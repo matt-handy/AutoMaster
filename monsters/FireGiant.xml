@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Fire Giant</mname>
+<hp>162</hp>
+<str>25</str>
+<dex>9</dex>
+<con>31</con>
+<int>10</int>
+<wis>14</wis>
+<cha>13</cha>
+<attacks>
+	<set>
+		<attack>
+			<name>Greatsword</name>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>6</diceCount>
+				<modifier>7</modifier>
+				<toHit>11</toHit>
+			</damage>
+		</attack>
+		<attack>
+			<name>Greatsword</name>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>6</diceCount>
+				<modifier>7</modifier>
+				<toHit>11</toHit>
+			</damage>
+		</attack>
+	</set>
+	<set>
+		<attack>
+			<name>Thrown Rock</name>
+			<damage>
+				<type>BLUDGEONING</type>
+				<dice>D10</dice>
+				<diceCount>4</diceCount>
+				<modifier>7</modifier>
+				<toHit>11</toHit>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>

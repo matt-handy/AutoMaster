@@ -1,0 +1,1 @@
+java -cp AutoMaster.jar handy.rp.dnd.Main

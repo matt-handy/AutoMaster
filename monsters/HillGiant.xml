@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Hill Giant</mname>
+<hp>105</hp>
+<str>21</str>
+<dex>8</dex>
+<con>19</con>
+<int>5</int>
+<wis>9</wis>
+<cha>6</cha>
+<attacks>
+	<set>
+		<attack>
+			<name>Greatclub</name>
+			<damage>
+				<type>BLUDGEONING</type>
+				<dice>D8</dice>
+				<diceCount>3</diceCount>
+				<modifier>5</modifier>
+				<toHit>8</toHit>
+			</damage>
+		</attack>
+		<attack>
+			<name>GreatClub</name>
+			<damage>
+				<type>BLUDGEONING</type>
+				<dice>D8</dice>
+				<diceCount>3</diceCount>
+				<modifier>5</modifier>
+				<toHit>8</toHit>
+			</damage>
+		</attack>
+	</set>
+	<set>
+		<attack>
+			<name>Thrown Rock</name>
+			<damage>
+				<type>BLUDGEONING</type>
+				<dice>D10</dice>
+				<diceCount>3</diceCount>
+				<modifier>5</modifier>
+				<toHit>8</toHit>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>

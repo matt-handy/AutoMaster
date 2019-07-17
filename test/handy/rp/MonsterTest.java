@@ -2,6 +2,7 @@ package handy.rp;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
@@ -86,6 +87,30 @@ class MonsterTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	void testLoadAll() {
+		try {
+			List<MonsterTemplate> allLoaded = MonsterParser.loadAll("monsters");
+			assertTrue(allLoaded.size() >= 2);
+			boolean foundHillGiant = false;
+			boolean foundFireGiant = false;
+			
+			for(MonsterTemplate mt : allLoaded) {
+				if(mt.humanReadableName.equals("Hill Giant")) {
+					foundHillGiant = true;
+				}else if(mt.humanReadableName.equals("Fire Giant")){
+					foundFireGiant = true;
+				}
+			}
+			
+			assertTrue(foundHillGiant);
+			assertTrue(foundFireGiant);
+		}catch(Exception e) {
+			e.printStackTrace();
+			fail();
 		}
 	}
 

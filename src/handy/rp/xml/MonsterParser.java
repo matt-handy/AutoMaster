@@ -3,7 +3,10 @@ package handy.rp.xml;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -89,6 +92,20 @@ public class MonsterParser {
 			
 		}
 		return monsterBuilder.build();
+	}
+	
+	public static List<MonsterTemplate> loadAll(String directory) throws Exception{
+		List<MonsterTemplate> monsters = new ArrayList<>();
+		File dir = new File(directory);
+		if(dir.isDirectory() && dir.exists()) {
+			for(File child : dir.listFiles()) {
+				monsters.add(load(child.getAbsolutePath()));
+			}
+		}else {
+			throw new IOException("Directory not found: " + directory);
+		}
+		
+		return monsters;
 	}
 	
 	
