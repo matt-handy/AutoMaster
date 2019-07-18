@@ -31,6 +31,13 @@ class MainTest {
 		String args[] = {"amon", "Hill Giant", "Danny Boy"};
 		String response = main.addMonster(args);
 		assertTrue(response.startsWith("Added Hill Giant as Danny Boy with initiative "));
+		String args2[] = {"amon", "0", "Other Guy"};
+		response = main.addMonster(args2);
+		assertTrue(response.startsWith("Added Fire Giant as Other Guy with initiative "));
+		
+		String rmArgs[] = {"rm", "Other Guy"};
+		response = main.rmMonster(rmArgs);
+		assertTrue(response.startsWith("Removed: Other Guy"));
 	}
 
 }

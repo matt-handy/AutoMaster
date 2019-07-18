@@ -75,6 +75,10 @@ public class Main {
 			case "addmonster":
 				console.writer().println(addMonster(args));
 				break;
+			case "rm":
+			case "remove":
+				console.writer().println(rmMonster(args));
+				break;
 			case "apc":
 			case "addplayercharacter":
 				if (args.length != 3) {
@@ -115,19 +119,47 @@ public class Main {
 				break;
 			case "li":
 			case "listinitiative":
+				int idx = 0;
 				for (Entity ent : currentInitiativeList) {
-					console.writer().println(ent.personalName + " " + ent.getCurrentInitiative());
+					console.writer().println(idx + " " + ent.personalName + " " + ent.getCurrentInitiative());
+					idx++;
 				}
 				break;
 			case "lam":
 			case "listmonsters":
+				int jdx = 0;
 				for (MonsterTemplate m : monstersAvailable) {
-					console.writer().println("Monster " + m.humanReadableName);
+					console.writer().println("Monster: " + jdx + " - " + m.humanReadableName);
+					jdx++;
 				}
 				break;
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
+			}
+		}
+	}
+	
+	String rmMonster(String args[]) {
+		if (args.length != 2) {
+			return "rm <character name>";
+		}
+		
+		try {
+			int idx = Integer.parseInt(args[1]);
+			if(idx <= currentInitiativeList.size()) {
+				Entity ent = currentInitiativeList.remove(idx);
+				return "Removed: " + ent.personalName;
+			}else {
+				return "Invalid index supplied";
+			}
+		} catch (NumberFormatException e) {
+			int idx = getIndexOfNamedEntity(args[1]);
+			if(idx >= 0) {
+				Entity ent = currentInitiativeList.remove(idx);
+				return "Removed: " + ent.personalName;
+			}else {
+				return "Invalid name";
 			}
 		}
 	}
@@ -165,5 +197,15 @@ public class Main {
 			}
 		}
 		return null;
+	}
+	
+	private int getIndexOfNamedEntity(String name) {
+		for(int idx = 0; idx < currentInitiativeList.size(); idx++) {
+			Entity ent = currentInitiativeList.get(idx);
+			if(ent.personalName.equals(name)) {
+				return idx;
+			}
+		}
+		return -1;
 	}
 }
