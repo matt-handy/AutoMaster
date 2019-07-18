@@ -45,4 +45,23 @@ public class Attack {
 		
 		return sBuilder.toString();
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(readableAttackName);
+		sb.append(" hits for ");
+		
+		boolean firstDamage = true;
+		
+		for(DamageComponent damage : damagers) {
+			if(firstDamage) {
+				firstDamage = false;
+			}else {
+				sb.append(" and ");
+			}
+			sb.append(damage.toString());
+		}
+		
+		return sb.toString();
+	}
 }

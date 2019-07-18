@@ -21,4 +21,5 @@ public class Damage {
 	public String getHumanReadableDamage() {
 		return damage + " " + damageType.readableName + " damage";
 	}
+	
 }

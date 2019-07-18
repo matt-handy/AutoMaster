@@ -4,7 +4,10 @@ import java.io.Console;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
+import handy.rp.dnd.attacks.Attack;
+import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.monsters.MonsterInstance;
 import handy.rp.dnd.monsters.MonsterTemplate;
 import handy.rp.xml.MonsterParser;
@@ -104,9 +107,17 @@ public class Main {
 			case "startcombat":
 				startCombat();
 				console.writer().println("First in order: " + currentInitiativeList.get(currentPlace).personalName);
+				if(currentInitiativeList.get(currentPlace) instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
+					console.writer().println(mi.listAttacksReadable());
+				}
 				break;
 			case "advturn":
 			case "advanceturn":
+				if(currentInitiativeList.get(currentPlace) instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
+					mi.resetTurn();
+				}
 				if (currentPlace + 1 == currentInitiativeList.size()) {
 					roundCount++;
 					console.writer().println("New round! Current round: " + roundCount);
@@ -116,6 +127,10 @@ public class Main {
 				}
 				Entity entity = currentInitiativeList.get(currentPlace);
 				console.writer().println("Next in order: " + entity.personalName);
+				if(currentInitiativeList.get(currentPlace) instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
+					console.writer().println(mi.listAttacksReadable());
+				}
 				break;
 			case "li":
 			case "listinitiative":
@@ -133,10 +148,49 @@ public class Main {
 					jdx++;
 				}
 				break;
+			case "la":
+			case "listattack":
+				if(currentInitiativeList.get(currentPlace) instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
+					console.writer().println(mi.listRemainingAttacksReadable());
+				}else {
+					console.writer().println("Must be a monster to list attacks");
+				}
+				break;
+			case "at":
+			case "attack":
+				console.writer().println(attack(args));
+				break;
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
 			}
+		}
+	}
+	
+	String attack(String args[]) {
+		if (args.length != 2) {
+			return "at <attack index>";
+		}
+		
+		if (!(currentInitiativeList.get(currentPlace) instanceof MonsterInstance)) {
+			return "Must be a monster to attack";
+		}
+		
+		MonsterInstance monster = (MonsterInstance) currentInitiativeList.get(currentPlace);
+		
+		try {
+			int attackIdx = Integer.parseInt(args[1]);
+			try {
+				Attack chosenAttack = monster.expendAttack(attackIdx);
+				chosenAttack.rollDamage();
+				return chosenAttack.readDamage();
+			}catch(IllegalArgumentException ex) {
+				return "Too high an index, not a valid attack";
+			}
+			
+		}catch(NumberFormatException e) {
+			return "Invalid attack index supplied";
 		}
 	}
 	

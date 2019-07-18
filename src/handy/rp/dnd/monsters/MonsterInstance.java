@@ -1,5 +1,7 @@
 package handy.rp.dnd.monsters;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import handy.rp.Dice;
@@ -71,7 +73,7 @@ public class MonsterInstance extends Entity{
 		currentInitiative = Dice.d20() + Helpers.getModifierFromAbility(dex);
 		return currentInitiative;
 	}
-	
+	/*
 	public void chooseAttackSet(int number) {
 		if(number >= attackLists.size()) {
 			throw new IllegalArgumentException("Picked too high an attack set number");
@@ -79,16 +81,32 @@ public class MonsterInstance extends Entity{
 			attacksThisTurn = attackLists.get(number - 1);
 		}
 	}
-	
+	*/
 	public List<Attack> getCurrentAttacks(){
 		return attacksThisTurn;
 	}
 	
 	public Attack expendAttack(int number) {
-		if(number >= attacksThisTurn.size()) {
+		if(attacksThisTurn == null) {
+			int totalIdx = 0;
+			for(List<Attack> set : attackLists) {
+				for(Attack attack : set) {
+					if(totalIdx == number) {
+						attacksThisTurn = new ArrayList<>();
+						attacksThisTurn.addAll(set);
+						attacksThisTurn.remove(attack);
+						return attack;
+					}
+					totalIdx++;
+				}
+			}
 			throw new IllegalArgumentException("Picked too high an attack number");
 		}else {
-			return attacksThisTurn.remove(number - 1);
+			if(number >= attacksThisTurn.size()) {
+				throw new IllegalArgumentException("Picked too high an attack number");
+			}else {
+				return attacksThisTurn.remove(number);
+			}
 		}
 	}
 	
@@ -96,5 +114,32 @@ public class MonsterInstance extends Entity{
 		return attackLists.size() > 1;
 	}
 	
+	public String listAttacksReadable() {
+		StringBuilder sb = new StringBuilder();
+		int setIdx = 0;
+		int aIdx = 0;
+		for(List<Attack> set : attackLists) {
+			if(attackLists.size() != 1) {
+				sb.append("Set: " + setIdx++ + System.lineSeparator());
+			}
+			
+			for(Attack attack : set) {
+				sb.append("Attack: " + aIdx++ + " " + attack.toString() + System.lineSeparator());
+			}
+		}
+		return sb.toString();
+	}
+	
+	public String listRemainingAttacksReadable() {
+		if(attacksThisTurn == null) {
+			return listAttacksReadable();
+		}
+		StringBuilder sb = new StringBuilder();
+		int aIdx = 0;
+		for(Attack attack : attacksThisTurn) {
+			sb.append("Attack: " + aIdx++ + " " + attack.toString() + System.lineSeparator());
+		}
+		return sb.toString();
+	}
 
 }

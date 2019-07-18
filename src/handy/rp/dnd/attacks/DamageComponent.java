@@ -67,4 +67,9 @@ public class DamageComponent {
 	public Damage rollDamage() {
 		return new Damage(damageType, (diceCount * diceType.roll()) + modifier, Dice.d20() + toHit);
 	}
+	
+	@Override
+	public String toString() {
+		return diceCount + "" + diceType.name() + " + " + modifier + " " + damageType.readableName + " with " + toHit + " to hit";
+	}
 }
