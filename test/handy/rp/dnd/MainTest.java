@@ -36,7 +36,7 @@ class MainTest {
 		assertTrue(response.startsWith("Added Fire Giant as Other Guy with initiative "));
 		
 		String rmArgs[] = {"rm", "Other Guy"};
-		response = main.rmMonster(rmArgs);
+		response = main.rmEntity(rmArgs);
 		assertTrue(response.startsWith("Removed: Other Guy"));
 	}
 

@@ -1,7 +1,6 @@
 package handy.rp.dnd.monsters;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import handy.rp.Dice;

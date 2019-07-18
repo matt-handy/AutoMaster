@@ -4,10 +4,8 @@ import java.io.Console;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import handy.rp.dnd.attacks.Attack;
-import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.monsters.MonsterInstance;
 import handy.rp.dnd.monsters.MonsterTemplate;
 import handy.rp.xml.MonsterParser;
@@ -31,6 +29,27 @@ public class Main {
 			}
 		} else {
 			currentPlace = currentInitiativeList.indexOf(currentEntity);
+		}
+	}
+	
+	public void removeEntity(Entity entity) {
+		if(entity == currentEntity) {
+			if(currentInitiativeList.indexOf(entity) == currentInitiativeList.size() - 1) {
+				if(currentInitiativeList.size() >= 1) {
+					roundCount++;
+					currentEntity = currentInitiativeList.get(0);
+					currentPlace = 0;
+				}else {
+					currentEntity = null;
+					currentPlace = -1;
+				}
+			}else {
+				currentPlace++;
+				currentEntity = currentInitiativeList.get(currentPlace);
+			}
+		}else {
+			currentInitiativeList.remove(entity);
+			currentPlace = currentInitiativeList.indexOf(entity);
 		}
 	}
 
@@ -80,7 +99,7 @@ public class Main {
 				break;
 			case "rm":
 			case "remove":
-				console.writer().println(rmMonster(args));
+				console.writer().println(rmEntity(args));
 				break;
 			case "apc":
 			case "addplayercharacter":
@@ -106,15 +125,15 @@ public class Main {
 			case "sc":
 			case "startcombat":
 				startCombat();
-				console.writer().println("First in order: " + currentInitiativeList.get(currentPlace).personalName);
-				if(currentInitiativeList.get(currentPlace) instanceof MonsterInstance) {
-					MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
+				console.writer().println("First in order: " + currentEntity.personalName);
+				if(currentEntity instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentEntity;
 					console.writer().println(mi.listAttacksReadable());
 				}
 				break;
 			case "advturn":
 			case "advanceturn":
-				if(currentInitiativeList.get(currentPlace) instanceof MonsterInstance) {
+				if(currentEntity instanceof MonsterInstance) {
 					MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
 					mi.resetTurn();
 				}
@@ -125,10 +144,10 @@ public class Main {
 				}else {
 					currentPlace++;
 				}
-				Entity entity = currentInitiativeList.get(currentPlace);
-				console.writer().println("Next in order: " + entity.personalName);
-				if(currentInitiativeList.get(currentPlace) instanceof MonsterInstance) {
-					MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
+				currentEntity = currentInitiativeList.get(currentPlace);
+				console.writer().println("Next in order: " + currentEntity.personalName);
+				if(currentEntity instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentEntity;
 					console.writer().println(mi.listAttacksReadable());
 				}
 				break;
@@ -161,6 +180,13 @@ public class Main {
 			case "attack":
 				console.writer().println(attack(args));
 				break;
+			case "rc":
+			case "roundcount":
+				console.writer().println("Round: " + roundCount);
+				break;
+			case "cur":
+			case "currententity":
+				console.writer().println("Current actor: " + currentEntity.personalName);
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
@@ -194,7 +220,7 @@ public class Main {
 		}
 	}
 	
-	String rmMonster(String args[]) {
+	String rmEntity(String args[]) {
 		if (args.length != 2) {
 			return "rm <character name>";
 		}
@@ -202,7 +228,8 @@ public class Main {
 		try {
 			int idx = Integer.parseInt(args[1]);
 			if(idx <= currentInitiativeList.size()) {
-				Entity ent = currentInitiativeList.remove(idx);
+				Entity ent = currentInitiativeList.get(idx);
+				removeEntity(ent);
 				return "Removed: " + ent.personalName;
 			}else {
 				return "Invalid index supplied";
@@ -210,7 +237,8 @@ public class Main {
 		} catch (NumberFormatException e) {
 			int idx = getIndexOfNamedEntity(args[1]);
 			if(idx >= 0) {
-				Entity ent = currentInitiativeList.remove(idx);
+				Entity ent = currentInitiativeList.get(idx);
+				removeEntity(ent);
 				return "Removed: " + ent.personalName;
 			}else {
 				return "Invalid name";
