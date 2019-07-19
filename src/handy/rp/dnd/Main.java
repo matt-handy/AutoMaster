@@ -187,6 +187,52 @@ public class Main {
 			case "cur":
 			case "currententity":
 				console.writer().println("Current actor: " + currentEntity.personalName);
+				break;
+			case "curhp":
+				if(currentEntity instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentEntity;
+					console.writer().println("Current HP: " + mi.getCurrentHp());
+				}else {
+					console.writer().println("Current actor does not have managed HP");
+				}
+				break;
+			//TODO: Consolidate hit and heal code into common logic
+			case "heal":
+				if(args.length != 2) {
+					console.writer().println("heal <hp>");
+					continue;
+				}
+				if(currentEntity instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentEntity;
+					try {
+						int hp = Integer.parseInt(args[1]);
+						mi.heal(hp);
+						console.writer().println("Current HP: " + mi.getCurrentHp());
+					}catch(NumberFormatException ex) {
+						console.writer().println("Invalid HP supplied.");
+					}
+				}else {
+					console.writer().println("Current actor does not have managed HP");
+				}
+				break;
+			case "hit":
+				if(args.length != 2) {
+					console.writer().println("hit <hp>");
+					continue;
+				}
+				if(currentEntity instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentEntity;
+					try {
+						int hp = Integer.parseInt(args[1]);
+						mi.hit(hp);
+						console.writer().println("Current HP: " + mi.getCurrentHp());
+					}catch(NumberFormatException ex) {
+						console.writer().println("Invalid HP supplied.");
+					}
+				}else {
+					console.writer().println("Current actor does not have managed HP");
+				}
+				break;
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
