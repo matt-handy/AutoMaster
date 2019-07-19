@@ -155,7 +155,12 @@ public class Main {
 			case "listinitiative":
 				int idx = 0;
 				for (Entity ent : currentInitiativeList) {
-					console.writer().println(idx + " " + ent.personalName + " " + ent.getCurrentInitiative());
+					if(ent instanceof MonsterInstance) {
+						MonsterInstance mi = (MonsterInstance) ent;
+						console.writer().println(idx + " " + ent.personalName + " " + ent.getCurrentInitiative() + " HP: " + mi.getCurrentHp());
+					}else {
+						console.writer().println(idx + " " + ent.personalName + " " + ent.getCurrentInitiative());
+					}
 					idx++;
 				}
 				break;
@@ -198,45 +203,50 @@ public class Main {
 				break;
 			//TODO: Consolidate hit and heal code into common logic
 			case "heal":
-				if(args.length != 2) {
-					console.writer().println("heal <hp>");
-					continue;
-				}
-				if(currentEntity instanceof MonsterInstance) {
-					MonsterInstance mi = (MonsterInstance) currentEntity;
-					try {
-						int hp = Integer.parseInt(args[1]);
-						mi.heal(hp);
-						console.writer().println("Current HP: " + mi.getCurrentHp());
-					}catch(NumberFormatException ex) {
-						console.writer().println("Invalid HP supplied.");
-					}
-				}else {
-					console.writer().println("Current actor does not have managed HP");
-				}
-				break;
 			case "hit":
-				if(args.length != 2) {
-					console.writer().println("hit <hp>");
-					continue;
-				}
-				if(currentEntity instanceof MonsterInstance) {
-					MonsterInstance mi = (MonsterInstance) currentEntity;
-					try {
-						int hp = Integer.parseInt(args[1]);
-						mi.hit(hp);
-						console.writer().println("Current HP: " + mi.getCurrentHp());
-					}catch(NumberFormatException ex) {
-						console.writer().println("Invalid HP supplied.");
-					}
-				}else {
-					console.writer().println("Current actor does not have managed HP");
-				}
+				console.writer().println(hpMod(args));
 				break;
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
 			}
+		}
+	}
+	
+	String hpMod(String args[]) {
+		String cmd = args[0];
+	
+		if(args.length != 3) {
+			if(cmd.equals("heal")) {
+				return "heal <monster> <hp>";
+			}else {
+				return "hit <monster> <hp>";
+			}
+		}
+		
+		int midx;
+		try {
+			midx = Integer.parseInt(args[1]); 
+		}catch(NumberFormatException ex) {
+			return "Need monster index";
+		}
+		Entity target = currentInitiativeList.get(midx);
+		
+		if(target instanceof MonsterInstance) {
+			MonsterInstance mi = (MonsterInstance) target;
+			try {
+				int hp = Integer.parseInt(args[2]);
+				if(cmd.equals("heal")) {
+					mi.heal(hp);
+				}else {
+					mi.hit(hp);
+				}
+				return "Current HP: " + mi.getCurrentHp();
+			}catch(NumberFormatException ex) {
+				return "Invalid HP supplied.";
+			}
+		}else {
+			return "Current actor does not have managed HP";
 		}
 	}
 	
