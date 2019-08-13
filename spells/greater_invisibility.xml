@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>greater_invisibility</compname>
+	<readablename>Greater Invisibility</readablename>
+	<minLevel>4</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>false</hasToHit>
+	<readableeffect>    You or a creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible as long as it is on the target’s person.
+</readableeffect>
+</spell>

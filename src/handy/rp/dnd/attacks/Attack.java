@@ -8,7 +8,7 @@ import java.util.Set;
 public class Attack {
 	
 	private List<DamageComponent> damagers = new ArrayList<DamageComponent>();
-	private final String readableAttackName;
+	public final String readableAttackName;
 	
 	//Keep at package, folks should use Builder
 	Attack(List<DamageComponent> damagers, String readableAttackName){
@@ -28,13 +28,13 @@ public class Attack {
 		return lastDamage;
 	}
 	
-	public String readDamage() {
-		StringBuilder sBuilder = new StringBuilder(readableAttackName);
+	public static String readDamage(String attackName, Set<Damage> damages) {
+		StringBuilder sBuilder = new StringBuilder(attackName);
 		sBuilder.append(" hits for ");
 		
 		boolean firstDamage = true;
 		
-		for(Damage damage : lastDamage) {
+		for(Damage damage : damages) {
 			if(firstDamage) {
 				firstDamage = false;
 			}else {

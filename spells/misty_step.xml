@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>misty_step</compname>
+	<readablename>Misty Step</readablename>
+	<minLevel>2</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>false</hasToHit>
+	<readableeffect>Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space that you can see.</readableeffect>
+</spell>

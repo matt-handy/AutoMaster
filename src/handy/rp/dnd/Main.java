@@ -4,10 +4,13 @@ import java.io.Console;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import handy.rp.dnd.attacks.Attack;
+import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.monsters.MonsterInstance;
 import handy.rp.dnd.monsters.MonsterTemplate;
+import handy.rp.dnd.spells.Spell;
 import handy.rp.xml.MonsterParser;
 
 public class Main {
@@ -206,6 +209,27 @@ public class Main {
 			case "hit":
 				console.writer().println(hpMod(args));
 				break;
+			case "cast":
+				console.writer().println(castSpell(args));
+				break;
+			case "listspells":
+			case "ls":
+				if(currentEntity instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentEntity;
+					console.writer().println(mi.listSpells());
+				}else {
+					console.writer().println("Current actor does not have managed spells");
+				}
+				break;
+			case "listspellslots":
+			case "lss":
+				if(currentEntity instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentEntity;
+					console.writer().println(mi.listSpellSlotsRemaining());
+				}else {
+					console.writer().println("Current actor does not have managed spells");
+				}
+				break;
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
@@ -265,14 +289,49 @@ public class Main {
 			int attackIdx = Integer.parseInt(args[1]);
 			try {
 				Attack chosenAttack = monster.expendAttack(attackIdx);
-				chosenAttack.rollDamage();
-				return chosenAttack.readDamage();
+				Set<Damage> damages = chosenAttack.rollDamage();
+				return Attack.readDamage(chosenAttack.readableAttackName, damages);
 			}catch(IllegalArgumentException ex) {
 				return "Too high an index, not a valid attack";
 			}
 			
 		}catch(NumberFormatException e) {
 			return "Invalid attack index supplied";
+		}
+	}
+	
+	String castSpell(String args[]) {
+		if(args.length != 3 && args.length != 2) {
+			return "cast <spellname> <level> | cast <spellname>";
+		}
+		
+		if (!(currentInitiativeList.get(currentPlace) instanceof MonsterInstance)) {
+			return "Must be a monster to attack";
+		}
+		
+		MonsterInstance monster = (MonsterInstance) currentInitiativeList.get(currentPlace);
+		
+		if(args.length == 3) {
+		try {
+			int spellLevel = Integer.parseInt(args[2]);
+			try {
+				Spell.SLOTLEVEL slotLevel = Spell.SLOTLEVEL.get(spellLevel);
+				Spell spell = monster.expendSpell(args[1], slotLevel);
+				return spell.cast(slotLevel, monster.casterLevel, monster.casterDc, monster.casterToHit);
+			}catch(IllegalArgumentException ex) {
+				return ex.getMessage();
+			}
+			
+		}catch(NumberFormatException e) {
+			return "Invalid attack index supplied";
+		}
+		}else {
+			try {
+				Spell spell = monster.expendSpell(args[1]);
+				return spell.cast(spell.minimumLevel, monster.casterLevel, monster.casterDc, monster.casterToHit);
+			}catch(IllegalArgumentException ex) {
+				return ex.getMessage();
+			}
 		}
 	}
 	

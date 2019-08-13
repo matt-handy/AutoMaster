@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,21 +27,30 @@ import handy.rp.dnd.attacks.DamageComponent;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
 import handy.rp.dnd.monsters.MonsterBuilder;
 import handy.rp.dnd.monsters.MonsterTemplate;
+import handy.rp.dnd.spells.Spell;
+import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
 public class MonsterParser {
 
+	public static List<Spell> spellsList;
+	
+	static {
+		try {
+			spellsList = SpellParser.loadAll("spells");
+		}catch(Exception ex) {
+			//Shouldn't happen, test loads happen before build. 
+			//TODO: Add user notification if exception occurs, will be deploy issue
+			ex.printStackTrace();
+		}
+	}
+	
 	public static MonsterTemplate load(String filename) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(new InputSource(new StringReader(readFile(filename))));
 		
 		NodeList manmeList = document.getElementsByTagName("mname");
-		
-		//Just assume one node returned
-		String mname = null;
-		for(int idx = 0; idx < manmeList.getLength(); idx++){
-			mname = manmeList.item(idx).getTextContent();
-		}
+		String mname = manmeList.item(0).getTextContent();
 		
 		MonsterBuilder monsterBuilder = new MonsterBuilder(mname);
 		
@@ -51,6 +62,13 @@ public class MonsterParser {
 		monsterBuilder.addWis(Integer.parseInt(document.getElementsByTagName("wis").item(0).getTextContent()));
 		monsterBuilder.addCha(Integer.parseInt(document.getElementsByTagName("cha").item(0).getTextContent()));
 		
+		try {
+			monsterBuilder.addCasterLevel(Integer.parseInt(document.getElementsByTagName("casterLevel").item(0).getTextContent()));
+			monsterBuilder.addCasterDc(Integer.parseInt(document.getElementsByTagName("casterDc").item(0).getTextContent()));
+			monsterBuilder.addCasterToHit(Integer.parseInt(document.getElementsByTagName("casterToHit").item(0).getTextContent()));
+		}catch(Exception ex) {
+			//Caster Level not given, ignore
+		}
 		
 		NodeList setList = document.getElementsByTagName("set");
 		
@@ -91,6 +109,69 @@ public class MonsterParser {
 			}
 			
 		}
+		
+		NodeList spellSet = document.getElementsByTagName("spells");
+		Node spellSetItem = spellSet.item(0);
+		Element spellSetElement = (Element) spellSetItem;
+		
+		NodeList spellEnums = document.getElementsByTagName("spell");
+		for(int idx = 0; idx < spellEnums.getLength(); idx++){
+			Node spellItem = spellEnums.item(idx);
+			Element spellElement = (Element) spellItem;
+			String spellName = spellElement.getTextContent();
+			for(Spell spell : spellsList) {
+				if(spell.computerName.equalsIgnoreCase(spellName)) {
+					monsterBuilder.addSpell(spell);
+					break;
+				}
+			}
+		}
+		
+		if(spellSetElement != null) {
+		NodeList slotSet = spellSetElement.getElementsByTagName("slots");
+		Node slotSetItem = slotSet.item(0);
+		Element slotSetElement = (Element) slotSetItem;
+		
+		Map<Spell.SLOTLEVEL, Integer> slotCounts = new HashMap<>();
+		
+		if(slotSetElement.getElementsByTagName("first").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("first").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.ONE, count);
+		}
+		if(slotSetElement.getElementsByTagName("second").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("second").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.TWO, count);
+		}
+		if(slotSetElement.getElementsByTagName("third").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("third").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.THREE, count);
+		}
+		if(slotSetElement.getElementsByTagName("fourth").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("fourth").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.FOUR, count);
+		}
+		if(slotSetElement.getElementsByTagName("fifth").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("fifth").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.FIVE, count);
+		}
+		if(slotSetElement.getElementsByTagName("sixth").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("sixth").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.SIX, count);
+		}
+		if(slotSetElement.getElementsByTagName("seventh").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("seventh").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.SEVEN, count);
+		}
+		if(slotSetElement.getElementsByTagName("eighth").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("eighth").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.EIGHT, count);
+		}
+		if(slotSetElement.getElementsByTagName("ninth").item(0) != null) {
+			Integer count = Integer.parseInt(slotSetElement.getElementsByTagName("ninth").item(0).getTextContent());
+			slotCounts.put(SLOTLEVEL.NINE, count);
+		}
+		monsterBuilder.addSpellSlots(slotCounts);
+		}
 		return monsterBuilder.build();
 	}
 	
@@ -110,7 +191,7 @@ public class MonsterParser {
 	
 	
 	//TODO: Move this function to Java commons
-	private static String readFile(String pathname) throws IOException {
+	public static String readFile(String pathname) throws IOException {
 
 		File file = new File(pathname);
 		StringBuilder fileContents = new StringBuilder((int) file.length());

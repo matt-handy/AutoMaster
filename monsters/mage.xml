@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Mage</mname>
+<hp>40</hp>
+<str>9</str>
+<dex>14</dex>
+<con>11</con>
+<int>17</int>
+<wis>12</wis>
+<cha>11</cha>
+<casterDc>14</casterDc>
+<casterToHit>6</casterToHit>
+<casterLevel>9</casterLevel>
+<attacks>
+	<set>
+		<attack>
+			<name>Dagger (ranged 20/60 or melee)</name>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D4</dice>
+				<diceCount>1</diceCount>
+				<modifier>2</modifier>
+				<toHit>4</toHit>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+<spells>
+	<slots>
+		<first>4</first>
+		<second>3</second>
+		<third>3</third>
+		<fourth>3</fourth>
+		<fifth>1</fifth>
+	</slots>
+	<spell>fire_bolt</spell>
+	<spell>light</spell>
+	<spell>mage_hand</spell>
+	<spell>prestidigitation</spell>
+	<spell>detect_magic</spell>
+	<spell>mage_armor</spell>
+	<spell>magic_missile</spell>
+	<spell>shield</spell>
+	<spell>misty_step</spell>
+	<spell>suggestion</spell>
+	<spell>counterspell</spell>
+	<spell>fireball</spell>
+	<spell>fly</spell>
+	<spell>greater_invisibility</spell>
+	<spell>ice_storm</spell>
+	<spell>cone_of_cold</spell>
+</spells>
+</monster>

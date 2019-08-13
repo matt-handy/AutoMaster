@@ -44,6 +44,10 @@ class MonsterTest {
 			assertTrue(hillGiant.getAttacks().get(0).size() == 2);
 			assertTrue(hillGiant.getAttacks().get(1).size() == 1);
 			
+			assertTrue(hillGiant.casterDc == -1);
+			assertTrue(hillGiant.casterLevel == -1);
+			assertTrue(hillGiant.casterToHit == -1);
+			
 			Attack s1a1 = hillGiant.getAttacks().get(0).get(0);
 			Attack s1a2 = hillGiant.getAttacks().get(0).get(1);
 			Attack s2a1 = hillGiant.getAttacks().get(1).get(0);
