@@ -9,13 +9,14 @@ import java.util.Set;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.monsters.MonsterInstance;
+import handy.rp.dnd.monsters.MonsterSetLoader;
 import handy.rp.dnd.monsters.MonsterTemplate;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.xml.MonsterParser;
 
 public class Main {
 
-	private List<Entity> currentInitiativeList = new ArrayList<>();
+	protected List<Entity> currentInitiativeList = new ArrayList<>();
 	private Entity currentEntity;
 	private int currentPlace;
 	private int roundCount;
@@ -96,6 +97,10 @@ public class Main {
 			String command = args[0];
 
 			switch (command) {
+			case "lms":
+			case "load_monster_set":
+				console.writer().println(loadMonsterSet(args));
+				break;
 			case "amon":
 			case "addmonster":
 				console.writer().println(addMonster(args));
@@ -234,6 +239,22 @@ public class Main {
 				console.writer().println("Unknown command: " + command);
 				break;
 			}
+		}
+	}
+	
+	String loadMonsterSet(String args[]) {
+		if(args.length != 2) {
+			return "lms <filename>";
+		}
+		
+		try {
+			List<MonsterInstance> mis = MonsterSetLoader.getMonsterSet(monstersAvailable, args[1]);
+			for(MonsterInstance mi : mis) {
+				addEntity(mi, false);
+			}
+			return "Loaded Successfully";
+		}catch(IllegalArgumentException ex) {
+			return ex.getMessage();
 		}
 	}
 	
