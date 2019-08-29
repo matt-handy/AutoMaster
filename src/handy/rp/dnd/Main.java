@@ -97,6 +97,26 @@ public class Main {
 			String command = args[0];
 
 			switch (command) {
+			case "help":
+				console.writer().println("advturn | advanceturn => advances play to the next entity");
+				console.writer().println("amon | addmonster <monster index or name> <personal name> => adds monster");
+				console.writer().println("apc | addplayercharacter <personal name> <initiative> => add character");
+				console.writer().println("at | attack <attack index> => makes attack by current monster");
+				console.writer().println("cast <spellname> <level - optional, defaults to lowers possible level> => cast spell but current monster");
+				console.writer().println("cur | currententity => gives name of current in initiative");
+				console.writer().println("curhp => gives hp of current entity in initiative");
+				console.writer().println("heal <index of entity> <hp> => heals monster");
+				console.writer().println("hit <index of entity> <hp> => removes monster hp");
+				console.writer().println("gr | getround => gives round number");
+				console.writer().println("la | listattack => prints list of current monster attacks");
+				console.writer().println("lam | listallmonsters => prints list of monster templates available for play");
+				console.writer().println("li | listinitiative => gives print of characters/monsters in initiative order");
+				console.writer().println("lms | load_monster_set <filename> => loads set of monsters into initiative order");
+				console.writer().println("ls | listspells => prints list of current monster spells");
+				console.writer().println("lss | listspellslots => prints list of current monster spell slots");
+				console.writer().println("rm | remove <index or personal name> => removes entity from initiative order");
+				console.writer().println("sc | startcombat => starts play");
+				break;
 			case "lms":
 			case "load_monster_set":
 				console.writer().println(loadMonsterSet(args));
@@ -193,10 +213,6 @@ public class Main {
 			case "attack":
 				console.writer().println(attack(args));
 				break;
-			case "rc":
-			case "roundcount":
-				console.writer().println("Round: " + roundCount);
-				break;
 			case "cur":
 			case "currententity":
 				console.writer().println("Current actor: " + currentEntity.personalName);
@@ -250,6 +266,7 @@ public class Main {
 		try {
 			List<MonsterInstance> mis = MonsterSetLoader.getMonsterSet(monstersAvailable, args[1]);
 			for(MonsterInstance mi : mis) {
+				mi.rollInitiative();
 				addEntity(mi, false);
 			}
 			return "Loaded Successfully";

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Brown Bear</mname>
+<hp>34</hp>
+<str>19</str>
+<dex>10</dex>
+<con>16</con>
+<int>2</int>
+<wis>13</wis>
+<cha>7</cha>
+<attacks>
+	<set>
+		<attack>
+			<name>Bite</name>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>4</modifier>
+				<toHit>5</toHit>
+			</damage>
+		</attack>
+		<attack>
+			<name>Claws</name>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>2</diceCount>
+				<modifier>4</modifier>
+				<toHit>5</toHit>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>

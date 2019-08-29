@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Orc War Chief</mname>
+<hp>93</hp>
+<str>18</str>
+<dex>12</dex>
+<con>18</con>
+<int>11</int>
+<wis>11</wis>
+<cha>16</cha>
+<attacks>
+	<set>
+		<attack>
+			<name>Greataxe</name>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D12</dice>
+				<diceCount>1</diceCount>
+				<modifier>0</modifier>
+				<toHit>6</toHit>
+			</damage>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>0</modifier>
+				<toHit>6</toHit>
+			</damage>
+		</attack>
+	</set>
+	<set>
+		<attack>
+			<name>Spear</name>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D8</dice>
+				<diceCount>2</diceCount>
+				<modifier>4</modifier>
+				<toHit>6</toHit>
+			</damage>
+		</attack>
+		<attack>
+			<name>Spear</name>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D8</dice>
+				<diceCount>2</diceCount>
+				<modifier>4</modifier>
+				<toHit>6</toHit>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>

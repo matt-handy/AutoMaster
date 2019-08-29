@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Bandit Captain</mname>
+<hp>65</hp>
+<str>15</str>
+<dex>16</dex>
+<con>14</con>
+<int>14</int>
+<wis>11</wis>
+<cha>14</cha>
+<attacks>
+	<set>
+		<attack>
+			<name>Scimitar</name>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+				<toHit>5</toHit>
+			</damage>
+		</attack>
+		<attack>
+			<name>Scimitar</name>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+				<toHit>5</toHit>
+			</damage>
+		</attack>
+		<attack>
+			<name>Dagger</name>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D4</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+				<toHit>5</toHit>
+			</damage>
+		</attack>
+	</set>
+	<set>
+		<attack>
+			<name>Dagger - Ranged</name>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D4</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+				<toHit>5</toHit>
+			</damage>
+		</attack>
+		<attack>
+			<name>Dagger - Ranged</name>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D4</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+				<toHit>5</toHit>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>
