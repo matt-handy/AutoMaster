@@ -27,6 +27,23 @@
 				<toHit>6</toHit>
 			</damage>
 		</attack>
+		<attack>
+			<name>Greataxe</name>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D12</dice>
+				<diceCount>1</diceCount>
+				<modifier>0</modifier>
+				<toHit>6</toHit>
+			</damage>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>0</modifier>
+				<toHit>6</toHit>
+			</damage>
+		</attack>
 	</set>
 	<set>
 		<attack>
