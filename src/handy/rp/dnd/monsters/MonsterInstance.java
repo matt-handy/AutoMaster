@@ -76,7 +76,8 @@ public class MonsterInstance extends Entity{
 	
 	public void resetTurn() {
 		if(attackLists.size() == 1) {
-			attacksThisTurn = attackLists.get(0);
+			attacksThisTurn = new ArrayList<>();
+			attacksThisTurn.addAll(attackLists.get(0));
 		}else {
 			attacksThisTurn = null;
 		}

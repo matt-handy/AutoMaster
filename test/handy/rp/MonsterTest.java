@@ -95,6 +95,22 @@ class MonsterTest {
 	}
 	
 	@Test
+	void testResetSingleAttack() {
+		try {
+			MonsterTemplate mage = MonsterParser.load("monsters\\mage.xml");
+			MonsterInstance trogdor = mage.getInstance("Trogdor");
+			Attack at = trogdor.expendAttack(0);
+			assertEquals(at.readableAttackName, "Dagger (ranged 20/60 or melee)");
+			assertEquals(trogdor.listRemainingAttacksReadable(), "");
+			trogdor.resetTurn();
+			at = trogdor.expendAttack(0);
+			assertEquals(at.readableAttackName, "Dagger (ranged 20/60 or melee)");
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
 	void testLoadAll() {
 		try {
 			List<MonsterTemplate> allLoaded = MonsterParser.loadAll("monsters");

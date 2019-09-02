@@ -328,7 +328,7 @@ public class Main {
 			try {
 				Attack chosenAttack = monster.expendAttack(attackIdx);
 				Set<Damage> damages = chosenAttack.rollDamage();
-				return Attack.readDamage(chosenAttack.readableAttackName, damages);
+				return Attack.readDamage(damages, chosenAttack);
 			}catch(IllegalArgumentException ex) {
 				return "Too high an index, not a valid attack";
 			}

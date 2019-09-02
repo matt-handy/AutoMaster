@@ -5,15 +5,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import handy.rp.Dice;
+
 public class Attack {
 	
 	private List<DamageComponent> damagers = new ArrayList<DamageComponent>();
 	public final String readableAttackName;
+	public final int toHit;
 	
 	//Keep at package, folks should use Builder
-	Attack(List<DamageComponent> damagers, String readableAttackName){
+	Attack(List<DamageComponent> damagers, String readableAttackName, int toHit){
 		this.damagers = damagers;
 		this.readableAttackName = readableAttackName;
+		this.toHit = toHit;
 	}
 	
 	private Set<Damage> lastDamage;
@@ -28,8 +32,8 @@ public class Attack {
 		return lastDamage;
 	}
 	
-	public static String readDamage(String attackName, Set<Damage> damages) {
-		StringBuilder sBuilder = new StringBuilder(attackName);
+	public static String readDamage(Set<Damage> damages, Attack attack) {
+		StringBuilder sBuilder = new StringBuilder(attack.readableAttackName);
 		sBuilder.append(" hits for ");
 		
 		boolean firstDamage = true;
@@ -42,6 +46,8 @@ public class Attack {
 			}
 			sBuilder.append(damage.getHumanReadableDamage());
 		}
+		
+		sBuilder.append(" with a hit dice of " + (Dice.d20() + attack.toHit));
 		
 		return sBuilder.toString();
 	}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Veteran</mname>
+<hp>58</hp>
+<str>16</str>
+<dex>13</dex>
+<con>14</con>
+<int>10</int>
+<wis>11</wis>
+<cha>10</cha>
+<attacks>
+	<set>
+		<attack>
+			<name>Longsword</name>
+			<toHit>5</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D10</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Longsword</name>
+			<toHit>5</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D10</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+			</damage>
+		</attack>
+	</set>
+	<set>
+		<attack>
+			<name>Heavy Crossbow</name>
+			<toHit>1</toHit>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D10</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>

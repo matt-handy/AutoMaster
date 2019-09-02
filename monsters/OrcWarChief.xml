@@ -12,58 +12,56 @@
 	<set>
 		<attack>
 			<name>Greataxe</name>
+			<toHit>6</toHit>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D12</dice>
 				<diceCount>1</diceCount>
 				<modifier>0</modifier>
-				<toHit>6</toHit>
 			</damage>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D8</dice>
 				<diceCount>1</diceCount>
 				<modifier>0</modifier>
-				<toHit>6</toHit>
 			</damage>
 		</attack>
 		<attack>
 			<name>Greataxe</name>
+			<toHit>6</toHit>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D12</dice>
 				<diceCount>1</diceCount>
 				<modifier>0</modifier>
-				<toHit>6</toHit>
 			</damage>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D8</dice>
 				<diceCount>1</diceCount>
 				<modifier>0</modifier>
-				<toHit>6</toHit>
 			</damage>
 		</attack>
 	</set>
 	<set>
 		<attack>
 			<name>Spear</name>
+			<toHit>6</toHit>
 			<damage>
 				<type>PIERCING</type>
 				<dice>D8</dice>
 				<diceCount>2</diceCount>
 				<modifier>4</modifier>
-				<toHit>6</toHit>
 			</damage>
 		</attack>
 		<attack>
 			<name>Spear</name>
+			<toHit>6</toHit>
 			<damage>
 				<type>PIERCING</type>
 				<dice>D8</dice>
 				<diceCount>2</diceCount>
 				<modifier>4</modifier>
-				<toHit>6</toHit>
 			</damage>
 		</attack>
 	</set>

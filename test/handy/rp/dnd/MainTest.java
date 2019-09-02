@@ -38,7 +38,8 @@ class MainTest {
 		assertTrue(response.startsWith("Added Hill Giant as Danny Boy with initiative "));
 		String args2[] = {"amon", "0", "Other Guy"};
 		response = main.addMonster(args2);
-		assertTrue(response.startsWith("Added Fire Giant as Other Guy with initiative "));
+		System.out.println(response);
+		assertTrue(response.startsWith("Added Bandit Captain as Other Guy with initiative "));
 		
 		String rmArgs[] = {"rm", "Other Guy"};
 		response = main.rmEntity(rmArgs);

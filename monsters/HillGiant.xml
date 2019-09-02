@@ -12,34 +12,34 @@
 	<set>
 		<attack>
 			<name>Greatclub</name>
+			<toHit>8</toHit>
 			<damage>
 				<type>BLUDGEONING</type>
 				<dice>D8</dice>
 				<diceCount>3</diceCount>
 				<modifier>5</modifier>
-				<toHit>8</toHit>
 			</damage>
 		</attack>
 		<attack>
 			<name>GreatClub</name>
+			<toHit>8</toHit>
 			<damage>
 				<type>BLUDGEONING</type>
 				<dice>D8</dice>
 				<diceCount>3</diceCount>
 				<modifier>5</modifier>
-				<toHit>8</toHit>
 			</damage>
 		</attack>
 	</set>
 	<set>
 		<attack>
 			<name>Thrown Rock</name>
+			<toHit>8</toHit>
 			<damage>
 				<type>BLUDGEONING</type>
 				<dice>D10</dice>
 				<diceCount>3</diceCount>
 				<modifier>5</modifier>
-				<toHit>8</toHit>
 			</damage>
 		</attack>
 	</set>

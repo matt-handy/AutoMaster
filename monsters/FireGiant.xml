@@ -12,34 +12,34 @@
 	<set>
 		<attack>
 			<name>Greatsword</name>
+			<toHit>11</toHit>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D6</dice>
 				<diceCount>6</diceCount>
 				<modifier>7</modifier>
-				<toHit>11</toHit>
 			</damage>
 		</attack>
 		<attack>
 			<name>Greatsword</name>
+			<toHit>11</toHit>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D6</dice>
 				<diceCount>6</diceCount>
 				<modifier>7</modifier>
-				<toHit>11</toHit>
 			</damage>
 		</attack>
 	</set>
 	<set>
 		<attack>
 			<name>Thrown Rock</name>
+			<toHit>11</toHit>
 			<damage>
 				<type>BLUDGEONING</type>
 				<dice>D10</dice>
 				<diceCount>4</diceCount>
 				<modifier>7</modifier>
-				<toHit>11</toHit>
 			</damage>
 		</attack>
 	</set>

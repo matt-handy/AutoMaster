@@ -12,54 +12,54 @@
 	<set>
 		<attack>
 			<name>Scimitar</name>
+			<toHit>5</toHit>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D6</dice>
 				<diceCount>1</diceCount>
 				<modifier>3</modifier>
-				<toHit>5</toHit>
 			</damage>
 		</attack>
 		<attack>
 			<name>Scimitar</name>
+			<toHit>5</toHit>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D6</dice>
 				<diceCount>1</diceCount>
 				<modifier>3</modifier>
-				<toHit>5</toHit>
 			</damage>
 		</attack>
 		<attack>
 			<name>Dagger</name>
+			<toHit>5</toHit>
 			<damage>
 				<type>PIERCING</type>
 				<dice>D4</dice>
 				<diceCount>1</diceCount>
 				<modifier>3</modifier>
-				<toHit>5</toHit>
 			</damage>
 		</attack>
 	</set>
 	<set>
 		<attack>
 			<name>Dagger - Ranged</name>
+			<toHit>5</toHit>
 			<damage>
 				<type>PIERCING</type>
 				<dice>D4</dice>
 				<diceCount>1</diceCount>
 				<modifier>3</modifier>
-				<toHit>5</toHit>
 			</damage>
 		</attack>
 		<attack>
 			<name>Dagger - Ranged</name>
+			<toHit>5</toHit>
 			<damage>
 				<type>PIERCING</type>
 				<dice>D4</dice>
 				<diceCount>1</diceCount>
 				<modifier>3</modifier>
-				<toHit>5</toHit>
 			</damage>
 		</attack>
 	</set>

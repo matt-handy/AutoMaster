@@ -12,22 +12,22 @@
 	<set>
 		<attack>
 			<name>Bite</name>
+			<toHit>5</toHit>
 			<damage>
 				<type>PIERCING</type>
 				<dice>D8</dice>
 				<diceCount>1</diceCount>
 				<modifier>4</modifier>
-				<toHit>5</toHit>
 			</damage>
 		</attack>
 		<attack>
 			<name>Claws</name>
+			<toHit>5</toHit>
 			<damage>
 				<type>SLASHING</type>
 				<dice>D6</dice>
 				<diceCount>2</diceCount>
 				<modifier>4</modifier>
-				<toHit>5</toHit>
 			</damage>
 		</attack>
 	</set>

@@ -85,6 +85,8 @@ public class MonsterParser {
 				NodeList aname = attackElement.getElementsByTagName("name");
 				String attackName = aname.item(0).getTextContent();
 				
+				int toHit = Integer.parseInt(attackElement.getElementsByTagName("toHit").item(0).getTextContent());;
+				
 				Set<DamageComponent> dcs = new HashSet<DamageComponent>();
 				NodeList damages = attackElement.getElementsByTagName("damage");
 				
@@ -95,13 +97,12 @@ public class MonsterParser {
 					DAMAGE_TYPE damageType = DAMAGE_TYPE.getDamage(damageElement.getElementsByTagName("type").item(0).getTextContent());
 					int diceCount = Integer.parseInt(damageElement.getElementsByTagName("diceCount").item(0).getTextContent());
 					int modifier = Integer.parseInt(damageElement.getElementsByTagName("modifier").item(0).getTextContent());
-					int toHit = Integer.parseInt(damageElement.getElementsByTagName("toHit").item(0).getTextContent());;
 					
 					DamageComponent dc = new DamageComponent(damageType, dice, diceCount, modifier, toHit);
 					dcs.add(dc);
 				}
 				
-				AttackBuilder ab = new AttackBuilder(attackName);
+				AttackBuilder ab = new AttackBuilder(attackName, toHit);
 				for(DamageComponent dc : dcs) {
 					ab.addDamageComponent(dc);
 				}

@@ -15,12 +15,12 @@
 	<set>
 		<attack>
 			<name>Dagger (ranged 20/60 or melee)</name>
+			<toHit>4</toHit>
 			<damage>
 				<type>PIERCING</type>
 				<dice>D4</dice>
 				<diceCount>1</diceCount>
 				<modifier>2</modifier>
-				<toHit>4</toHit>
 			</damage>
 		</attack>
 	</set>
