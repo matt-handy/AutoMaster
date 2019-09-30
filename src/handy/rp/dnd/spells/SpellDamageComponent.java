@@ -22,7 +22,11 @@ public class SpellDamageComponent extends DamageComponent {
 		}
 		for(DiceToLevelRange range : ranges) {
 			if(casterLevel >= range.lowerLimitInclusive && casterLevel <= range.upperLimitInclusive) {
-				return new Damage(damageType, (range.numDice * diceType.roll()) + modifier, Dice.d20() + toHit);
+				int damageSum = 0;
+				for(int i = 0; i < range.numDice; i++) {
+					damageSum += diceType.roll();
+				}
+				return new Damage(damageType, damageSum + modifier, Dice.d20() + toHit);
 			}
 		}
 		throw new IllegalArgumentException("Invalid caster level, not in range. Ranges should be 1 to MAX_INT, so thats really impressive");

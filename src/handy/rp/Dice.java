@@ -36,6 +36,10 @@ public class Dice {
 	//TODO: Migrate to Java Commons
 	private static Random rng = new SecureRandom();
 	
+	static {
+		rng.setSeed(System.currentTimeMillis());
+	}
+	
 	public static int d4() {
 		return dX(4);
 	}

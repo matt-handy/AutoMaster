@@ -38,12 +38,20 @@ class MainTest {
 		assertTrue(response.startsWith("Added Hill Giant as Danny Boy with initiative "));
 		String args2[] = {"amon", "0", "Other Guy"};
 		response = main.addMonster(args2);
-		System.out.println(response);
 		assertTrue(response.startsWith("Added Bandit Captain as Other Guy with initiative "));
+		String args3[] = {"amon", "0", "Dude"};
+		response = main.addMonster(args3);
+		assertTrue(response.startsWith("Added Bandit Captain as Dude with initiative "));
+		
+		main.startCombat();
+		
+		assertTrue(main.getCurrentEntity().personalName.equals("Danny Boy"));
 		
 		String rmArgs[] = {"rm", "Other Guy"};
 		response = main.rmEntity(rmArgs);
 		assertTrue(response.startsWith("Removed: Other Guy"));
+		
+		assertTrue(main.getCurrentEntity().personalName.equals("Danny Boy"));
 	}
 	
 	@Test

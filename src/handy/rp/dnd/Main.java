@@ -36,10 +36,14 @@ public class Main {
 		}
 	}
 	
+	public Entity getCurrentEntity() {
+		return currentEntity;
+	}
+	
 	public void removeEntity(Entity entity) {
 		if(entity == currentEntity) {
 			if(currentInitiativeList.indexOf(entity) == currentInitiativeList.size() - 1) {
-				if(currentInitiativeList.size() >= 1) {
+				if(currentInitiativeList.size() > 1) {
 					roundCount++;
 					currentEntity = currentInitiativeList.get(0);
 					currentPlace = 0;
@@ -48,12 +52,13 @@ public class Main {
 					currentPlace = -1;
 				}
 			}else {
-				currentPlace++;
-				currentEntity = currentInitiativeList.get(currentPlace);
+				currentEntity = currentInitiativeList.get(currentPlace + 1);
+				currentInitiativeList.remove(entity);
+				currentPlace = currentInitiativeList.indexOf(currentEntity);
 			}
 		}else {
 			currentInitiativeList.remove(entity);
-			currentPlace = currentInitiativeList.indexOf(entity);
+			currentPlace = currentInitiativeList.indexOf(currentEntity);
 		}
 	}
 
@@ -375,12 +380,12 @@ public class Main {
 	
 	String rmEntity(String args[]) {
 		if (args.length != 2) {
-			return "rm <character name>";
+			return "rm <character name or index>";
 		}
 		
 		try {
 			int idx = Integer.parseInt(args[1]);
-			if(idx <= currentInitiativeList.size()) {
+			if(idx < currentInitiativeList.size()) {
 				Entity ent = currentInitiativeList.get(idx);
 				removeEntity(ent);
 				return "Removed: " + ent.personalName;
