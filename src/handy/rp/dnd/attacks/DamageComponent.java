@@ -65,7 +65,11 @@ public class DamageComponent {
 	}
 	
 	public Damage rollDamage() {
-		return new Damage(damageType, (diceCount * diceType.roll()) + modifier, Dice.d20() + toHit);
+		int damage = 0;
+		for(int i = 0; i < diceCount; i++) {
+			damage += diceType.roll();
+		}
+		return new Damage(damageType, damage + modifier, Dice.d20() + toHit);
 	}
 	
 	@Override

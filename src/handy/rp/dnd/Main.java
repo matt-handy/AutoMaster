@@ -1,6 +1,9 @@
 package handy.rp.dnd;
 
+import java.io.BufferedWriter;
 import java.io.Console;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +26,19 @@ public class Main {
 
 	private List<MonsterTemplate> monstersAvailable;
 
+	private BufferedWriter logFile = null;
+	
+	private void log (String message) {
+		if(logFile != null) {
+			try {
+				logFile.write(message + System.lineSeparator());
+				logFile.flush();
+			} catch (IOException e) {
+				
+			}
+		}
+	}
+	
 	public void addEntity(Entity entity, boolean assignStart) {
 		currentInitiativeList.add(entity);
 		Collections.sort(currentInitiativeList, new EntityComparator());
@@ -82,6 +98,21 @@ public class Main {
 
 	public void initialize() throws Exception {
 		monstersAvailable = MonsterParser.loadAll("monsters");
+		
+		try {
+			logFile = new BufferedWriter(new FileWriter("log", true));
+		} catch (IOException e) {
+			e.printStackTrace();
+			logFile = null;
+		}
+	}
+	
+	public void shutdown() {
+		try {
+			logFile.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void runEncounter() {
@@ -283,11 +314,11 @@ public class Main {
 	String hpMod(String args[]) {
 		String cmd = args[0];
 	
-		if(args.length != 3) {
+		if(args.length != 3 && args.length != 4) {
 			if(cmd.equals("heal")) {
-				return "heal <monster> <hp>";
+				return "heal <monster> <hp> <option - action taker index>";
 			}else {
-				return "hit <monster> <hp>";
+				return "hit <monster> <hp> <option - action taker index>";
 			}
 		}
 		
@@ -305,9 +336,30 @@ public class Main {
 				int hp = Integer.parseInt(args[2]);
 				if(cmd.equals("heal")) {
 					mi.heal(hp);
+					if(args.length == 4) {
+						try {
+							int healer = Integer.parseInt(args[3]);
+							log(mi.personalName + " is healed by " + currentInitiativeList.get(healer).personalName + " for " + hp);
+						}catch(NumberFormatException | IndexOutOfBoundsException ex) {
+							log(mi.personalName + " is healed for " + hp);
+						}
+					}else{
+						log(mi.personalName + " is healed for " + hp);
+					}
 				}else {
 					mi.hit(hp);
+					if(args.length == 4) {
+						try {
+							int healer = Integer.parseInt(args[3]);
+							log(mi.personalName + " is hit by " + currentInitiativeList.get(healer).personalName + " for " + hp);
+						}catch(NumberFormatException | IndexOutOfBoundsException ex) {
+							log(mi.personalName + " is hit for " + hp);
+						}
+					}else{
+						log(mi.personalName + " is hit for " + hp);
+					}
 				}
+				log(mi.personalName + " HP: " + mi.getCurrentHp());
 				return "Current HP: " + mi.getCurrentHp();
 			}catch(NumberFormatException ex) {
 				return "Invalid HP supplied.";
@@ -318,8 +370,8 @@ public class Main {
 	}
 	
 	String attack(String args[]) {
-		if (args.length != 2) {
-			return "at <attack index>";
+		if (args.length != 2 && args.length != 3) {
+			return "at <attack index> <option - attackee index>";
 		}
 		
 		if (!(currentInitiativeList.get(currentPlace) instanceof MonsterInstance)) {
@@ -333,7 +385,19 @@ public class Main {
 			try {
 				Attack chosenAttack = monster.expendAttack(attackIdx);
 				Set<Damage> damages = chosenAttack.rollDamage();
-				return Attack.readDamage(damages, chosenAttack);
+				String result = Attack.readDamage(damages, chosenAttack);
+				if(args.length == 3) {
+					try {
+						int attackee = Integer.parseInt(args[2]);
+						log(currentEntity.personalName + " attacks " + currentInitiativeList.get(attackee).personalName);
+					}catch(NumberFormatException | IndexOutOfBoundsException ex) {
+						log(currentEntity.personalName + " attacks");
+					}
+				}else{
+					log(currentEntity.personalName + " attacks");
+				}
+				log(result);
+				return result;
 			}catch(IllegalArgumentException ex) {
 				return "Too high an index, not a valid attack";
 			}
@@ -355,23 +419,29 @@ public class Main {
 		MonsterInstance monster = (MonsterInstance) currentInitiativeList.get(currentPlace);
 		
 		if(args.length == 3) {
-		try {
-			int spellLevel = Integer.parseInt(args[2]);
 			try {
-				Spell.SLOTLEVEL slotLevel = Spell.SLOTLEVEL.get(spellLevel);
-				Spell spell = monster.expendSpell(args[1], slotLevel);
-				return spell.cast(slotLevel, monster.casterLevel, monster.casterDc, monster.casterToHit);
-			}catch(IllegalArgumentException ex) {
-				return ex.getMessage();
-			}
+				int spellLevel = Integer.parseInt(args[2]);
+				try {
+					Spell.SLOTLEVEL slotLevel = Spell.SLOTLEVEL.get(spellLevel);
+					Spell spell = monster.expendSpell(args[1], slotLevel);
+					String result = spell.cast(slotLevel, monster.casterLevel, monster.casterDc, monster.casterToHit);
+					log(currentEntity.personalName + " cast " + spell.readableName);
+					log(result);
+					return result;
+				}catch(IllegalArgumentException ex) {
+					return ex.getMessage();
+				}
 			
-		}catch(NumberFormatException e) {
-			return "Invalid attack index supplied";
-		}
+			}catch(NumberFormatException e) {
+				return "Invalid attack index supplied";
+			}
 		}else {
 			try {
 				Spell spell = monster.expendSpell(args[1]);
-				return spell.cast(spell.minimumLevel, monster.casterLevel, monster.casterDc, monster.casterToHit);
+				String result = spell.cast(spell.minimumLevel, monster.casterLevel, monster.casterDc, monster.casterToHit);
+				log(currentEntity.personalName + " cast " + spell.readableName);
+				log(result);
+				return result;
 			}catch(IllegalArgumentException ex) {
 				return ex.getMessage();
 			}

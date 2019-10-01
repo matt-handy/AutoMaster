@@ -67,7 +67,7 @@ public class Spell {
 			throw new IllegalArgumentException("This is a " + minimumLevel + " spell");
 		}
 		
-		StringBuilder attackBuilder = new StringBuilder();
+		StringBuilder attackBuilder = new StringBuilder(readableName + ": ");
 		
 		if(readableEffect != null) {
 			attackBuilder.append(readableEffect);
@@ -102,10 +102,8 @@ public class Spell {
 	}
 	
 	public static String read(Spell spell, Set<Damage> damages) {
-		StringBuilder sBuilder = new StringBuilder(spell.readableName);
-		if(spell.readableEffect != null) {
-			sBuilder.append(spell.readableEffect + System.lineSeparator());
-		}
+		StringBuilder sBuilder = new StringBuilder();
+		
 		if(damages != null && damages.size() != 0) {
 			sBuilder.append(" hits for ");
 			boolean firstDamage = true;
