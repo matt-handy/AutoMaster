@@ -8,6 +8,9 @@
 <int>11</int>
 <wis>11</wis>
 <cha>16</cha>
+<strsave>6</strsave>
+<consave>6</consave>
+<wissave>2</wissave>
 <attacks>
 	<set>
 		<attack>

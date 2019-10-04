@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import handy.rp.dnd.Helpers;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.spells.Spell;
 
@@ -19,6 +20,13 @@ public class MonsterBuilder {
 	private int inte = -1;
 	private int wis = -1;
 	private int cha = -1;
+	
+	private int strsave = -1;
+	private int dexsave = -1;
+	private int consave = -1;
+	private int intsave = -1;
+	private int wissave = -1;
+	private int chasave = -1;
 	
 	private int casterLevel = -1;
 	private int casterDc = -1;
@@ -57,6 +65,30 @@ public class MonsterBuilder {
 	
 	public void addCha(int cha) {
 		this.cha = cha;
+	}
+	
+	public void addStrsave(int str) {
+		this.strsave = str;
+	}
+	
+	public void addDexsave(int dex) {
+		this.dexsave = dex;
+	}
+	
+	public void addConsave(int con) {
+		this.consave = con;
+	}
+	
+	public void addIntsave(int inte) {
+		this.intsave = inte;
+	}
+	
+	public void addWissave(int wis) {
+		this.wissave = wis;
+	}
+	
+	public void addChasave(int cha) {
+		this.chasave = cha;
 	}
 	
 	public void addAttack(Attack attack, int setIdx) {
@@ -102,6 +134,25 @@ public class MonsterBuilder {
 	}
 	
 	public MonsterTemplate build() {
+		if(strsave == -1) {
+			strsave = Helpers.getModifierFromAbility(str);
+		}
+		if(dexsave == -1) {
+			dexsave = Helpers.getModifierFromAbility(dex);
+		}
+		if(consave == -1) {
+			consave = Helpers.getModifierFromAbility(con);
+		}
+		if(intsave == -1) {
+			intsave = Helpers.getModifierFromAbility(inte);
+		}
+		if(wissave == -1) {
+			wissave = Helpers.getModifierFromAbility(wis);
+		}
+		if(chasave == -1) {
+			chasave = Helpers.getModifierFromAbility(cha);
+		}
+		
 		if(maxHP == -1 ||
 				str == -1 ||
 				dex == -1 ||
@@ -116,7 +167,7 @@ public class MonsterBuilder {
 		}else if((spells == null && slotMapping != null) || (spells != null && slotMapping == null)){
 			throw new IllegalArgumentException("Casters must have spells and slot mappings");
 		}
-		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterToHit, spells, slotMapping);
+		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping);
 	}
 	
 }

@@ -8,6 +8,8 @@
 <int>17</int>
 <wis>12</wis>
 <cha>11</cha>
+<intsave>6</intsave>
+<wissave>4</wissave>
 <casterDc>14</casterDc>
 <casterToHit>6</casterToHit>
 <casterLevel>9</casterLevel>

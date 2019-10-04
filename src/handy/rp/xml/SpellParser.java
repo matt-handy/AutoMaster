@@ -45,6 +45,12 @@ public class SpellParser {
 
 		NodeList hasToHitList = document.getElementsByTagName("hasToHit");
 		boolean hasToHit = hasToHitList.item(0).getTextContent().equalsIgnoreCase("true");
+		
+		NodeList concentrateList = document.getElementsByTagName("concentration");
+		boolean concentrate = false;
+		if(concentrateList != null && concentrateList.item(0) != null) {
+			concentrate = concentrateList.item(0).getTextContent().equalsIgnoreCase("true");
+		}
 
 		NodeList readableEffectList = document.getElementsByTagName("readableeffect");
 		String readableEffect = readableEffectList.item(0).getTextContent();
@@ -150,7 +156,7 @@ public class SpellParser {
 
 		}
 		return new Spell(compName, readableName, Spell.SLOTLEVEL.get(minLevel), hasDc, hasToHit, damagers,
-				readableEffect);
+				readableEffect, concentrate);
 
 	}
 

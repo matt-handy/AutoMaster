@@ -27,6 +27,30 @@ class MonsterTest {
 	}
 
 	@Test
+	void testFireGiant() {
+		try {
+			MonsterTemplate fireGiant = MonsterParser.load("monsters\\FireGiant.xml");
+			assertEquals(fireGiant.str, 25);
+			assertEquals(fireGiant.con, 31);
+			assertEquals(fireGiant.dex, 9);
+			assertEquals(fireGiant.inte, 10);
+			assertEquals(fireGiant.wis, 14);
+			assertEquals(fireGiant.cha, 13);
+			
+			assertEquals(fireGiant.strsave, 7);
+			assertEquals(fireGiant.consave, 10);
+			assertEquals(fireGiant.dexsave, 3);
+			assertEquals(fireGiant.intsave, 0);
+			assertEquals(fireGiant.wissave, 2);
+			assertEquals(fireGiant.chasave, 5);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
 	void test() {
 		try {
 			MonsterTemplate hillGiant = MonsterParser.load("monsters\\HillGiant.xml");

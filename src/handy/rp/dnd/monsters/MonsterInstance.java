@@ -31,6 +31,13 @@ public class MonsterInstance extends Entity{
 	public final int wis;
 	public final int cha;
 	
+	public final int strsave;
+	public final int dexsave;
+	public final int consave;
+	public final int intsave;
+	public final int wissave;
+	public final int chasave;
+	
 	private int currentHp;
 	
 	private List<Attack> attacksThisTurn = null;
@@ -38,8 +45,11 @@ public class MonsterInstance extends Entity{
 	private Map<Spell.SLOTLEVEL, List<Spell>> spells;
 	private Map<Spell.SLOTLEVEL, Integer> slotsRemaining;
 	
+	private Spell concentratedSpell = null;
+	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName, int currentHp,
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterToHit,
+			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping){
 		super(personalName);
 		this.currentHp = currentHp;
@@ -53,6 +63,13 @@ public class MonsterInstance extends Entity{
 		this.inte = inte;
 		this.wis = wis;
 		this.cha = cha;
+		
+		this.strsave = strsave;
+		this.dexsave = dexsave;
+		this.consave = consave;
+		this.intsave = intsave;
+		this.wissave = wissave;
+		this.chasave = chasave;
 		
 		this.casterLevel = casterLevel;
 		this.casterDc = casterDc;
@@ -68,10 +85,14 @@ public class MonsterInstance extends Entity{
 	}
 	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName,
-			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterToHit, 
+			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, 
+			int casterDc, int casterToHit,
+			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping){
 		this(humanReadableName, maxHP, attackLists, personalName, maxHP,
-				str, dex, con, inte, wis, cha, casterLevel, casterDc, casterToHit, spells, slotMapping);
+				str, dex, con, inte, wis, cha, casterLevel, casterDc, casterToHit, 
+				strsave, dexsave, consave, intsave, wissave, chasave,
+				spells, slotMapping);
 	}
 	
 	public void resetTurn() {
@@ -93,21 +114,22 @@ public class MonsterInstance extends Entity{
 	
 	public void hit(int hp) {
 		currentHp -= hp;
+		//TODO: Add constitution saving throw for concentration
+	}
+	
+	public void breakConcentration() {
+		concentratedSpell = null;
+	}
+	
+	public Spell concentratedSpell() {
+		return concentratedSpell;
 	}
 	
 	public int rollInitiative() {
 		currentInitiative = Dice.d20() + Helpers.getModifierFromAbility(dex);
 		return currentInitiative;
 	}
-	/*
-	public void chooseAttackSet(int number) {
-		if(number >= attackLists.size()) {
-			throw new IllegalArgumentException("Picked too high an attack set number");
-		}else {
-			attacksThisTurn = attackLists.get(number - 1);
-		}
-	}
-	*/
+	
 	public List<Attack> getCurrentAttacks(){
 		return attacksThisTurn;
 	}
@@ -203,40 +225,43 @@ public class MonsterInstance extends Entity{
 		return sb.toString();
 	}
 	
-	public Spell expendSpell(String spellName, Spell.SLOTLEVEL slotLvl) {
-		
+	private Spell getSpellWithConcentrationCheck(String spellName) {
+		Spell targetSpell = getSpellByCompName(spellName);
+		if(targetSpell.concentrate && concentratedSpell != null) {
+			throw new IllegalArgumentException("Already concentrating on: " + concentratedSpell.readableName);
+		}else if(targetSpell.concentrate) {
+			concentratedSpell = targetSpell;
+		}
+		return targetSpell;
+	}
+	
+	public Spell expendSpell(String spellName, Spell.SLOTLEVEL slotLvl) {	
 			int minSpellLevel = getMinSpellLevel(spellName);
 			if(minSpellLevel > slotLvl.level) {
 				throw new IllegalArgumentException("Need a spell slot of at least minimum level: " + minSpellLevel);
 			}
-			Spell.SLOTLEVEL minSpellLevelSlot = Spell.SLOTLEVEL.get(minSpellLevel);
-			if(minSpellLevelSlot == Spell.SLOTLEVEL.CANTRIP) {
-				return getSpellByCompName(spellName);
-			}
-			if(slotsRemaining.get(slotLvl) < 1) {
-				throw new IllegalArgumentException("Insufficient slots at level: " + slotLvl.level);
-			}else {
-				slotsRemaining.put(slotLvl, slotsRemaining.get(slotLvl) - 1);
-				return getSpellByCompName(spellName);
-			}
-		
+			return expendSpellWorker(spellName, slotLvl);
+	}
+	
+	public Spell expendSpellWorker(String spellName, Spell.SLOTLEVEL slotLvl) {
+		if(slotLvl == Spell.SLOTLEVEL.CANTRIP) {
+			return getSpellWithConcentrationCheck(spellName);
+		}
+		if(slotsRemaining.get(slotLvl) < 1) {
+			throw new IllegalArgumentException("Insufficient slots at level: " + slotLvl.level);
+		}else {
+			slotsRemaining.put(slotLvl, slotsRemaining.get(slotLvl) - 1);
+			return getSpellWithConcentrationCheck(spellName);
+		}
 	}
 	
 	public Spell expendSpell(String spellName) {
 		
 		int minSpellLevel = getMinSpellLevel(spellName);
 		Spell.SLOTLEVEL spellLevel = Spell.SLOTLEVEL.get(minSpellLevel);
-		if(spellLevel == Spell.SLOTLEVEL.CANTRIP) {
-			return getSpellByCompName(spellName);
-		}
-		if(slotsRemaining.get(spellLevel) < 1) {
-			throw new IllegalArgumentException("Insufficient slots at level: " + spellLevel.level);
-		}else {
-			slotsRemaining.put(spellLevel, slotsRemaining.get(spellLevel) - 1);
-			return getSpellByCompName(spellName);
-		}
+		return expendSpellWorker(spellName, spellLevel);
 	
-}
+	}
 	
 	private int getMinSpellLevel(String spellName) {
 		return getSpellByCompName(spellName).minimumLevel.level;

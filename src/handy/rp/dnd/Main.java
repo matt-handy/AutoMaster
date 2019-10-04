@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import handy.rp.Dice;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.monsters.MonsterInstance;
@@ -152,6 +153,22 @@ public class Main {
 				console.writer().println("lss | listspellslots => prints list of current monster spell slots");
 				console.writer().println("rm | remove <index or personal name> => removes entity from initiative order");
 				console.writer().println("sc | startcombat => starts play");
+				break;
+			case "breakSpell":
+				if(currentEntity instanceof MonsterInstance) {
+					MonsterInstance mi = (MonsterInstance) currentEntity;
+					if(mi.concentratedSpell() == null) {
+						console.writer().println("Monster was not concetrating on anything");
+					}else {
+						Spell spell = mi.concentratedSpell();
+						String str = mi.personalName + " breaks concentration on " + spell.readableName;
+						mi.breakConcentration();
+						console.writer().println(str);
+						log(str);
+					}
+				}else {
+					console.writer().println("Can only break concentration for monsters");
+				}
 				break;
 			case "lms":
 			case "load_monster_set":
@@ -333,6 +350,7 @@ public class Main {
 		if(target instanceof MonsterInstance) {
 			MonsterInstance mi = (MonsterInstance) target;
 			try {
+				StringBuilder output = new StringBuilder();
 				int hp = Integer.parseInt(args[2]);
 				if(cmd.equals("heal")) {
 					mi.heal(hp);
@@ -358,9 +376,28 @@ public class Main {
 					}else{
 						log(mi.personalName + " is hit for " + hp);
 					}
+					if(mi.concentratedSpell() != null) {
+						Spell currSpell = mi.concentratedSpell();
+						int saveDc = 10;
+						if(hp / 2 > saveDc) {
+							saveDc = hp / 2;
+						}
+						
+						int saveRoll = Dice.d20() + mi.consave;
+						String outputStr;
+						if(saveRoll >= saveDc) {
+							outputStr = mi.personalName + " saves " + saveRoll + " against " + saveDc + " and keeps concentrating on " + currSpell.readableName;
+						}else {
+							outputStr = mi.personalName + " fails " + saveRoll + " against " + saveDc + " and loses concentration on " + currSpell.readableName;
+							mi.breakConcentration();
+						}
+						log(outputStr);
+						output.append(outputStr + System.lineSeparator());
+					}
 				}
 				log(mi.personalName + " HP: " + mi.getCurrentHp());
-				return "Current HP: " + mi.getCurrentHp();
+				output.append("Current HP: " + mi.getCurrentHp());
+				return output.toString();
 			}catch(NumberFormatException ex) {
 				return "Invalid HP supplied.";
 			}

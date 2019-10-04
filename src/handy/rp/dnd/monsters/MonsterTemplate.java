@@ -19,6 +19,13 @@ public class MonsterTemplate {
 	public final int wis;
 	public final int cha;
 	
+	public final int strsave;
+	public final int dexsave;
+	public final int consave;
+	public final int intsave;
+	public final int wissave;
+	public final int chasave;
+	
 	public final int casterLevel;
 	public final int casterDc;
 	public final int casterToHit;
@@ -28,6 +35,7 @@ public class MonsterTemplate {
 	
 	MonsterTemplate(String humanReadableName, int maxHP, List<List<Attack>> attackLists,
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterToHit,
+			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping){
 		this.humanReadableName = humanReadableName;
 		this.maxHP = maxHP;
@@ -39,6 +47,13 @@ public class MonsterTemplate {
 		this.inte = inte;
 		this.wis = wis;
 		this.cha = cha;
+		
+		this.strsave = strsave;
+		this.dexsave = dexsave;
+		this.consave = consave;
+		this.intsave = intsave;
+		this.wissave = wissave;
+		this.chasave = chasave;
 		
 		this.casterLevel = casterLevel;
 		this.casterDc = casterDc;
@@ -53,7 +68,7 @@ public class MonsterTemplate {
 	}
 	
 	public MonsterInstance getInstance(String personalName) {
-		return new MonsterInstance(humanReadableName, maxHP, attackLists, personalName, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterToHit, spells, slotMapping);
+		return new MonsterInstance(humanReadableName, maxHP, attackLists, personalName, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping);
 	}
 	
 }

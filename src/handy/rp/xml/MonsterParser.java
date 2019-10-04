@@ -62,6 +62,36 @@ public class MonsterParser {
 		monsterBuilder.addWis(Integer.parseInt(document.getElementsByTagName("wis").item(0).getTextContent()));
 		monsterBuilder.addCha(Integer.parseInt(document.getElementsByTagName("cha").item(0).getTextContent()));
 		
+		NodeList strsaveList = document.getElementsByTagName("strsave");
+		if(strsaveList != null && strsaveList.item(0) != null) {
+			monsterBuilder.addStrsave(Integer.parseInt(strsaveList.item(0).getTextContent()));
+		}
+		
+		NodeList dexsaveList = document.getElementsByTagName("dexsave");
+		if(dexsaveList != null && dexsaveList.item(0) != null) {
+			monsterBuilder.addDexsave(Integer.parseInt(dexsaveList.item(0).getTextContent()));
+		}
+		
+		NodeList consaveList = document.getElementsByTagName("consave");
+		if(consaveList != null && consaveList.item(0) != null) {
+			monsterBuilder.addConsave(Integer.parseInt(consaveList.item(0).getTextContent()));
+		}
+		
+		NodeList intsaveList = document.getElementsByTagName("intsave");
+		if(intsaveList != null && intsaveList.item(0) != null) {
+			monsterBuilder.addIntsave(Integer.parseInt(intsaveList.item(0).getTextContent()));
+		}
+		
+		NodeList wissaveList = document.getElementsByTagName("wissave");
+		if(wissaveList != null && wissaveList.item(0) != null) {
+			monsterBuilder.addWissave(Integer.parseInt(wissaveList.item(0).getTextContent()));
+		}
+		
+		NodeList chasaveList = document.getElementsByTagName("chasave");
+		if(chasaveList != null && chasaveList.item(0) != null) {
+			monsterBuilder.addChasave(Integer.parseInt(chasaveList.item(0).getTextContent()));
+		}
+		
 		try {
 			monsterBuilder.addCasterLevel(Integer.parseInt(document.getElementsByTagName("casterLevel").item(0).getTextContent()));
 			monsterBuilder.addCasterDc(Integer.parseInt(document.getElementsByTagName("casterDc").item(0).getTextContent()));

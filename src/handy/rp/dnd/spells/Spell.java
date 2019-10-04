@@ -50,9 +50,10 @@ public class Spell {
 	public final boolean saveDc;
 	public final boolean toHit;
 	public final String readableEffect;
+	public final boolean concentrate;
 	
 	public Spell(String computerName, String readableName, SLOTLEVEL minimumLevel, boolean saveDc, boolean toHit, Map<SLOTLEVEL, List<SpellDamageComponent>> damagers,
-			String readableEffect){
+			String readableEffect, boolean concentrate){
 		this.readableEffect = readableEffect;
 		this.damagers = damagers;
 		this.minimumLevel = minimumLevel;
@@ -60,6 +61,7 @@ public class Spell {
 		this.toHit = toHit;
 		this.readableName = readableName;
 		this.computerName = computerName;
+		this.concentrate = concentrate;
 	}
 	
 	public String cast(SLOTLEVEL level, int casterLevel, int casterDc, int casterToHit) {
