@@ -357,6 +357,9 @@ public class Main {
 					if(args.length == 4) {
 						try {
 							int healer = Integer.parseInt(args[3]);
+							if(healer >= currentInitiativeList.size()) {
+								return "Invalid healer specified";
+							}
 							log(mi.personalName + " is healed by " + currentInitiativeList.get(healer).personalName + " for " + hp);
 						}catch(NumberFormatException | IndexOutOfBoundsException ex) {
 							log(mi.personalName + " is healed for " + hp);
@@ -369,6 +372,9 @@ public class Main {
 					if(args.length == 4) {
 						try {
 							int healer = Integer.parseInt(args[3]);
+							if(healer >= currentInitiativeList.size()) {
+								return "Invalid attacker specified";
+							}
 							log(mi.personalName + " is hit by " + currentInitiativeList.get(healer).personalName + " for " + hp);
 						}catch(NumberFormatException | IndexOutOfBoundsException ex) {
 							log(mi.personalName + " is hit for " + hp);
