@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>poison_spray</compname>
+	<readablename>Poison Spray</readablename>
+	<minLevel>0</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>true</hasToHit>
+	<readableeffect>You extend your hand toward a creature you can see within range and project a puff of noxious gas from your palm. The creature must succeed on a Constitution saving throw or take 1d12 poison damage. This spell's damage increases by 1d12 when you reach 5th level (2d12), 11th level (3d12), and 17th level (4d12). </readableeffect>
+	<damages>
+		<damage>
+			<type>POISON</type>
+			<dice>D12</dice>
+			<diceCount>1</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>true</stdCantripIncrease>
+		</damage>
+	</damages>
+</spell>
