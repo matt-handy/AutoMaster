@@ -23,6 +23,7 @@ public class MonsterInstance extends Entity{
 	public final int casterLevel;
 	public final int casterDc;
 	public final int casterToHit;
+	public final int casterInnateDc;
 	
 	public final int str;
 	public final int dex;
@@ -45,12 +46,17 @@ public class MonsterInstance extends Entity{
 	private Map<Spell.SLOTLEVEL, List<Spell>> spells;
 	private Map<Spell.SLOTLEVEL, Integer> slotsRemaining;
 	
+	//Innate spells possessed, plus number of charges per day
+	private Map<Spell, Integer> innateSpells;
+	public static final int AT_WILL_INNATE_SPELL = 9999;
+	
 	private Spell concentratedSpell = null;
 	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName, int currentHp,
-			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterToHit,
+			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
-			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping){
+			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, 
+			Map<Spell, Integer> innateSpells){
 		super(personalName);
 		this.currentHp = currentHp;
 		this.humanReadableName = humanReadableName;
@@ -73,6 +79,7 @@ public class MonsterInstance extends Entity{
 		
 		this.casterLevel = casterLevel;
 		this.casterDc = casterDc;
+		this.casterInnateDc = casterInnateDc;
 		this.casterToHit = casterToHit;
 		this.spells = spells;
 		
@@ -82,17 +89,19 @@ public class MonsterInstance extends Entity{
 				slotsRemaining.put(slot, new Integer(slotMapping.get(slot)));
 			}
 		}
+		
+		this.innateSpells = innateSpells;
 	}
 	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName,
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, 
-			int casterDc, int casterToHit,
+			int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
-			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping){
+			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, Map<Spell, Integer> innateSpells){
 		this(humanReadableName, maxHP, attackLists, personalName, maxHP,
-				str, dex, con, inte, wis, cha, casterLevel, casterDc, casterToHit, 
+				str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, 
 				strsave, dexsave, consave, intsave, wissave, chasave,
-				spells, slotMapping);
+				spells, slotMapping, innateSpells);
 	}
 	
 	public void resetTurn() {
@@ -204,6 +213,54 @@ public class MonsterInstance extends Entity{
 			sb.append(", ");
 		}
 		return sb.toString();
+	}
+	
+	public String listInnateSpells() {
+		if(innateSpells == null) {
+			return "";
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(Spell spell : innateSpells.keySet()) {
+			sb.append(spell.readableName + " - ");
+			if(innateSpells.get(spell) != AT_WILL_INNATE_SPELL) {
+				sb.append(innateSpells.get(spell) + "/day, ");
+			}else {
+				sb.append("at will, ");
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	public Spell expendInnateSpell(String spellName) {
+		Spell spell = getInnateSpell(spellName);
+		Integer remainingCharges = innateSpells.get(spell);
+		if(remainingCharges > 0) {
+			if(spell.concentrate && concentratedSpell != null) {
+				throw new IllegalArgumentException("Already concentrating on: " + concentratedSpell.readableName);
+			}else if(spell.concentrate) {
+				concentratedSpell = spell;
+			}
+			
+			if(innateSpells.get(spell) != AT_WILL_INNATE_SPELL) {
+				innateSpells.put(spell, remainingCharges - 1);
+			}
+		}else {
+			throw new IllegalArgumentException("No more charges for spell: " + spellName);
+		}
+		
+		return spell;
+	}
+	
+	private Spell getInnateSpell(String spellName) {
+		for(Spell spell : innateSpells.keySet()) {
+			if(spell.computerName.equals(spellName)) {
+				return spell;
+			}
+		}
+		throw new IllegalArgumentException("Unknown spell: " + spellName);
 	}
 	
 	public String listSpells() {

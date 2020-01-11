@@ -26,6 +26,7 @@ import handy.rp.dnd.attacks.AttackBuilder;
 import handy.rp.dnd.attacks.DamageComponent;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
 import handy.rp.dnd.monsters.MonsterBuilder;
+import handy.rp.dnd.monsters.MonsterInstance;
 import handy.rp.dnd.monsters.MonsterTemplate;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
@@ -100,6 +101,12 @@ public class MonsterParser {
 			//Caster Level not given, ignore
 		}
 		
+		try {
+			monsterBuilder.addCasterInnateDc(Integer.parseInt(document.getElementsByTagName("casterInnateDc").item(0).getTextContent()));
+		}catch(Exception ex) {
+			//Caster Innate DC not given, ignore
+		}
+		
 		NodeList setList = document.getElementsByTagName("set");
 		
 		for(int idx = 0; idx < setList.getLength(); idx++){
@@ -139,6 +146,25 @@ public class MonsterParser {
 				monsterBuilder.addAttack(ab.build(), idx);
 			}
 			
+		}
+		
+		NodeList iSpellSet = document.getElementsByTagName("ispells");
+		NodeList iSpellEnums = document.getElementsByTagName("ispell");
+		for(int idx = 0; idx < iSpellEnums.getLength(); idx++){
+			String name = iSpellEnums.item(idx).getAttributes().getNamedItem("name").getNodeValue();
+			String charges = iSpellEnums.item(idx).getAttributes().getNamedItem("freq").getNodeValue();
+			for(Spell spell : spellsList) {
+				if(spell.computerName.equalsIgnoreCase(name)) {
+					int chargeInt;
+					if(charges.contentEquals("will")) {
+						chargeInt = MonsterInstance.AT_WILL_INNATE_SPELL;
+					}else {
+						chargeInt = Integer.parseInt(charges);
+					}
+					monsterBuilder.addInnateSpell(spell, chargeInt);
+					break;
+				}
+			}
 		}
 		
 		NodeList spellSet = document.getElementsByTagName("spells");

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -115,6 +116,33 @@ class MonsterTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	void testInnateLoad() {
+		try {
+			MonsterTemplate drowMage = MonsterParser.load("monsters\\drow_mage.xml");
+			MonsterInstance trogdor = drowMage.getInstance("Trogdor");
+			assertEquals(trogdor.casterInnateDc, 12);
+			
+			assertTrue(trogdor.expendInnateSpell("levitate").readableName.contentEquals("Levitate"));
+			assertTrue(trogdor.expendInnateSpell("faerie_fire").readableName.contentEquals("Faerie Fire"));
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+		
+		try {
+			MonsterTemplate drowMage = MonsterParser.load("monsters\\drow_mage.xml");
+			MonsterInstance trogdor = drowMage.getInstance("Trogdor");
+			assertEquals(trogdor.casterInnateDc, 12);
+			
+			assertTrue(trogdor.expendInnateSpell("levitate").readableName.contentEquals("Levitate"));
+			Assertions.assertThrows(IllegalArgumentException.class, () -> {
+				trogdor.expendInnateSpell("darkness").readableName.contentEquals("Darkness");
+			  });
+		}catch(Exception ex) {
+			fail(ex.getMessage());
 		}
 	}
 	

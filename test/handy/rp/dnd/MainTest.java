@@ -64,6 +64,33 @@ class MainTest {
 	}
 	
 	@Test
+	void testInnateSpellcast() {
+		Main main = new Main();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+		String args[] = {"amon", "Drow Mage", "Dave"};
+		main.addMonster(args);
+		
+		main.startCombat();
+		
+		String args2[] = {"icast", "levitate"};
+		String results = main.castInnateSpell(args2);
+		assertTrue(results.contains("Levitate: One creature or loose object of your choice that you can see "));
+		
+		results = main.castInnateSpell(args2);
+		assertEquals(results, "Cannot cast spell: No more charges for spell: levitate");
+		
+		String args3[] = {"icast", "darkness"};
+		results = main.castInnateSpell(args3);
+		assertEquals(results, "Cannot cast spell: Already concentrating on: Levitate");
+	}
+	
+	@Test
 	void testLoadMonsters() {
 		Main main = new Main();
 		try {

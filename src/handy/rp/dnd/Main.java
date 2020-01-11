@@ -286,10 +286,20 @@ public class Main {
 			case "cast":
 				console.writer().println(castSpell(args));
 				break;
+			case "icast":
+				console.writer().println(castInnateSpell(args));
+				break;
 			case "listspells":
 			case "ls":
 				if(currentEntity instanceof MonsterInstance) {
 					MonsterInstance mi = (MonsterInstance) currentEntity;
+					
+					String innateSpells = mi.listInnateSpells();
+					if(innateSpells.length() != 0) {
+						console.writer().println("Innate Spells:");
+						console.writer().println(innateSpells);
+					}
+					
 					console.writer().println(mi.listSpells());
 				}else {
 					console.writer().println("Current actor does not have managed spells");
@@ -447,6 +457,23 @@ public class Main {
 			
 		}catch(NumberFormatException e) {
 			return "Invalid attack index supplied";
+		}
+	}
+	
+	String castInnateSpell(String args[]) {
+		if(args.length != 2) {
+			return "icast <spellname>";
+		}
+		
+		MonsterInstance monster = (MonsterInstance) currentInitiativeList.get(currentPlace);
+		try {
+			Spell spell = monster.expendInnateSpell(args[1]);
+			String result = spell.cast(spell.minimumLevel, monster.casterLevel, monster.casterInnateDc, monster.casterToHit);
+			log(currentEntity.personalName + " cast " + spell.readableName);
+			log(result);
+			return result;
+		}catch(IllegalArgumentException ex) {
+			return "Cannot cast spell: " + ex.getMessage();
 		}
 	}
 	

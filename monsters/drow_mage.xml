@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Drow Mage</mname>
+<hp>45</hp>
+<str>9</str>
+<dex>14</dex>
+<con>10</con>
+<int>17</int>
+<wis>13</wis>
+<cha>12</cha>
+<casterDc>14</casterDc>
+<casterInnateDc>12</casterInnateDc>
+<casterToHit>6</casterToHit>
+<casterLevel>10</casterLevel>
+<attacks>
+	<set>
+		<attack>
+			<name>Staff</name>
+			<toHit>4</toHit>
+			<damage>
+				<type>BLUDGEONING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>-1</modifier>
+			</damage>
+			<damage>
+				<type>POISON</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>0</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+<ispells>
+<ispell name="dancing_lights" freq="will" />
+<ispell name="darkness" freq="1" />
+<ispell name="faerie_fire" freq="1" />
+<ispell name="levitate" freq="1" />
+</ispells>
+<spells>
+	<slots>
+		<first>4</first>
+		<second>3</second>
+		<third>3</third>
+		<fourth>3</fourth>
+		<fifth>2</fifth>
+	</slots>
+	<spell>mage_hand</spell>
+	<spell>minor_illusion</spell>
+	<spell>poison_spray</spell>
+	<spell>ray_of_frost</spell>
+	<spell>mage_armor</spell>
+	<spell>magic_missile</spell>
+	<spell>shield</spell>
+	<spell>witch_bolt</spell>
+	<spell>alter_self</spell>
+	<spell>misty_step</spell>
+	<spell>web</spell>
+	<spell>fly</spell>
+	<spell>lightning_bolt</spell>
+	<spell>greater_invisibility</spell>
+	<spell>evards_black_tentacles</spell>
+	<spell>cloudkill</spell>
+</spells>
+</monster>

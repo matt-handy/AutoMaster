@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>ray_of_frost</compname>
+	<readablename>Ray of Frost</readablename>
+	<minLevel>0</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>true</hasToHit>
+	<readableeffect>A frigid beam of blue-white light streaks toward a creature within range. Make a ranged spell attack against the target. On a hit, it takes 1d8 cold damage, and its speed is reduced by 10 feet until the start of your next turn.  This spell's damage increases by 1d8 when you reach 5th level (2d10), 11th level (3d10), and 17th level (4d10).</readableeffect>
+	<damages>
+		<damage>
+			<type>COLD</type>
+			<dice>D8</dice>
+			<diceCount>1</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>true</stdCantripIncrease>
+		</damage>
+	</damages>
+</spell>

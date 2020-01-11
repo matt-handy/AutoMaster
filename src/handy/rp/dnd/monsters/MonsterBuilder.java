@@ -30,10 +30,13 @@ public class MonsterBuilder {
 	
 	private int casterLevel = -1;
 	private int casterDc = -1;
+	private int casterInnateDc = -1;
 	private int casterToHit = -1;
 	
 	private Map<Spell.SLOTLEVEL, List<Spell>> spells;
 	private Map<Spell.SLOTLEVEL, Integer> slotMapping;
+	
+	private Map<Spell, Integer> innateSpells;
 	
 	public MonsterBuilder(String humanReadableName) {
 		this.humanReadableName = humanReadableName;
@@ -104,6 +107,13 @@ public class MonsterBuilder {
 		
 	}
 	
+	public void addInnateSpell(Spell spell, int charges) {
+		if(innateSpells == null) {
+			innateSpells = new HashMap<>();
+		}
+		innateSpells.put(spell, charges);
+	}
+	
 	public void addSpell(Spell spell) {
 		if(spells == null) {
 			spells = new HashMap<>();
@@ -127,6 +137,10 @@ public class MonsterBuilder {
 	
 	public void addCasterDc(int casterDc) {
 		this.casterDc = casterDc;
+	}
+	
+	public void addCasterInnateDc(int casterInnateDc) {
+		this.casterInnateDc = casterInnateDc;
 	}
 	
 	public void addCasterToHit(int casterToHit) {
@@ -167,7 +181,11 @@ public class MonsterBuilder {
 		}else if((spells == null && slotMapping != null) || (spells != null && slotMapping == null)){
 			throw new IllegalArgumentException("Casters must have spells and slot mappings");
 		}
-		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping);
+		
+		if(casterInnateDc == -1 && innateSpells != null) {
+			throw new IllegalArgumentException("Innate casters must have spells and slot mappings");
+		}
+		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells);
 	}
 	
 }
