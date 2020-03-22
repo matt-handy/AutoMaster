@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>staggering_smite</compname>
+	<readablename>Staggering Smite</readablename>
+	<minLevel>4</minLevel>
+	<hasDc>true</hasDc>
+	<hasToHit>false</hasToHit>
+	<concentration>true</concentration>
+	<readableeffect>The next time you hit a creature with a melee weapon attack during this spell’s duration, your weapon pierces both body and mind, and the attack deals an extra 4d6 psychic damage to the target. The target must make a Wisdom saving throw. On a failed save, it has disadvantage on attack rolls and ability checks, and can’t take reactions, until the end of its next turn.</readableeffect>
+	<damages>
+		<damage>
+			<type>PSYCHIC</type>
+			<dice>D6</dice>
+			<diceCount>4</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+		</damage>
+	</damages>
+</spell>

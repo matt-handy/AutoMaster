@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>dk_hellfire_orb</compname>
+	<readablename>Hellfire Orb</readablename>
+	<minLevel>0</minLevel>
+	<hasDc>true</hasDc>
+	<hasToHit>false</hasToHit>
+	<readableeffect>The death knight hurls a magical ball of fire that explodes at a point it can see within 120 feet of it. Each creature in a 20-foot-radius sphere centered on that point must make a DC 18 Dexterity saving throw. The sphere spreads around corners. A creature takes 35 (10d6) fire damage and 35 (10d6) necrotic damage on a failed save, or half as much damage on a successful one.</readableeffect>
+	<dc>18</dc>
+	<damages>
+		<damage>
+			<type>FIRE</type>
+			<dice>D6</dice>
+			<diceCount>10</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>false</stdCantripIncrease>
+		</damage>
+		<damage>
+			<type>NECROTIC</type>
+			<dice>D6</dice>
+			<diceCount>10</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>false</stdCantripIncrease>
+		</damage>
+	</damages>
+</spell>

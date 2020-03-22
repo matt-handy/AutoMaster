@@ -10,9 +10,11 @@ import java.util.Set;
 import handy.rp.Dice;
 import handy.rp.dnd.Entity;
 import handy.rp.dnd.Helpers;
+import handy.rp.dnd.attacks.Action;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.spells.*;
+import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
 public class MonsterInstance extends Entity{
 
@@ -48,7 +50,9 @@ public class MonsterInstance extends Entity{
 	
 	//Innate spells possessed, plus number of charges per day
 	private Map<Spell, Integer> innateSpells;
-	public static final int AT_WILL_INNATE_SPELL = 9999;
+	public static final int AT_WILL = 9999;
+	
+	private Map<Action, Integer> actions;
 	
 	private Spell concentratedSpell = null;
 	
@@ -56,7 +60,7 @@ public class MonsterInstance extends Entity{
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, 
-			Map<Spell, Integer> innateSpells){
+			Map<Spell, Integer> innateSpells, Map<Action, Integer> actions){
 		super(personalName);
 		this.currentHp = currentHp;
 		this.humanReadableName = humanReadableName;
@@ -91,17 +95,20 @@ public class MonsterInstance extends Entity{
 		}
 		
 		this.innateSpells = innateSpells;
+		
+		this.actions = actions;
 	}
 	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName,
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, 
 			int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
-			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, Map<Spell, Integer> innateSpells){
+			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, Map<Spell, Integer> innateSpells,
+			Map<Action, Integer> actions){
 		this(humanReadableName, maxHP, attackLists, personalName, maxHP,
 				str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, 
 				strsave, dexsave, consave, intsave, wissave, chasave,
-				spells, slotMapping, innateSpells);
+				spells, slotMapping, innateSpells, actions);
 	}
 	
 	public void resetTurn() {
@@ -123,7 +130,11 @@ public class MonsterInstance extends Entity{
 	
 	public void hit(int hp) {
 		currentHp -= hp;
-		//TODO: Add constitution saving throw for concentration
+	}
+	
+	public int conSaveThrow() {
+		int save = Dice.d20() + Helpers.getModifierFromAbility(con) + consave;
+		return save;
 	}
 	
 	public void breakConcentration() {
@@ -141,6 +152,71 @@ public class MonsterInstance extends Entity{
 	
 	public List<Attack> getCurrentAttacks(){
 		return attacksThisTurn;
+	}
+	
+	public String expendAction(String cName) {
+		try {
+			Action action = returnAction(cName);
+			StringBuilder sb = new StringBuilder();
+			sb.append(action.name);
+			sb.append(System.lineSeparator());
+			if(action.spell != null) {
+				sb.append(action.spell.cast());
+				sb.append(System.lineSeparator());
+			}
+			if(action.attack != null) {
+				//TODO support attack
+			}
+			if(action.text != null) {
+				sb.append(action.text);
+				sb.append(System.lineSeparator());
+			}
+			return sb.toString();
+		}catch(IllegalArgumentException ex) {
+			return ex.getMessage();
+		}
+	}
+	
+	public Action returnAction(String cName) {
+		for(Action action : actions.keySet()) {
+			if(action.cname.contentEquals(cName)) {
+				int charges = actions.get(action);
+				if(charges == AT_WILL) {
+					return action;
+				}else {
+					if(charges > 0) {
+						actions.put(action, charges - 1);
+						return action;
+					}else {
+						throw new IllegalArgumentException("No remaining charges for action");
+					}
+				}
+			}
+		}
+		throw new IllegalArgumentException("No such action: " + cName);
+	}
+	
+	public String listActions() {
+		if(actions == null) {
+			return "";
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		for(Action action : actions.keySet()) {
+			int charges = actions.get(action);
+			String chargeMsg = charges + "";
+			if(charges == AT_WILL) {
+				chargeMsg = "At will";
+			}
+			sb.append("Name: " + action.name + " Charges: " + chargeMsg);
+			sb.append(System.lineSeparator());
+			sb.append("Cname: " + action.cname);
+			if(action.text != null) {
+				sb.append(System.lineSeparator());
+				sb.append(action.text);
+			}
+		}
+		return sb.toString();
 	}
 	
 	public Attack expendAttack(int number) {
@@ -224,7 +300,7 @@ public class MonsterInstance extends Entity{
 		
 		for(Spell spell : innateSpells.keySet()) {
 			sb.append(spell.readableName + " - ");
-			if(innateSpells.get(spell) != AT_WILL_INNATE_SPELL) {
+			if(innateSpells.get(spell) != AT_WILL) {
 				sb.append(innateSpells.get(spell) + "/day, ");
 			}else {
 				sb.append("at will, ");
@@ -244,7 +320,7 @@ public class MonsterInstance extends Entity{
 				concentratedSpell = spell;
 			}
 			
-			if(innateSpells.get(spell) != AT_WILL_INNATE_SPELL) {
+			if(innateSpells.get(spell) != AT_WILL) {
 				innateSpells.put(spell, remainingCharges - 1);
 			}
 		}else {

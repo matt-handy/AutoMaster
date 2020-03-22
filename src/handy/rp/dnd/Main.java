@@ -460,9 +460,37 @@ public class Main {
 		}
 	}
 	
+	//TODO: Recharge interval
+	//TODO: Attack support
+	//TODO: Drow summoning
+	String doAction(String args[]) {
+		if(args.length != 2) {
+			return "act <action mnemonic>";
+		}
+		
+		//TODO: replace these blocks with an exception-throwing "is monster" check
+		if (!(currentInitiativeList.get(currentPlace) instanceof MonsterInstance)) {
+			return "Must be a monster to attack";
+		}
+		
+		MonsterInstance monster = (MonsterInstance) currentInitiativeList.get(currentPlace);
+		try {
+			String msg = monster.expendAction(args[1]);
+			log(msg);
+			return msg;
+		}catch(IllegalArgumentException ex) {
+			log(ex.getMessage());
+			return ex.getMessage();
+		}
+	}
+	
 	String castInnateSpell(String args[]) {
 		if(args.length != 2) {
 			return "icast <spellname>";
+		}
+	
+		if (!(currentInitiativeList.get(currentPlace) instanceof MonsterInstance)) {
+			return "Must be a monster to attack";
 		}
 		
 		MonsterInstance monster = (MonsterInstance) currentInitiativeList.get(currentPlace);

@@ -19,6 +19,7 @@ import org.xml.sax.InputSource;
 
 import handy.rp.Dice.DICE_TYPE;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
+import handy.rp.dnd.spells.ActionSpell;
 import handy.rp.dnd.spells.DiceToLevelRange;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.SpellDamageComponent;
@@ -26,7 +27,7 @@ import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
 public class SpellParser {
 
-	public static Spell load(String filename) throws Exception {
+	public static Spell load(String filename, boolean actionSpell) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(new InputSource(new StringReader(MonsterParser.readFile(filename))));
@@ -48,6 +49,21 @@ public class SpellParser {
 		
 		NodeList concentrateList = document.getElementsByTagName("concentration");
 		boolean concentrate = false;
+		
+		int dc = -1;
+		int toHit = -1;
+		if(actionSpell) {
+			Node dcNode =document.getElementsByTagName("dc").item(0);
+			if(dcNode != null) {
+				dc = Integer.parseInt(dcNode.getTextContent());
+			}
+			
+			Node toHitNode =document.getElementsByTagName("toHit").item(0);
+			if(toHitNode != null) {
+				toHit = Integer.parseInt(toHitNode.getTextContent());
+			}
+		}
+		
 		if(concentrateList != null && concentrateList.item(0) != null) {
 			concentrate = concentrateList.item(0).getTextContent().equalsIgnoreCase("true");
 		}
@@ -155,17 +171,38 @@ public class SpellParser {
 			}
 
 		}
-		return new Spell(compName, readableName, Spell.SLOTLEVEL.get(minLevel), hasDc, hasToHit, damagers,
-				readableEffect, concentrate);
+		if(actionSpell) {
+			return new ActionSpell(compName, readableName, Spell.SLOTLEVEL.CANTRIP, hasDc, hasToHit, damagers, readableEffect, concentrate, dc, toHit);
+		}else {
+			return new Spell(compName, readableName, Spell.SLOTLEVEL.get(minLevel), hasDc, hasToHit, damagers,
+					readableEffect, concentrate);
+		}
 
 	}
 
-	public static List<Spell> loadAll(String directory) throws Exception {
+	public static List<Spell> loadAllSpells(String directory) throws Exception{
+		return loadAll(directory, false);
+	}
+	
+	public static List<ActionSpell> loadAllActionSpells(String directory) throws Exception {
+		List<ActionSpell> actionSpells = new ArrayList<>();
+		for(Spell spell : loadAll(directory, true)) {
+			actionSpells.add((ActionSpell) spell);
+		}
+		return actionSpells;
+	}
+	
+	public static List<Spell> loadAll(String directory, boolean actionSpell) throws Exception {
 		List<Spell> spells = new ArrayList<>();
 		File dir = new File(directory);
 		if (dir.isDirectory() && dir.exists()) {
 			for (File child : dir.listFiles()) {
-				spells.add(load(child.getAbsolutePath()));
+				try {
+					spells.add(load(child.getAbsolutePath(), actionSpell));
+				}catch(Exception ex) {
+					System.out.println("Error on file: " + child.getAbsolutePath());
+					throw ex;
+				}
 			}
 		} else {
 			throw new IOException("Directory not found: " + directory);

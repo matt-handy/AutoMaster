@@ -22,22 +22,26 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import handy.rp.Dice.DICE_TYPE;
+import handy.rp.dnd.attacks.Action;
 import handy.rp.dnd.attacks.AttackBuilder;
 import handy.rp.dnd.attacks.DamageComponent;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
 import handy.rp.dnd.monsters.MonsterBuilder;
 import handy.rp.dnd.monsters.MonsterInstance;
 import handy.rp.dnd.monsters.MonsterTemplate;
+import handy.rp.dnd.spells.ActionSpell;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
 public class MonsterParser {
 
 	public static List<Spell> spellsList;
+	public static List<ActionSpell> actionSpellsList;
 	
 	static {
 		try {
-			spellsList = SpellParser.loadAll("spells");
+			spellsList = SpellParser.loadAllSpells("spells");
+			actionSpellsList = SpellParser.loadAllActionSpells("action_spells");
 		}catch(Exception ex) {
 			//Shouldn't happen, test loads happen before build. 
 			//TODO: Add user notification if exception occurs, will be deploy issue
@@ -157,7 +161,7 @@ public class MonsterParser {
 				if(spell.computerName.equalsIgnoreCase(name)) {
 					int chargeInt;
 					if(charges.contentEquals("will")) {
-						chargeInt = MonsterInstance.AT_WILL_INNATE_SPELL;
+						chargeInt = MonsterInstance.AT_WILL;
 					}else {
 						chargeInt = Integer.parseInt(charges);
 					}
@@ -165,6 +169,39 @@ public class MonsterParser {
 					break;
 				}
 			}
+		}
+		
+		NodeList actionSet = document.getElementsByTagName("action");
+		for(int idx = 0; idx < actionSet.getLength(); idx++){
+			Node actionItem = actionSet.item(idx);
+			Element actionElement = (Element) actionItem;
+			String actionName = actionElement.getElementsByTagName("aname").item(0).getTextContent();
+			String actionComputerName = actionElement.getElementsByTagName("acname").item(0).getTextContent();
+			ActionSpell actionSpell = null;
+			String actionText = null;
+			int actionCharges = 0;
+			if(actionElement.getElementsByTagName("aspell").item(0) != null) {
+				String spellCompId = actionElement.getElementsByTagName("aspell").item(0).getTextContent();
+				for(ActionSpell spell : actionSpellsList) {
+					if(spell.computerName.equalsIgnoreCase(spellCompId)) {
+						actionSpell = spell;
+						break;
+					}
+				}
+			}
+			if(actionElement.getElementsByTagName("atext").item(0) != null) {
+				actionText = actionElement.getElementsByTagName("atext").item(0).getTextContent();
+			}
+			if(actionElement.getElementsByTagName("acharges").item(0) != null) {
+				String tagText = actionElement.getElementsByTagName("acharges").item(0).getTextContent();
+				if(tagText.contentEquals("will")) {
+					actionCharges = MonsterInstance.AT_WILL;
+				}else {
+					actionCharges = Integer.parseInt(tagText);
+				}
+			}
+			Action action = new Action(actionName, actionComputerName, actionText, actionSpell, null);
+			monsterBuilder.addAction(action, actionCharges);
 		}
 		
 		NodeList spellSet = document.getElementsByTagName("spells");

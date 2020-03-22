@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Death Knight</mname>
+<hp>180</hp>
+<str>20</str>
+<dex>11</dex>
+<con>20</con>
+<int>12</int>
+<wis>16</wis>
+<cha>18</cha>
+<dexsave>6</dexsave>
+<wissave>9</wissave>
+<chasave>9</chasave>
+<casterDc>18</casterDc>
+<casterToHit>10</casterToHit>
+<casterLevel>19</casterLevel>
+<attacks>
+	<set>
+		<attack>
+			<name>Longsword</name>
+			<toHit>11</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>5</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Longsword</name>
+			<toHit>11</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>5</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Longsword</name>
+			<toHit>11</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>5</modifier>
+			</damage>
+		</attack>
+	</set>
+	<set>
+		<attack>
+			<name>Heavy Crossbow</name>
+			<toHit>1</toHit>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D10</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+<spells>
+	<slots>
+		<first>4</first>
+		<second>3</second>
+		<third>3</third>
+		<fourth>3</fourth>
+		<fifth>2</fifth>
+	</slots>
+	<spell>command</spell>
+	<spell>compelled_duel</spell>
+	<spell>searing_smite</spell>
+	<spell>hold_person</spell>
+	<spell>magic_weapon</spell>
+	<spell>dispel_magic</spell>
+	<spell>elemental_weapon</spell>
+	<spell>banishment</spell>
+	<spell>staggering_smite</spell>
+	<spell>destructive_wave</spell>
+</spells>
+<action>
+	<aname>Hellfire Orb</aname>
+	<aspell>dk_hellfire_orb</aspell>
+	<acname>hellfire_orb</acname>
+	<acharges>1</acharges>
+</action>
+</monster>

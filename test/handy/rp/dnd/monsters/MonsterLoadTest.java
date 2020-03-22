@@ -36,6 +36,7 @@ class MonsterLoadTest {
 		}
 	}
 	
+	
 	@Test
 	void test() {
 		try {

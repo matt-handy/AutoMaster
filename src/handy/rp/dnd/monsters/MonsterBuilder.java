@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import handy.rp.dnd.Helpers;
+import handy.rp.dnd.attacks.Action;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.spells.Spell;
 
@@ -37,6 +38,7 @@ public class MonsterBuilder {
 	private Map<Spell.SLOTLEVEL, Integer> slotMapping;
 	
 	private Map<Spell, Integer> innateSpells;
+	private Map<Action, Integer> actions;
 	
 	public MonsterBuilder(String humanReadableName) {
 		this.humanReadableName = humanReadableName;
@@ -114,6 +116,13 @@ public class MonsterBuilder {
 		innateSpells.put(spell, charges);
 	}
 	
+	public void addAction(Action action, int charges) {
+		if(actions == null) {
+			actions = new HashMap<>();
+		}
+		actions.put(action, charges);
+	}
+	
 	public void addSpell(Spell spell) {
 		if(spells == null) {
 			spells = new HashMap<>();
@@ -185,7 +194,7 @@ public class MonsterBuilder {
 		if(casterInnateDc == -1 && innateSpells != null) {
 			throw new IllegalArgumentException("Innate casters must have spells and slot mappings");
 		}
-		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells);
+		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions);
 	}
 	
 }

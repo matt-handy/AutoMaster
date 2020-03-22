@@ -30,7 +30,7 @@ class SpellTest {
 	@Test
 	void testFly() {
 		try {
-			Spell fly = SpellParser.load("spells\\fly.xml");
+			Spell fly = SpellParser.load("spells\\fly.xml", false);
 			assertEquals(fly.readableName, "Fly");
 			assertEquals(fly.computerName, "fly");
 			assertEquals(fly.minimumLevel, Spell.SLOTLEVEL.get(3));
@@ -49,7 +49,7 @@ class SpellTest {
 	@Test
 	void testFireball() {
 		try {
-			Spell fireball = SpellParser.load("spells\\fireball.xml");
+			Spell fireball = SpellParser.load("spells\\fireball.xml", false);
 			assertEquals(fireball.readableName, "Fireball");
 			assertEquals(fireball.computerName, "fireball");
 			assertEquals(fireball.minimumLevel, Spell.SLOTLEVEL.get(3));
@@ -83,7 +83,7 @@ class SpellTest {
 	@Test
 	void testIceStorm() {
 		try {
-			Spell ice_storm = SpellParser.load("spells\\ice_storm.xml");
+			Spell ice_storm = SpellParser.load("spells\\ice_storm.xml", false);
 			assertEquals(ice_storm.readableName, "Ice Storm");
 			assertEquals(ice_storm.computerName, "ice_storm");
 			assertEquals(ice_storm.minimumLevel, Spell.SLOTLEVEL.get(4));
@@ -132,7 +132,7 @@ class SpellTest {
 	@Test
 	void testFireBolt() {
 		try {
-			Spell firebolt = SpellParser.load("spells\\fire_bolt.xml");
+			Spell firebolt = SpellParser.load("spells\\fire_bolt.xml", false);
 			assertEquals(firebolt.readableName, "Fire Bolt");
 			assertEquals(firebolt.computerName, "fire_bolt");
 			assertEquals(firebolt.minimumLevel, Spell.SLOTLEVEL.CANTRIP);
@@ -186,7 +186,7 @@ class SpellTest {
 	@Test
 	void testEldritchBlast() {
 		try {
-			Spell firebolt = SpellParser.load("spells\\eldritch_blast.xml");
+			Spell firebolt = SpellParser.load("spells\\eldritch_blast.xml", false);
 			assertEquals(firebolt.readableName, "Eldritch Blast");
 			assertEquals(firebolt.computerName, "eldritch_blast");
 			assertEquals(firebolt.minimumLevel, Spell.SLOTLEVEL.CANTRIP);
@@ -238,9 +238,30 @@ class SpellTest {
 	}
 	
 	@Test
+	void testLoadAllActionSpells() {
+		try {
+			List<ActionSpell> allLoaded = SpellParser.loadAllActionSpells("action_spells");
+			assertTrue(allLoaded.size() >= 1);
+			
+			boolean foundDKHellfireOrb = false;
+			for(ActionSpell spell : allLoaded) {
+				if(spell.readableName.equals("Hellfire Orb")) {
+					foundDKHellfireOrb = true;
+					assertEquals(spell.staticDC, 18);
+				}
+			}
+			
+			assertTrue(foundDKHellfireOrb);
+		}catch(Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	@Test
 	void testLoadAll() {
 		try {
-			List<Spell> allLoaded = SpellParser.loadAll("spells");
+			List<Spell> allLoaded = SpellParser.loadAll("spells", false);
 			assertTrue(allLoaded.size() >= 3);
 			boolean foundFireball = false;
 			boolean foundFirebolt = false;

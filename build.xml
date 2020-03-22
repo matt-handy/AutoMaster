@@ -16,12 +16,16 @@
         <mkdir dir="build/deploy"/>
         <mkdir dir="build/deploy/monsters"/>
         <mkdir dir="build/deploy/spells"/>
+        <mkdir dir="build/deploy/action_spells"/>
         <mkdir dir="build/deploy/monster_sets"/>
     	<copy file="exec.bat" todir="build/deploy"/>
     	<copy todir="build/deploy/monsters">
     	  <fileset dir="monsters"/>
     	</copy>
     	<copy todir="build/deploy/spells">
+    	  <fileset dir="spells"/>
+    	</copy>
+    	<copy todir="build/deploy/action_spells">
     	  <fileset dir="spells"/>
     	</copy>
     	<copy todir="build/deploy/monster_sets">

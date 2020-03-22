@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>searing_smite</compname>
+	<readablename>Searing Smite</readablename>
+	<minLevel>1</minLevel>
+	<hasDc>true</hasDc>
+	<hasToHit>false</hasToHit>
+	<concentration>true</concentration>
+	<readableeffect>You can cast this spell when you hit with a melee weapon attack on your turn. Your weapon flares with white-hot intensity, and the attack deals 1d6 extra fire damage to the target. Until the spell ends, at the start of each of its turns, the target must make a Constitution saving throw or take 1d6 fire damage. The spell ends when the creature makes a successful saving throw against it. At Higher Levels: When you cast this spell using a spell slot of 2nd level or higher, the extra damage increases by 1d6 for each level above 1st.</readableeffect>
+	<damages>
+		<damage>
+			<type>FIRE</type>
+			<dice>D6</dice>
+			<diceCount>1</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>true</extraDicePerLevel>
+		</damage>
+	</damages>
+</spell>

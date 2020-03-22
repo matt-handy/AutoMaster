@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>compelled_duel</compname>
+	<readablename>Compelled Duel</readablename>
+	<minLevel>1</minLevel>
+	<hasDc>true</hasDc>
+	<hasToHit>false</hasToHit>
+	<concentration>true</concentration>
+	<readableeffect>You do an attempt to compel a creature into the duel. One creature must make a wisdom saving throw which you can see within a range. The creature is dawn to you on a failed save and compelled by your divine demand. For the specific span of duration, it has one disadvantage on the attack rolls which against creatures other than you and also it must make a wisdom saving throw each time whenever it attempts to move into the space which is more than 30 feet away from you; Suppose, if it succeeds upon this saving throw then the spell does not restrict the target’s movement for that specific turn.
+If you attack any other creature then the spell will end. Suppose, if you cast the spell which target’s the hostile creature which is other than the target and also if the creature friendly for you either will damage the target or else casts any harmful spell on it or even you end your turn more than the 30 feet away from this target.</readableeffect>
+</spell>
