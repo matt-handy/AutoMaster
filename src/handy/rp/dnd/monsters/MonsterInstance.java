@@ -53,6 +53,7 @@ public class MonsterInstance extends Entity{
 	public static final int AT_WILL = 9999;
 	
 	private Map<Action, Integer> actions;
+	private Map<Action, Boolean> actionReadiness = new HashMap<>();
 	
 	private Spell concentratedSpell = null;
 	
@@ -97,6 +98,13 @@ public class MonsterInstance extends Entity{
 		this.innateSpells = innateSpells;
 		
 		this.actions = actions;
+		if(actions != null) {
+			for(Action action : actions.keySet()) {
+				if(action.rechargeDice != null) {
+					actionReadiness.put(action, true);
+				}
+			}
+		}
 	}
 	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName,
@@ -117,6 +125,14 @@ public class MonsterInstance extends Entity{
 			attacksThisTurn.addAll(attackLists.get(0));
 		}else {
 			attacksThisTurn = null;
+		}
+		for(Action action : actionReadiness.keySet()) {
+			if(!actionReadiness.get(action)) {
+				int roll = action.rechargeDice.roll();
+				if(roll >= action.rechargeDiceMeets) {
+					actionReadiness.put(action, true);
+				}
+			}
 		}
 	}
 	
@@ -157,6 +173,15 @@ public class MonsterInstance extends Entity{
 	public String expendAction(String cName) {
 		try {
 			Action action = returnAction(cName);
+			
+			if(actionReadiness.containsKey(action)) {
+				if(actionReadiness.get(action)) {
+					actionReadiness.put(action, false);
+				}else {
+					return "Rechargable Action - Need " + action.rechargeDiceMeets + " or better from " + action.rechargeDice;
+				}
+			}
+			
 			StringBuilder sb = new StringBuilder();
 			sb.append(action.name);
 			sb.append(System.lineSeparator());
@@ -208,8 +233,12 @@ public class MonsterInstance extends Entity{
 			if(charges == AT_WILL) {
 				chargeMsg = "At will";
 			}
-			sb.append("Name: " + action.name + " Charges: " + chargeMsg);
+			sb.append("Name: " + action.name + " Daily charges: " + chargeMsg);
 			sb.append(System.lineSeparator());
+			if(actionReadiness.containsKey(action)) {
+				sb.append("Rechargable spell, ready? " + actionReadiness.get(action));
+				sb.append(System.lineSeparator());
+			}
 			sb.append("Cname: " + action.cname);
 			if(action.text != null) {
 				sb.append(System.lineSeparator());

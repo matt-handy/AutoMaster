@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Young Red Dragon</mname>
+<hp>178</hp>
+<str>23</str>
+<dex>10</dex>
+<con>21</con>
+<int>14</int>
+<wis>11</wis>
+<cha>19</cha>
+<dexsave>4</dexsave>
+<consave>9</consave>
+<wissave>4</wissave>
+<chasave>8</chasave>
+<attacks>
+	<set>
+		<attack>
+			<name>Bite</name>
+			<toHit>10</toHit>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D10</dice>
+				<diceCount>2</diceCount>
+				<modifier>6</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Claw</name>
+			<toHit>10</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>2</diceCount>
+				<modifier>6</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Claw</name>
+			<toHit>10</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>2</diceCount>
+				<modifier>6</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+<action>
+	<aname>Fire Breath</aname>
+	<aspell>yd_fire_breath</aspell>
+	<acname>fire_breath</acname>
+	<acharges>will</acharges>
+	<recharge>5-D6</recharge>
+</action>
+</monster>

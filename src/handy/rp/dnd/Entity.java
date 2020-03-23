@@ -16,4 +16,5 @@ public class Entity {
 	public void setInitiative(int currentInitiative) {
 		this.currentInitiative = currentInitiative;
 	}
+	
 }

@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import handy.rp.Dice;
 import handy.rp.Dice.DICE_TYPE;
 import handy.rp.dnd.attacks.Action;
 import handy.rp.dnd.attacks.AttackBuilder;
@@ -180,6 +181,8 @@ public class MonsterParser {
 			ActionSpell actionSpell = null;
 			String actionText = null;
 			int actionCharges = 0;
+			DICE_TYPE rechargeDice = null;
+			int rechargeDiceMeets = -1;
 			if(actionElement.getElementsByTagName("aspell").item(0) != null) {
 				String spellCompId = actionElement.getElementsByTagName("aspell").item(0).getTextContent();
 				for(ActionSpell spell : actionSpellsList) {
@@ -200,7 +203,16 @@ public class MonsterParser {
 					actionCharges = Integer.parseInt(tagText);
 				}
 			}
-			Action action = new Action(actionName, actionComputerName, actionText, actionSpell, null);
+			if(actionElement.getElementsByTagName("recharge").item(0) != null) {
+				String[] rechargeArgs = actionElement.getElementsByTagName("recharge").item(0).getTextContent().split("-");
+				if(rechargeArgs.length != 2) {
+					throw new IllegalArgumentException("Need recharge args of the format: 'X-Y'");
+				}
+				rechargeDiceMeets = Integer.parseInt(rechargeArgs[0]);
+				rechargeDice = Dice.DICE_TYPE.getDice(rechargeArgs[1]);
+			}
+			Action action = new Action(actionName, actionComputerName, actionText, actionSpell, null,
+					rechargeDice, rechargeDiceMeets);
 			monsterBuilder.addAction(action, actionCharges);
 		}
 		

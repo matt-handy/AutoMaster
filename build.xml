@@ -26,7 +26,7 @@
     	  <fileset dir="spells"/>
     	</copy>
     	<copy todir="build/deploy/action_spells">
-    	  <fileset dir="spells"/>
+    	  <fileset dir="action_spells"/>
     	</copy>
     	<copy todir="build/deploy/monster_sets">
     	  <fileset dir="scenarios/monster_sets"/>

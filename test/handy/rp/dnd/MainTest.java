@@ -64,6 +64,35 @@ class MainTest {
 	}
 	
 	@Test
+	void testActions() {
+		Main main = new Main();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+		String args[] = {"amon", "Young Red Dragon", "Larry"};
+		main.addMonster(args);
+		main.startCombat();
+		
+		String listActResults = main.listActions();
+		assertEquals(listActResults, "Name: Fire Breath Daily charges: At will" + System.lineSeparator() + 
+				"Rechargable spell, ready? true" + System.lineSeparator() +
+				"Cname: fire_breath");
+		
+		String args3[] = {"act", "fire_breath"};
+		String actResult = main.doAction(args3);
+		assertTrue(actResult.contains("Fire Breath: The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one."));
+	
+		listActResults = main.listActions();
+		assertEquals(listActResults, "Name: Fire Breath Daily charges: At will" + System.lineSeparator() + 
+				"Rechargable spell, ready? false" + System.lineSeparator() +
+				"Cname: fire_breath");
+	}
+	
+	@Test
 	void testInnateSpellcast() {
 		Main main = new Main();
 		try {

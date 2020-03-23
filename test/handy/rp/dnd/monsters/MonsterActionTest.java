@@ -26,6 +26,7 @@ class MonsterActionTest {
 			List<MonsterTemplate> allLoaded = MonsterParser.loadAll("monsters");
 			boolean foundDeathKnight = false;
 			boolean foundDrow = false;
+			boolean foundYRD = false;
 			
 			for(MonsterTemplate mt : allLoaded) {
 				if(mt.humanReadableName.contentEquals("Death Knight")) {
@@ -48,6 +49,14 @@ class MonsterActionTest {
 					assertTrue(result.contains("The drow magically summons a quasit, or attempts to summon a shadow demon with a 50 percent chance of success. The summoned demon appears in an unoccupied space within 60 feet of its summoner, acts as an ally of its summoner, and can't summon other demons. It remains for 10 minutes, until it or its summoner dies, or until its summoner dismisses it as an action."));
 					result = dk.expendAction("summon_demon");
 					assertEquals("No remaining charges for action", result);
+				}else if(mt.humanReadableName.contentEquals("Young Red Dragon")) {
+					foundYRD = true;
+					MonsterInstance dk = mt.getInstance("Young Red Dragon");String result = dk.expendAction("nonaction");
+					assertEquals("No such action: nonaction", result);
+					result = dk.expendAction("fire_breath");
+					assertTrue(result.contains("Fire Breath: The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one."));
+					result = dk.expendAction("fire_breath");
+					assertEquals("Rechargable Action - Need 5 or better from D6", result);
 				}
 			}
 			

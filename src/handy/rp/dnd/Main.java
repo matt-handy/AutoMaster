@@ -153,6 +153,8 @@ public class Main {
 				console.writer().println("lss | listspellslots => prints list of current monster spell slots");
 				console.writer().println("rm | remove <index or personal name> => removes entity from initiative order");
 				console.writer().println("sc | startcombat => starts play");
+				console.writer().println("act <action name> => take action");
+				console.writer().println("listact => lists actions");
 				break;
 			case "breakSpell":
 				if(currentEntity instanceof MonsterInstance) {
@@ -169,6 +171,12 @@ public class Main {
 				}else {
 					console.writer().println("Can only break concentration for monsters");
 				}
+				break;
+			case "listact":
+				console.writer().println(listActions());
+				break;
+			case "act":
+				console.writer().println(doAction(args));
 				break;
 			case "lms":
 			case "load_monster_set":
@@ -321,6 +329,15 @@ public class Main {
 		}
 	}
 	
+	String listActions() {
+		if(currentEntity instanceof MonsterInstance) {
+			MonsterInstance mi = (MonsterInstance) currentEntity;
+			return mi.listActions();
+		}else {
+			return "Can only list actions for monsters";
+		}
+	}
+	
 	String loadMonsterSet(String args[]) {
 		if(args.length != 2) {
 			return "lms <filename>";
@@ -460,9 +477,7 @@ public class Main {
 		}
 	}
 	
-	//TODO: Recharge interval
 	//TODO: Attack support
-	//TODO: Drow summoning
 	String doAction(String args[]) {
 		if(args.length != 2) {
 			return "act <action mnemonic>";
