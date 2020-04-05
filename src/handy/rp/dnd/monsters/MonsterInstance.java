@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import handy.rp.Dice;
+import handy.rp.dnd.Action;
 import handy.rp.dnd.Entity;
 import handy.rp.dnd.Helpers;
-import handy.rp.dnd.attacks.Action;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.spells.*;

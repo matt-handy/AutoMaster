@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import handy.rp.dnd.Action;
 import handy.rp.dnd.Helpers;
-import handy.rp.dnd.attacks.Action;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.spells.Spell;
 

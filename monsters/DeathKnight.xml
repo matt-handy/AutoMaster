@@ -80,8 +80,6 @@
 	<spell>destructive_wave</spell>
 </spells>
 <action>
-	<aname>Hellfire Orb</aname>
-	<aspell>dk_hellfire_orb</aspell>
 	<acname>hellfire_orb</acname>
 	<acharges>1</acharges>
 </action>

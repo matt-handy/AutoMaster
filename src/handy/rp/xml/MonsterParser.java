@@ -23,7 +23,7 @@ import org.xml.sax.InputSource;
 
 import handy.rp.Dice;
 import handy.rp.Dice.DICE_TYPE;
-import handy.rp.dnd.attacks.Action;
+import handy.rp.dnd.Action;
 import handy.rp.dnd.attacks.AttackBuilder;
 import handy.rp.dnd.attacks.DamageComponent;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
@@ -38,11 +38,13 @@ public class MonsterParser {
 
 	public static List<Spell> spellsList;
 	public static List<ActionSpell> actionSpellsList;
+	public static List<Action> actionList;
 	
 	static {
 		try {
 			spellsList = SpellParser.loadAllSpells("spells");
 			actionSpellsList = SpellParser.loadAllActionSpells("action_spells");
+			actionList = ActionParser.loadAll("actions");
 		}catch(Exception ex) {
 			//Shouldn't happen, test loads happen before build. 
 			//TODO: Add user notification if exception occurs, will be deploy issue
@@ -112,6 +114,8 @@ public class MonsterParser {
 			//Caster Innate DC not given, ignore
 		}
 		
+		//TODO: refector so we don't use attacks defined with monster, pull from
+		//separately parsed actions sets
 		NodeList setList = document.getElementsByTagName("set");
 		
 		for(int idx = 0; idx < setList.getLength(); idx++){
@@ -176,25 +180,9 @@ public class MonsterParser {
 		for(int idx = 0; idx < actionSet.getLength(); idx++){
 			Node actionItem = actionSet.item(idx);
 			Element actionElement = (Element) actionItem;
-			String actionName = actionElement.getElementsByTagName("aname").item(0).getTextContent();
 			String actionComputerName = actionElement.getElementsByTagName("acname").item(0).getTextContent();
-			ActionSpell actionSpell = null;
-			String actionText = null;
+			
 			int actionCharges = 0;
-			DICE_TYPE rechargeDice = null;
-			int rechargeDiceMeets = -1;
-			if(actionElement.getElementsByTagName("aspell").item(0) != null) {
-				String spellCompId = actionElement.getElementsByTagName("aspell").item(0).getTextContent();
-				for(ActionSpell spell : actionSpellsList) {
-					if(spell.computerName.equalsIgnoreCase(spellCompId)) {
-						actionSpell = spell;
-						break;
-					}
-				}
-			}
-			if(actionElement.getElementsByTagName("atext").item(0) != null) {
-				actionText = actionElement.getElementsByTagName("atext").item(0).getTextContent();
-			}
 			if(actionElement.getElementsByTagName("acharges").item(0) != null) {
 				String tagText = actionElement.getElementsByTagName("acharges").item(0).getTextContent();
 				if(tagText.contentEquals("will")) {
@@ -203,17 +191,12 @@ public class MonsterParser {
 					actionCharges = Integer.parseInt(tagText);
 				}
 			}
-			if(actionElement.getElementsByTagName("recharge").item(0) != null) {
-				String[] rechargeArgs = actionElement.getElementsByTagName("recharge").item(0).getTextContent().split("-");
-				if(rechargeArgs.length != 2) {
-					throw new IllegalArgumentException("Need recharge args of the format: 'X-Y'");
+			for(Action action : actionList) {
+				if(action.cname.equals(actionComputerName)) {
+					monsterBuilder.addAction(action, actionCharges);
+					break;
 				}
-				rechargeDiceMeets = Integer.parseInt(rechargeArgs[0]);
-				rechargeDice = Dice.DICE_TYPE.getDice(rechargeArgs[1]);
 			}
-			Action action = new Action(actionName, actionComputerName, actionText, actionSpell, null,
-					rechargeDice, rechargeDiceMeets);
-			monsterBuilder.addAction(action, actionCharges);
 		}
 		
 		NodeList spellSet = document.getElementsByTagName("spells");

@@ -1,0 +1,36 @@
+<action>
+	<aname>Multiattack</aname>
+	<acname>dk_multiattack</acname>
+	<set>
+		<attack>
+			<name>Longsword</name>
+			<toHit>11</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>5</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Longsword</name>
+			<toHit>11</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>5</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Longsword</name>
+			<toHit>11</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>5</modifier>
+			</damage>
+		</attack>
+	</set>
+</action>
