@@ -27,5 +27,21 @@ public class Action {
 		this.rechargeDiceMeets = rechargeDiceMeets;
 	}
 	
-	
+	public String expendAction() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(name);
+		sb.append(System.lineSeparator());
+		if(spell != null) {
+			sb.append(spell.cast());
+			sb.append(System.lineSeparator());
+		}
+		if(attack != null) {
+			//TODO support attack
+		}
+		if(text != null) {
+			sb.append(text);
+			sb.append(System.lineSeparator());
+		}
+		return sb.toString();
+	}
 }

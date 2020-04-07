@@ -14,10 +14,12 @@
 
     <target name="jar" depends="compile" >
         <mkdir dir="build/deploy"/>
+        <mkdir dir="build/deploy/lairs"/>
         <mkdir dir="build/deploy/monsters"/>
         <mkdir dir="build/deploy/spells"/>
         <mkdir dir="build/deploy/action_spells"/>
         <mkdir dir="build/deploy/monster_sets"/>
+        <mkdir dir="build/deploy/actions"/>
     	<copy file="exec.bat" todir="build/deploy"/>
     	<copy todir="build/deploy/monsters">
     	  <fileset dir="monsters"/>
@@ -28,8 +30,14 @@
     	<copy todir="build/deploy/action_spells">
     	  <fileset dir="action_spells"/>
     	</copy>
+    	<copy todir="build/deploy/actions">
+    	  <fileset dir="actions"/>
+    	</copy>
     	<copy todir="build/deploy/monster_sets">
     	  <fileset dir="scenarios/monster_sets"/>
+    	</copy>
+    	<copy todir="build/deploy/lairs">
+    	  <fileset dir="lairs"/>
     	</copy>
         <jar destfile="build/deploy/AutoMaster.jar" basedir="build/classes">
             <manifest>

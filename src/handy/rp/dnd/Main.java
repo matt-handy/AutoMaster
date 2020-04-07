@@ -12,10 +12,13 @@ import java.util.Set;
 import handy.rp.Dice;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
+import handy.rp.dnd.lair.Lair;
+import handy.rp.dnd.lair.LairAction;
 import handy.rp.dnd.monsters.MonsterInstance;
 import handy.rp.dnd.monsters.MonsterSetLoader;
 import handy.rp.dnd.monsters.MonsterTemplate;
 import handy.rp.dnd.spells.Spell;
+import handy.rp.xml.LairParser;
 import handy.rp.xml.MonsterParser;
 
 public class Main {
@@ -26,6 +29,9 @@ public class Main {
 	private int roundCount;
 
 	private List<MonsterTemplate> monstersAvailable;
+	private List<Lair> lairsAvailable;
+	
+	private Lair currentLair = null;
 
 	private BufferedWriter logFile = null;
 	
@@ -99,6 +105,7 @@ public class Main {
 
 	public void initialize() throws Exception {
 		monstersAvailable = MonsterParser.loadAll("monsters");
+		lairsAvailable = LairParser.loadAll("lairs");
 		
 		try {
 			logFile = new BufferedWriter(new FileWriter("log", true));
@@ -155,6 +162,9 @@ public class Main {
 				console.writer().println("sc | startcombat => starts play");
 				console.writer().println("act <action name> => take action");
 				console.writer().println("listact => lists actions");
+				console.writer().println("listlairs => all available lairs");
+				console.writer().println("setlair <Index> => Sets Lair");
+				console.writer().println("lairact <Index> => Takes Lair Action");
 				break;
 			case "breakSpell":
 				if(currentEntity instanceof MonsterInstance) {
@@ -215,10 +225,7 @@ public class Main {
 			case "startcombat":
 				startCombat();
 				console.writer().println("First in order: " + currentEntity.personalName);
-				if(currentEntity instanceof MonsterInstance) {
-					MonsterInstance mi = (MonsterInstance) currentEntity;
-					console.writer().println(mi.listAttacksReadable());
-				}
+				console.writer().println(currentEntity.listAvailableActionsAttackSpells());
 				break;
 			case "advturn":
 			case "advanceturn":
@@ -235,10 +242,8 @@ public class Main {
 				}
 				currentEntity = currentInitiativeList.get(currentPlace);
 				console.writer().println("Next in order: " + currentEntity.personalName);
-				if(currentEntity instanceof MonsterInstance) {
-					MonsterInstance mi = (MonsterInstance) currentEntity;
-					console.writer().println(mi.listAttacksReadable());
-				}
+				currentEntity.notifyNewTurn();
+				console.writer().println(currentEntity.listAvailableActionsAttackSpells());
 				break;
 			case "li":
 			case "listinitiative":
@@ -259,6 +264,13 @@ public class Main {
 				for (MonsterTemplate m : monstersAvailable) {
 					console.writer().println("Monster: " + jdx + " - " + m.humanReadableName);
 					jdx++;
+				}
+				break;
+			case "listlairs":
+				int kdx = 0;
+				for (Lair lair : lairsAvailable) {
+					console.writer().println("Lair: " + kdx + " - " + lair.personalName);
+					kdx++;
 				}
 				break;
 			case "la":
@@ -286,7 +298,6 @@ public class Main {
 					console.writer().println("Current actor does not have managed HP");
 				}
 				break;
-			//TODO: Consolidate hit and heal code into common logic
 			case "heal":
 			case "hit":
 				console.writer().println(hpMod(args));
@@ -322,10 +333,49 @@ public class Main {
 					console.writer().println("Current actor does not have managed spells");
 				}
 				break;
+			case "setlair":
+				console.writer().println(setLair(args));
+				break;
+			case "lairact":
+				console.writer().println(lairAct(args));
+				break;
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
 			}
+		}
+	}
+	
+	String lairAct(String[] args) {
+		if(currentLair != currentEntity) {
+			return "Lair is not active entity";
+		}
+		
+		try {
+			int actionIdx = Integer.parseInt(args[1]);
+			LairAction action = currentLair.getActions().get(actionIdx);
+			return currentLair.expendAction(action);
+		}catch(Exception ex) {
+			return "Cannot execute action idx: " + args[1];
+		}
+	}
+	
+	String setLair(String[] args) {
+		if(currentLair == null) {
+			if(args.length != 2) {
+				return "setlair <index of lair>";
+			}
+			
+			try {
+				int idx = Integer.parseInt(args[1]);
+				currentLair = lairsAvailable.get(idx);
+				addEntity(currentLair, false);
+				return "Added Lair: " + currentLair.personalName;
+			}catch(Exception ex) {
+				return "Unable to use provided index: " + args[1];
+			}
+		}else {
+			return "Cannot set lair, already set";
 		}
 	}
 	

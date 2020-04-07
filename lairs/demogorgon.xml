@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lair>
+	<name>Demogorgon's Lair</name>
+	<action interval="2">illusory_duplicate</action>
+	<action interval="2">lair_darkness</action>	
+</lair>

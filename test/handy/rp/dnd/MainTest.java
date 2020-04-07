@@ -91,6 +91,39 @@ class MainTest {
 				"Rechargable spell, ready? false" + System.lineSeparator() +
 				"Cname: fire_breath");
 	}
+
+	@Test
+	void testLair() {
+		Main main = new Main();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+		String args[] = {"setlair", "100"};
+		String message = main.setLair(args);
+		assertEquals("Unable to use provided index: 100", message);
+		
+		String args2[] = {"setlair", "dave"};
+		message = main.setLair(args2);
+		assertEquals("Unable to use provided index: dave", message);
+		
+		String args3[] = {"setlair", "0"};
+		message = main.setLair(args3);
+		assertEquals("Added Lair: Demogorgon's Lair", message);
+		
+		main.startCombat();
+		
+		String args4[] = {"lairact", "0"};
+		message = main.lairAct(args4);
+		assertTrue(message.contains("Illusory Duplicate"));
+		assertTrue(message.contains("The creature creates an illusory duplicate of himself, which appears in his own space and lasts until initiative count 20 of the next round. On his turn, the creature can move the illusory duplicate a distance equal to his walking speed (no action required). The first time a creature or object interacts physically with the creature (for example. hitting him with an attack). there is a 50 percent chance that it is the illusory duplicate that is being affected, not the creature himself, in which case the illusion disappears."));
+		
+		message = main.lairAct(args4);
+		assertEquals("Cannot act this turn, already acted", message);
+	}
 	
 	@Test
 	void testInnateSpellcast() {

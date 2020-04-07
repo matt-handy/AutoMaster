@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,7 +31,7 @@ public class SpellParser {
 	public static Spell load(String filename, boolean actionSpell) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document document = builder.parse(new InputSource(new StringReader(MonsterParser.readFile(filename))));
+		Document document = builder.parse(new InputSource(new StringReader(readFile(filename))));
 
 		NodeList compNameList = document.getElementsByTagName("compname");
 		String compName = compNameList.item(0).getTextContent();
@@ -210,4 +211,26 @@ public class SpellParser {
 
 		return spells;
 	}
+	
+	//TODO: Move this function to Java commons
+		public static String readFile(String pathname) throws IOException {
+
+			File file = new File(pathname);
+			StringBuilder fileContents = new StringBuilder((int) file.length());
+			Scanner scanner = new Scanner(file);
+			String lineSeparator = System.getProperty("line.separator");
+
+			try {
+				while (scanner.hasNextLine()) {
+					if (scanner.hasNextLine()) {
+						fileContents.append(scanner.nextLine() + lineSeparator);
+					} else {
+						fileContents.append(scanner.nextLine());
+					}
+				}
+			} finally {
+				scanner.close();
+			}
+			return fileContents.toString();
+		}
 }

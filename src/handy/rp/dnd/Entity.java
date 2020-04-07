@@ -17,4 +17,12 @@ public class Entity {
 		this.currentInitiative = currentInitiative;
 	}
 	
+	public void notifyNewTurn() {
+		
+	}
+	
+	public String listAvailableActionsAttackSpells() {
+		return "Cannot list actions, entity is not managed by this tool"; 
+	}
+	
 }

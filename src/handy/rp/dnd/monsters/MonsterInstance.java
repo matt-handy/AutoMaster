@@ -13,6 +13,7 @@ import handy.rp.dnd.Entity;
 import handy.rp.dnd.Helpers;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
+import handy.rp.dnd.lair.LairAction;
 import handy.rp.dnd.spells.*;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
@@ -56,6 +57,8 @@ public class MonsterInstance extends Entity{
 	private Map<Action, Boolean> actionReadiness = new HashMap<>();
 	
 	private Spell concentratedSpell = null;
+	
+	boolean actedThisTurn = false;
 	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName, int currentHp,
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterInnateDc, int casterToHit,
@@ -171,6 +174,9 @@ public class MonsterInstance extends Entity{
 	}
 	
 	public String expendAction(String cName) {
+		if(actedThisTurn) {
+			return "Cannot take action, already acted this turn";
+		}
 		try {
 			Action action = returnAction(cName);
 			
@@ -182,24 +188,21 @@ public class MonsterInstance extends Entity{
 				}
 			}
 			
-			StringBuilder sb = new StringBuilder();
-			sb.append(action.name);
-			sb.append(System.lineSeparator());
-			if(action.spell != null) {
-				sb.append(action.spell.cast());
-				sb.append(System.lineSeparator());
-			}
-			if(action.attack != null) {
-				//TODO support attack
-			}
-			if(action.text != null) {
-				sb.append(action.text);
-				sb.append(System.lineSeparator());
-			}
-			return sb.toString();
+			actedThisTurn = true;
+			return action.expendAction();
 		}catch(IllegalArgumentException ex) {
 			return ex.getMessage();
 		}
+	}
+	
+	@Override
+	public String listAvailableActionsAttackSpells() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(listRemainingAttacksReadable());
+		sb.append(listSpells());
+		sb.append(listSpellSlotsRemaining());
+		sb.append(listInnateSpells());
+		return sb.toString();
 	}
 	
 	public Action returnAction(String cName) {
@@ -317,6 +320,7 @@ public class MonsterInstance extends Entity{
 			sb.append("Level " + slot.level + ": " + slotsRemaining.get(slot));
 			sb.append(", ");
 		}
+		sb.append(System.lineSeparator());
 		return sb.toString();
 	}
 	
@@ -330,11 +334,12 @@ public class MonsterInstance extends Entity{
 		for(Spell spell : innateSpells.keySet()) {
 			sb.append(spell.readableName + " - ");
 			if(innateSpells.get(spell) != AT_WILL) {
-				sb.append(innateSpells.get(spell) + "/day, ");
+				sb.append(innateSpells.get(spell) + "/day, charges remaining: " + innateSpells.get(spell));
 			}else {
 				sb.append("at will, ");
 			}
 		}
+		sb.append(System.lineSeparator());
 		
 		return sb.toString();
 	}
@@ -439,5 +444,10 @@ public class MonsterInstance extends Entity{
 			}
 		}
 		throw new IllegalArgumentException("I have no such spell: " + spellName);
+	}
+	
+	@Override
+	public void notifyNewTurn() {
+		actedThisTurn = false;
 	}
 }
