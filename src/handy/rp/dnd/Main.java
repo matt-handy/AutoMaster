@@ -160,8 +160,13 @@ public class Main {
 				console.writer().println("lss | listspellslots => prints list of current monster spell slots");
 				console.writer().println("rm | remove <index or personal name> => removes entity from initiative order");
 				console.writer().println("sc | startcombat => starts play");
+				
 				console.writer().println("act <action name> => take action");
 				console.writer().println("listact => lists actions");
+				
+				console.writer().println("lact <actor index> <action name> <optional - actee name> => take legendary action");
+				console.writer().println("listlact <optional idx> => lists legendary actions, assumes current actor");
+				
 				console.writer().println("listlairs => all available lairs");
 				console.writer().println("setlair <Index> => Sets Lair");
 				console.writer().println("lairact <Index> => Takes Lair Action");
@@ -181,6 +186,12 @@ public class Main {
 				}else {
 					console.writer().println("Can only break concentration for monsters");
 				}
+				break;
+			case "listlact":
+				console.writer().println(listLegendaryActions(args));
+				break;
+			case "lact":
+				console.writer().println(doLegendaryAction(args));
 				break;
 			case "listact":
 				console.writer().println(listActions());
@@ -202,20 +213,7 @@ public class Main {
 				break;
 			case "apc":
 			case "addplayercharacter":
-				if (args.length != 3) {
-					console.writer().println("apc <character name> <initiative>");
-					continue;
-				}
-
-				Entity pc = new Entity(args[1]);
-				try {
-					int init = Integer.parseInt(args[2]);
-					pc.setInitiative(init);
-					addEntity(pc, false);
-				} catch (NumberFormatException e) {
-					console.writer().println("Second argument must be an initiative number");
-					continue;
-				}
+				console.writer().println(addPlayerCharacter(args));
 				break;
 			case "gr":
 			case "getround":
@@ -346,6 +344,22 @@ public class Main {
 		}
 	}
 	
+	String addPlayerCharacter(String[] args) {
+		if (args.length != 3) {
+			return "apc <character name> <initiative>";
+		}
+
+		Entity pc = new Entity(args[1]);
+		try {
+			int init = Integer.parseInt(args[2]);
+			pc.setInitiative(init);
+			addEntity(pc, false);
+			return "Added " + pc.personalName; 
+		} catch (NumberFormatException e) {
+			return "Second argument must be an initiative number";
+		}
+	}
+	
 	String lairAct(String[] args) {
 		if(currentLair != currentEntity) {
 			return "Lair is not active entity";
@@ -376,6 +390,37 @@ public class Main {
 			}
 		}else {
 			return "Cannot set lair, already set";
+		}
+	}
+	
+	String listLegendaryActions(String args[]) {
+		if(args.length > 2) {
+			return "listlact <optional creature index>";
+		}
+		if(args.length == 1) {
+			if(currentEntity instanceof MonsterInstance) {
+				MonsterInstance mi = (MonsterInstance) currentEntity;
+				return mi.listLegendaryActions();
+			}else {
+				return "Can only list legendary actions for monsters";
+			}
+		}else {
+			try {
+				Integer idx = Integer.parseInt(args[1]);
+				if(idx >= currentInitiativeList.size()) {
+					return "Index out of range of current monster set";
+				}else {
+					Entity entity = currentInitiativeList.get(idx);
+					if(entity instanceof MonsterInstance) {
+						MonsterInstance mi = (MonsterInstance) entity;
+						return mi.listLegendaryActions();
+					}else {
+						return "Can only list legendary actions for monsters";
+					}
+				}
+			}catch(NumberFormatException ex) {
+				return "Need a proper index for the monster";
+			}
 		}
 	}
 	
@@ -524,6 +569,39 @@ public class Main {
 			
 		}catch(NumberFormatException e) {
 			return "Invalid attack index supplied";
+		}
+	}
+	
+	String doLegendaryAction(String args[]) {
+		if(args.length != 3 && args.length != 4) {
+			return "lact <actor index> <action name> <optional - actee name> => take legendary action";
+		}
+		
+		try {
+			Integer monsterIdx = Integer.parseInt(args[1]);
+			Integer actee = null;
+			if(args.length == 4) {
+				actee = Integer.parseInt(args[3]);
+				if(actee >= currentInitiativeList.size()) {
+					return "Invalid index for actee";
+				}
+			}
+			if(monsterIdx >= currentInitiativeList.size()) {
+				return "Monster index too high";
+			}
+			if(!(currentInitiativeList.get(monsterIdx) instanceof MonsterInstance)) {
+				return "Must be a monster";
+			}
+			MonsterInstance monster = (MonsterInstance) currentInitiativeList.get(monsterIdx);
+			String actionResult = monster.expandLegendaryAction(args[2]);
+			if(actee != null) {
+				Entity target = currentInitiativeList.get(actee);
+				actionResult += "against target " + target.personalName;
+			}
+			log(actionResult);
+			return actionResult;
+		}catch(NumberFormatException ex) {
+			return "Need a valid index for both actor and actee";
 		}
 	}
 	

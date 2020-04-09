@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Adult Red Dragon</mname>
+<hp>256</hp>
+<str>27</str>
+<dex>10</dex>
+<con>25</con>
+<int>16</int>
+<wis>13</wis>
+<cha>21</cha>
+<dexsave>6</dexsave>
+<consave>13</consave>
+<wissave>7</wissave>
+<chasave>11</chasave>
+<attacks>
+	<set>
+		<attack>
+			<name>Bite</name>
+			<toHit>14</toHit>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D10</dice>
+				<diceCount>2</diceCount>
+				<modifier>8</modifier>
+			</damage>
+			<damage>
+				<type>FIRE</type>
+				<dice>D6</dice>
+				<diceCount>2</diceCount>
+				<modifier>0</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Claw</name>
+			<toHit>14</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>2</diceCount>
+				<modifier>8</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Claw</name>
+			<toHit>14</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>2</diceCount>
+				<modifier>8</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+<lactions>3</lactions>
+<laction>
+	<acname>detect</acname>
+	<acharges>will</acharges>
+	<lcharges>1</lcharges>
+</laction>
+<laction>
+	<acname>tail_attack</acname>
+	<acharges>will</acharges>
+	<lcharges>1</lcharges>
+</laction>
+<laction>
+	<acname>wing_attack</acname>
+	<acharges>will</acharges>
+	<lcharges>2</lcharges>
+</laction>
+<action>
+	<acname>ad_fire_breath</acname>
+	<acharges>will</acharges>
+</action>
+<action>
+	<acname>frightful_presence</acname>
+	<acharges>will</acharges>
+</action>
+</monster>

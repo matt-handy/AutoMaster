@@ -7,6 +7,7 @@ import java.util.Map;
 
 import handy.rp.dnd.Action;
 import handy.rp.dnd.Helpers;
+import handy.rp.dnd.LegendaryAction;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.spells.Spell;
 
@@ -39,6 +40,9 @@ public class MonsterBuilder {
 	
 	private Map<Spell, Integer> innateSpells;
 	private Map<Action, Integer> actions;
+	
+	private int legendaryActionCharges = -1;
+	private Map<LegendaryAction, Integer> legendaryActions;
 	
 	public MonsterBuilder(String humanReadableName) {
 		this.humanReadableName = humanReadableName;
@@ -96,6 +100,10 @@ public class MonsterBuilder {
 		this.chasave = cha;
 	}
 	
+	public void addLegendaryActionsCharges(int charges) {
+		legendaryActionCharges = charges;
+	}
+	
 	public void addAttack(Attack attack, int setIdx) {
 		if(setIdx < attackLists.size()) {
 			attackLists.get(setIdx).add(attack);
@@ -121,6 +129,13 @@ public class MonsterBuilder {
 			actions = new HashMap<>();
 		}
 		actions.put(action, charges);
+	}
+	
+	public void addLegendaryAction(LegendaryAction action, int charges) {
+		if(legendaryActions == null) {
+			legendaryActions = new HashMap<>();
+		}
+		legendaryActions.put(action, charges);
 	}
 	
 	public void addSpell(Spell spell) {
@@ -194,7 +209,11 @@ public class MonsterBuilder {
 		if(casterInnateDc == -1 && innateSpells != null) {
 			throw new IllegalArgumentException("Innate casters must have spells and slot mappings");
 		}
-		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions);
+		
+		if(legendaryActionCharges == -1 && legendaryActions != null) {
+			throw new IllegalArgumentException("Need legendary action charges if giving legendary actions");
+		}
+		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryActionCharges, legendaryActions);
 	}
 	
 }

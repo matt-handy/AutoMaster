@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>wing_attack</compname>
+	<readablename>Wing Attack</readablename>
+	<minLevel>0</minLevel>
+	<hasDc>true</hasDc>
+	<hasToHit>false</hasToHit>
+	<readableeffect>The dragon beats its wings. Each creature within 10 ft. of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed.</readableeffect>
+	<dc>22</dc>
+	<damages>
+		<damage>
+			<type>BLUDGEONING</type>
+			<dice>D6</dice>
+			<diceCount>2</diceCount>
+			<modifier>8</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>false</stdCantripIncrease>
+		</damage>
+	</damages>
+</spell>

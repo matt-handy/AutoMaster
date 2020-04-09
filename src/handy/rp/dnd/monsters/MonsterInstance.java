@@ -5,17 +5,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import handy.rp.Dice;
 import handy.rp.dnd.Action;
 import handy.rp.dnd.Entity;
 import handy.rp.dnd.Helpers;
+import handy.rp.dnd.LegendaryAction;
 import handy.rp.dnd.attacks.Attack;
-import handy.rp.dnd.attacks.Damage;
-import handy.rp.dnd.lair.LairAction;
-import handy.rp.dnd.spells.*;
-import handy.rp.dnd.spells.Spell.SLOTLEVEL;
+import handy.rp.dnd.spells.Spell;
 
 public class MonsterInstance extends Entity{
 
@@ -58,13 +55,17 @@ public class MonsterInstance extends Entity{
 	
 	private Spell concentratedSpell = null;
 	
-	boolean actedThisTurn = false;
+	private boolean actedThisTurn = false;
+	
+	private int maxCharges;
+	private int currentCharges;
+	private Map<LegendaryAction, Integer> legendaryActions;
 	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName, int currentHp,
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, 
-			Map<Spell, Integer> innateSpells, Map<Action, Integer> actions){
+			Map<Spell, Integer> innateSpells, Map<Action, Integer> actions, int legendaryCharges, Map<LegendaryAction, Integer> legendaryActions){
 		super(personalName);
 		this.currentHp = currentHp;
 		this.humanReadableName = humanReadableName;
@@ -108,6 +109,8 @@ public class MonsterInstance extends Entity{
 				}
 			}
 		}
+		maxCharges = currentCharges = legendaryCharges;
+		this.legendaryActions = legendaryActions;
 	}
 	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName,
@@ -115,11 +118,11 @@ public class MonsterInstance extends Entity{
 			int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, Map<Spell, Integer> innateSpells,
-			Map<Action, Integer> actions){
+			Map<Action, Integer> actions, int legendaryCharges, Map<LegendaryAction, Integer> legendaryActions){
 		this(humanReadableName, maxHP, attackLists, personalName, maxHP,
 				str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, 
 				strsave, dexsave, consave, intsave, wissave, chasave,
-				spells, slotMapping, innateSpells, actions);
+				spells, slotMapping, innateSpells, actions, legendaryCharges, legendaryActions);
 	}
 	
 	public void resetTurn() {
@@ -173,12 +176,50 @@ public class MonsterInstance extends Entity{
 		return attacksThisTurn;
 	}
 	
+	public String expandLegendaryAction(String cName) {
+		try {
+			LegendaryAction laction = null;
+			boolean dropActionCharge = false;
+			int charges = 0;
+			for(LegendaryAction action : legendaryActions.keySet()) {
+				if(action.cname.contentEquals(cName)) {
+					charges = legendaryActions.get(action);
+					if(charges == AT_WILL) {
+						laction = action;
+					}else {
+						if(charges > 0) {
+							dropActionCharge = true;
+							laction = action;
+						}else {
+							throw new IllegalArgumentException("No remaining charges for action");
+						}
+					}
+					break;
+				}
+			}
+			if(laction == null) {
+				throw new IllegalArgumentException("No such action: " + cName);
+			}
+			if(currentCharges - laction.charges < 0) {
+				return "Insufficient charges for legendary action: " + cName;
+			}else {
+				currentCharges -= laction.charges;
+				if(dropActionCharge) {
+					legendaryActions.put(laction, charges - 1);
+				}
+				return laction.expendAction();
+			}
+		}catch(IllegalArgumentException ex) {
+			return ex.getMessage();
+		}
+	}
+	
 	public String expendAction(String cName) {
 		if(actedThisTurn) {
 			return "Cannot take action, already acted this turn";
 		}
 		try {
-			Action action = returnAction(cName);
+			Action action = returnAction(cName, actions);
 			
 			if(actionReadiness.containsKey(action)) {
 				if(actionReadiness.get(action)) {
@@ -205,7 +246,7 @@ public class MonsterInstance extends Entity{
 		return sb.toString();
 	}
 	
-	public Action returnAction(String cName) {
+	public Action returnAction(String cName, Map<Action, Integer> actions) {
 		for(Action action : actions.keySet()) {
 			if(action.cname.contentEquals(cName)) {
 				int charges = actions.get(action);
@@ -224,7 +265,21 @@ public class MonsterInstance extends Entity{
 		throw new IllegalArgumentException("No such action: " + cName);
 	}
 	
-	public String listActions() {
+	public String listLegendaryActions() {
+		if(legendaryActions == null || legendaryActions.size() == 0) {
+			return "Monster has no legendary actions";
+		}
+		StringBuilder msg =  new StringBuilder("Charges for legendary actions: " + currentCharges);
+		msg.append(System.lineSeparator());
+		msg.append(listActions(legendaryActions));
+		return msg.toString();
+	}
+	
+	public String listActions(){
+		return listActions(actions);
+	}
+	
+	public String listActions(Map<? extends Action, Integer> actions) {
 		if(actions == null) {
 			return "";
 		}
@@ -236,16 +291,15 @@ public class MonsterInstance extends Entity{
 			if(charges == AT_WILL) {
 				chargeMsg = "At will";
 			}
-			sb.append("Name: " + action.name + " Daily charges: " + chargeMsg);
+			sb.append("Name: " + action.name + " (" + action.cname +  ") Daily charges: " + chargeMsg);
 			sb.append(System.lineSeparator());
 			if(actionReadiness.containsKey(action)) {
 				sb.append("Rechargable spell, ready? " + actionReadiness.get(action));
 				sb.append(System.lineSeparator());
 			}
-			sb.append("Cname: " + action.cname);
 			if(action.text != null) {
-				sb.append(System.lineSeparator());
 				sb.append(action.text);
+				sb.append(System.lineSeparator());
 			}
 		}
 		return sb.toString();
@@ -449,5 +503,6 @@ public class MonsterInstance extends Entity{
 	@Override
 	public void notifyNewTurn() {
 		actedThisTurn = false;
+		currentCharges = maxCharges;
 	}
 }

@@ -47,7 +47,7 @@ public class Attack {
 			sBuilder.append(damage.getHumanReadableDamage());
 		}
 		
-		sBuilder.append(" with a hit dice of " + (Dice.d20() + attack.toHit));
+		sBuilder.append(" with a hit dice of " + (Dice.d20() + attack.toHit) + " | "+ (Dice.d20() + attack.toHit));
 		
 		return sBuilder.toString();
 	}

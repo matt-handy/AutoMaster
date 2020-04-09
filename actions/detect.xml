@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action>
+	<aname>Detect</aname>
+	<acname>detect</acname>
+	<atext>The creature makes a Wisdom (Perception) check.</atext>
+</action>

@@ -42,10 +42,10 @@ class MainTest {
 		String args[] = {"amon", "Hill Giant", "Danny Boy"};
 		String response = main.addMonster(args);
 		assertTrue(response.startsWith("Added Hill Giant as Danny Boy with initiative "));
-		String args2[] = {"amon", "0", "Other Guy"};
+		String args2[] = {"amon", "1", "Other Guy"};
 		response = main.addMonster(args2);
 		assertTrue(response.startsWith("Added Bandit Captain as Other Guy with initiative "));
-		String args3[] = {"amon", "0", "Dude"};
+		String args3[] = {"amon", "1", "Dude"};
 		response = main.addMonster(args3);
 		assertTrue(response.startsWith("Added Bandit Captain as Dude with initiative "));
 		
@@ -61,6 +61,61 @@ class MainTest {
 		assertTrue(main.getCurrentEntity().personalName.equals("Other Guy") ||
 				main.getCurrentEntity().personalName.equals("Dude") ||
 				main.getCurrentEntity().personalName.equals("Danny Boy"));
+		main.shutdown();
+	}
+	
+	@Test
+	void testLegendaryActions() {
+		Main main = new Main();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+		String args[] = {"amon", "Adult Red Dragon", "Dave"};
+		main.addMonster(args);
+		main.startCombat();
+		
+		//Guarentee Gary will have a lower initiative than the dragon
+		String args2[] = {"apc", "Gary", "1"};
+		String result = main.addPlayerCharacter(args2);
+		assertEquals("Added Gary", result);
+		
+		String args3[] = {"listlact", "0"};
+		result = main.listLegendaryActions(args3);
+		assertTrue(result.contains("Charges for legendary actions: 3" + System.lineSeparator())); 
+		assertTrue(result.contains("Name: Wing Attack (wing_attack) Daily charges: At will" + System.lineSeparator()));
+		assertTrue(result.contains("Name: Tail Attack (tail_attack) Daily charges: At will" + System.lineSeparator()));
+		assertTrue(result.contains("Name: Detect (detect) Daily charges: At will" + System.lineSeparator())); 
+		assertTrue(result.contains("The creature makes a Wisdom (Perception) check." + System.lineSeparator()));
+		
+		String args4[] = {"lact", "0", "tail_attack"};
+		result = main.doLegendaryAction(args4);
+		assertTrue(result.contains("Tail Attack" + System.lineSeparator() + "Tail hits for "));
+		assertTrue(result.contains(" Bludgeoning damage with a hit dice of "));
+		assertFalse(result.contains("Against Gary"));
+		
+		result = main.listLegendaryActions(args3);
+		assertTrue(result.contains("Charges for legendary actions: 2" + System.lineSeparator())); 
+		assertTrue(result.contains("Name: Wing Attack (wing_attack) Daily charges: At will" + System.lineSeparator()));
+		assertTrue(result.contains("Name: Tail Attack (tail_attack) Daily charges: At will" + System.lineSeparator()));
+		assertTrue(result.contains("Name: Detect (detect) Daily charges: At will" + System.lineSeparator())); 
+		assertTrue(result.contains("The creature makes a Wisdom (Perception) check." + System.lineSeparator()));
+		
+		String args5[] = {"lact", "0", "tail_attack", "1"};
+		result = main.doLegendaryAction(args5);
+		assertTrue(result.contains("Tail Attack" + System.lineSeparator() + "Tail hits for "));
+		assertTrue(result.contains(" Bludgeoning damage with a hit dice of "));
+		assertTrue(result.contains("against target Gary"));
+		
+		String args6[] = {"lact", "0", "wing_attack"};
+		result = main.doLegendaryAction(args6);
+		assertEquals("Insufficient charges for legendary action: wing_attack", result);
+		
+		
+		main.shutdown();
 	}
 	
 	@Test
@@ -78,18 +133,18 @@ class MainTest {
 		main.startCombat();
 		
 		String listActResults = main.listActions();
-		assertEquals(listActResults, "Name: Fire Breath Daily charges: At will" + System.lineSeparator() + 
-				"Rechargable spell, ready? true" + System.lineSeparator() +
-				"Cname: fire_breath");
+		assertEquals(listActResults, "Name: Fire Breath (fire_breath) Daily charges: At will" + System.lineSeparator() + 
+				"Rechargable spell, ready? true" + System.lineSeparator());
 		
 		String args3[] = {"act", "fire_breath"};
 		String actResult = main.doAction(args3);
 		assertTrue(actResult.contains("Fire Breath: The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one."));
 	
 		listActResults = main.listActions();
-		assertEquals(listActResults, "Name: Fire Breath Daily charges: At will" + System.lineSeparator() + 
-				"Rechargable spell, ready? false" + System.lineSeparator() +
-				"Cname: fire_breath");
+		assertEquals(listActResults, "Name: Fire Breath (fire_breath) Daily charges: At will" + System.lineSeparator() + 
+				"Rechargable spell, ready? false" + System.lineSeparator());
+		
+		main.shutdown();
 	}
 
 	@Test
@@ -123,6 +178,7 @@ class MainTest {
 		
 		message = main.lairAct(args4);
 		assertEquals("Cannot act this turn, already acted", message);
+		main.shutdown();
 	}
 	
 	@Test
@@ -150,6 +206,7 @@ class MainTest {
 		String args3[] = {"icast", "darkness"};
 		results = main.castInnateSpell(args3);
 		assertEquals(results, "Cannot cast spell: Already concentrating on: Levitate");
+		main.shutdown();
 	}
 	
 	@Test
@@ -208,6 +265,7 @@ class MainTest {
 		assertTrue(foundFred);
 		assertTrue(foundOlaf);
 		assertTrue(foundGreg);
+		main.shutdown();
 	}
 	
 	@Test
@@ -314,7 +372,6 @@ class MainTest {
 			if(next == null) {
 				fail("Expected another log line");
 			}
-			System.out.println(next);
 			assertTrue(next.startsWith(" hits for "));
 			assertTrue(next.contains("Cold damage"));
 			
@@ -323,13 +380,7 @@ class MainTest {
 				fail("Expected another log line");
 			}
 			assertEquals(next, "Spell Save: 14");
-			/*
-			String next = fr.readLine();
-			while(next != null) {
-				System.out.println(next);
-				next = fr.readLine();
-			}
-			*/
+			
 			fr.close();
 		} catch (FileNotFoundException e1) {
 			fail(e1.getMessage());
@@ -344,6 +395,7 @@ class MainTest {
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
+		
 	}
 
 }

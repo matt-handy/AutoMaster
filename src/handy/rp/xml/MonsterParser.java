@@ -24,6 +24,7 @@ import org.xml.sax.InputSource;
 import handy.rp.Dice;
 import handy.rp.Dice.DICE_TYPE;
 import handy.rp.dnd.Action;
+import handy.rp.dnd.LegendaryAction;
 import handy.rp.dnd.attacks.AttackBuilder;
 import handy.rp.dnd.attacks.DamageComponent;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
@@ -171,6 +172,35 @@ public class MonsterParser {
 						chargeInt = Integer.parseInt(charges);
 					}
 					monsterBuilder.addInnateSpell(spell, chargeInt);
+					break;
+				}
+			}
+		}
+		
+		NodeList lactionsList = document.getElementsByTagName("lactions");
+		if(lactionsList != null && lactionsList.item(0) != null) {
+			monsterBuilder.addLegendaryActionsCharges(Integer.parseInt(lactionsList.item(0).getTextContent()));
+		}
+		
+		NodeList lactionSet = document.getElementsByTagName("laction");
+		for(int idx = 0; idx < lactionSet.getLength(); idx++){
+			Node actionItem = lactionSet.item(idx);
+			Element actionElement = (Element) actionItem;
+			String actionComputerName = actionElement.getElementsByTagName("acname").item(0).getTextContent();
+			
+			int actionCharges = 0;
+			if(actionElement.getElementsByTagName("acharges").item(0) != null) {
+				String tagText = actionElement.getElementsByTagName("acharges").item(0).getTextContent();
+				if(tagText.contentEquals("will")) {
+					actionCharges = MonsterInstance.AT_WILL;
+				}else {
+					actionCharges = Integer.parseInt(tagText);
+				}
+			}
+			String lChargesStr = actionElement.getElementsByTagName("lcharges").item(0).getTextContent();
+			for(Action action : actionList) {
+				if(action.cname.equals(actionComputerName)) {
+					monsterBuilder.addLegendaryAction(new LegendaryAction(action, Integer.parseInt(lChargesStr)), actionCharges);
 					break;
 				}
 			}

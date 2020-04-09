@@ -1,0 +1,7 @@
+<action>
+	<aname>Fire Breath</aname>
+	<aspell>ad_fire_breath</aspell>
+	<acname>ad_fire_breath</acname>
+	<acharges>will</acharges>
+	<recharge>5-D6</recharge>
+</action>

@@ -1,10 +1,12 @@
 package handy.rp.dnd;
 
 import java.util.List;
+import java.util.Set;
 
 import handy.rp.Dice;
 import handy.rp.Dice.DICE_TYPE;
 import handy.rp.dnd.attacks.Attack;
+import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.spells.ActionSpell;
 
 public class Action {
@@ -36,7 +38,12 @@ public class Action {
 			sb.append(System.lineSeparator());
 		}
 		if(attack != null) {
-			//TODO support attack
+			for(Attack at : attack) {
+				Set<Damage> damages = at.rollDamage();
+				String result = Attack.readDamage(damages, at);
+				sb.append(result);
+				sb.append(System.lineSeparator());
+			}
 		}
 		if(text != null) {
 			sb.append(text);

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>yd_fire_breath</compname>
+	<readablename>Fire Breath</readablename>
+	<minLevel>0</minLevel>
+	<hasDc>true</hasDc>
+	<hasToHit>false</hasToHit>
+	<readableeffect>The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one.</readableeffect>
+	<dc>19</dc>
+	<damages>
+		<damage>
+			<type>FIRE</type>
+			<dice>D6</dice>
+			<diceCount>18</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>false</stdCantripIncrease>
+		</damage>
+	</damages>
+</spell>

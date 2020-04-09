@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action>
+	<aname>Tail Attack</aname>
+	<acname>tail_attack</acname>
+	<set>
+		<attack>
+			<name>Tail</name>
+			<toHit>14</toHit>
+			<damage>
+				<type>BLUDGEONING</type>
+				<dice>D8</dice>
+				<diceCount>2</diceCount>
+				<modifier>8</modifier>
+			</damage>
+		</attack>
+	</set>
+</action>
