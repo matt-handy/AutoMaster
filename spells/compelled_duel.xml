@@ -2,6 +2,7 @@
 <spell>
 	<compname>compelled_duel</compname>
 	<readablename>Compelled Duel</readablename>
+	<bonusAction>true</bonusAction>
 	<minLevel>1</minLevel>
 	<hasDc>true</hasDc>
 	<hasToHit>false</hasToHit>

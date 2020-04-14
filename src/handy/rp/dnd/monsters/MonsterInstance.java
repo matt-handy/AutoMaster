@@ -56,6 +56,8 @@ public class MonsterInstance extends Entity{
 	private Spell concentratedSpell = null;
 	
 	private boolean actedThisTurn = false;
+	private boolean bonusActedThisTurn = false;
+	private boolean hasCastNonCantripSpell = false;
 	
 	private int maxCharges;
 	private int currentCharges;
@@ -101,13 +103,20 @@ public class MonsterInstance extends Entity{
 		
 		this.innateSpells = innateSpells;
 		
-		this.actions = actions;
+		
+		
 		if(actions != null) {
+			this.actions = new HashMap<>();
+			for(Action action : actions.keySet()) {
+				this.actions.put(action, actions.get(action));
+			}
 			for(Action action : actions.keySet()) {
 				if(action.rechargeDice != null) {
 					actionReadiness.put(action, true);
 				}
 			}
+		}else {
+			this.actions = actions;
 		}
 		maxCharges = currentCharges = legendaryCharges;
 		this.legendaryActions = legendaryActions;
@@ -466,13 +475,39 @@ public class MonsterInstance extends Entity{
 	
 	public Spell expendSpellWorker(String spellName, Spell.SLOTLEVEL slotLvl) {
 		if(slotLvl == Spell.SLOTLEVEL.CANTRIP) {
-			return getSpellWithConcentrationCheck(spellName);
+			//Action check only, can cast cantrip after bonus action
+			Spell cantrip = getSpellWithConcentrationCheck(spellName);
+			if(actedThisTurn) {
+				throw new IllegalArgumentException("Can't cast spell, already taken action");
+			}else {
+				actedThisTurn = true;
+			}
+			return cantrip;
 		}
 		if(slotsRemaining.get(slotLvl) < 1) {
 			throw new IllegalArgumentException("Insufficient slots at level: " + slotLvl.level);
 		}else {
+			//Check action && bonus action. Only set has acted or bonus action based on need 
+			Spell targetSpell = getSpellWithConcentrationCheck(spellName);
+			if(hasCastNonCantripSpell) {
+				throw new IllegalArgumentException("Can only cast cantrip after casting a spell on the same turn, and only if prior spell was a bonus action spell");
+			}
+			if(targetSpell.bonusAction) {
+				if(bonusActedThisTurn) {
+					throw new IllegalArgumentException("Already taken bonus action");
+				}else {
+					bonusActedThisTurn = true;
+				}
+			}else {
+				if(actedThisTurn) {
+					throw new IllegalArgumentException("Already taken action this turn");
+				}else {
+					actedThisTurn = true;
+				}
+			}
+			hasCastNonCantripSpell = true;
 			slotsRemaining.put(slotLvl, slotsRemaining.get(slotLvl) - 1);
-			return getSpellWithConcentrationCheck(spellName);
+			return targetSpell;
 		}
 	}
 	
@@ -503,6 +538,8 @@ public class MonsterInstance extends Entity{
 	@Override
 	public void notifyNewTurn() {
 		actedThisTurn = false;
+		bonusActedThisTurn = false;
+		hasCastNonCantripSpell = false;
 		currentCharges = maxCharges;
 	}
 }

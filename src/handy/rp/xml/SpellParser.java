@@ -51,6 +51,9 @@ public class SpellParser {
 		NodeList concentrateList = document.getElementsByTagName("concentration");
 		boolean concentrate = false;
 		
+		NodeList bonusActionList = document.getElementsByTagName("bonusAction");
+		boolean bonusAction = false;
+		
 		int dc = -1;
 		int toHit = -1;
 		if(actionSpell) {
@@ -67,6 +70,10 @@ public class SpellParser {
 		
 		if(concentrateList != null && concentrateList.item(0) != null) {
 			concentrate = concentrateList.item(0).getTextContent().equalsIgnoreCase("true");
+		}
+		
+		if(bonusActionList != null && bonusActionList.item(0) != null) {
+			bonusAction = bonusActionList.item(0).getTextContent().equalsIgnoreCase("true");
 		}
 
 		NodeList readableEffectList = document.getElementsByTagName("readableeffect");
@@ -176,7 +183,7 @@ public class SpellParser {
 			return new ActionSpell(compName, readableName, Spell.SLOTLEVEL.CANTRIP, hasDc, hasToHit, damagers, readableEffect, concentrate, dc, toHit);
 		}else {
 			return new Spell(compName, readableName, Spell.SLOTLEVEL.get(minLevel), hasDc, hasToHit, damagers,
-					readableEffect, concentrate);
+					readableEffect, concentrate, bonusAction);
 		}
 
 	}

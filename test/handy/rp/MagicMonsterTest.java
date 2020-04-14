@@ -30,6 +30,53 @@ class MagicMonsterTest {
 	}
 
 	@Test
+	void spellActionLogic(){
+		try {
+			MonsterTemplate mage = MonsterParser.load("monsters\\drow_mage.xml");
+			MonsterInstance mageInst = mage.getInstance("Tim");
+			mageInst.expendSpell("mage_armor");
+			Exception exception = assertThrows(IllegalArgumentException.class, () -> 
+			{
+				//check try another action spell
+				mageInst.expendSpell("mage_armor");
+			});
+			assertEquals("Can only cast cantrip after casting a spell on the same turn, and only if prior spell was a bonus action spell", exception.getMessage());
+			exception = assertThrows(IllegalArgumentException.class, () -> 
+			{
+				//check bonus action spell
+				mageInst.expendSpell("misty_step");
+			});
+			assertEquals("Can only cast cantrip after casting a spell on the same turn, and only if prior spell was a bonus action spell", exception.getMessage());
+			
+			mageInst.notifyNewTurn();
+			mageInst.expendSpell("misty_step");
+			mageInst.expendSpell("ray_of_frost");
+			exception = assertThrows(IllegalArgumentException.class, () -> 
+			{
+				//check bonus action spell
+				mageInst.expendSpell("ray_of_frost");
+			});
+			assertEquals("Can't cast spell, already taken action", exception.getMessage());
+			
+			mageInst.notifyNewTurn();
+			mageInst.expendAction("summon_demon");
+			mageInst.expendSpell("misty_step");
+			
+			//Reset so we can use action twice
+			MonsterInstance mageInst2 = mage.getInstance("TimTim");
+			mageInst2.expendAction("summon_demon");
+			exception = assertThrows(IllegalArgumentException.class, () -> 
+			{
+				//check bonus action spell
+				mageInst2.expendSpell("ray_of_frost");
+			});
+			assertEquals("Can't cast spell, already taken action", exception.getMessage());
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
 	void testMage() {
 
 		try {
@@ -95,6 +142,7 @@ class MagicMonsterTest {
 			assertTrue(mageInst.listSpellSlotsRemaining().contains("Level 2: 3,"));
 			assertTrue(mageInst.listSpellSlotsRemaining().contains("Level 1: 4"));
 
+			mageInst.notifyNewTurn();
 			mageInst.expendSpell("fireball", SLOTLEVEL.FIVE);
 
 			assertTrue(mageInst.listSpellSlotsRemaining().contains("Level 5: 0,"));
@@ -102,7 +150,8 @@ class MagicMonsterTest {
 			assertTrue(mageInst.listSpellSlotsRemaining().contains("Level 3: 2,"));
 			assertTrue(mageInst.listSpellSlotsRemaining().contains("Level 2: 3,"));
 			assertTrue(mageInst.listSpellSlotsRemaining().contains("Level 1: 4"));
-
+			
+			mageInst.notifyNewTurn();
 			assertTrue(mageInst.expendSpell("suggestion")
 					.cast(SLOTLEVEL.TWO, mageInst.casterLevel, mageInst.casterDc, mageInst.casterToHit)
 					.contains("Spell Save: 14"));

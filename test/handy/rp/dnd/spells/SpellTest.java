@@ -183,6 +183,19 @@ class SpellTest {
 		}
 	}
 	
+	@Test 
+	void testBonusActionSetting(){
+		try {
+			Spell firebolt = SpellParser.load("spells\\eldritch_blast.xml", false);
+			assertFalse(firebolt.bonusAction);
+			
+			Spell mistyStep = SpellParser.load("spells\\misty_step.xml", false);
+			assertTrue(mistyStep.bonusAction);
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
 	@Test
 	void testEldritchBlast() {
 		try {
