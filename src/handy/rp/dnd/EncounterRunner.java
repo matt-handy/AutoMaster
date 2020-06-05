@@ -21,7 +21,7 @@ import handy.rp.dnd.spells.Spell;
 import handy.rp.xml.LairParser;
 import handy.rp.xml.MonsterParser;
 
-public class Main {
+public class EncounterRunner {
 
 	protected List<Entity> currentInitiativeList = new ArrayList<>();
 	private Entity currentEntity;
@@ -92,7 +92,7 @@ public class Main {
 	}
 
 	public static void main(String args[]) {
-		Main main = new Main();
+		EncounterRunner main = new EncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {

@@ -12,28 +12,29 @@ import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.spells.Spell;
 
 public class MonsterBuilder {
+	public static final int UNINITIALIZED_VALUE = -1;
 	public final String humanReadableName;
 	private final List<List<Attack>> attackLists = new ArrayList<>();
-	private int maxHP = -1;
+	private int maxHP = UNINITIALIZED_VALUE;
 	
-	private int str = -1;
-	private int dex = -1;
-	private int con = -1;
-	private int inte = -1;
-	private int wis = -1;
-	private int cha = -1;
+	private int str = UNINITIALIZED_VALUE;
+	private int dex = UNINITIALIZED_VALUE;
+	private int con = UNINITIALIZED_VALUE;
+	private int inte = UNINITIALIZED_VALUE;
+	private int wis = UNINITIALIZED_VALUE;
+	private int cha = UNINITIALIZED_VALUE;
 	
-	private int strsave = -1;
-	private int dexsave = -1;
-	private int consave = -1;
-	private int intsave = -1;
-	private int wissave = -1;
-	private int chasave = -1;
+	private int strsave = UNINITIALIZED_VALUE;
+	private int dexsave = UNINITIALIZED_VALUE;
+	private int consave = UNINITIALIZED_VALUE;
+	private int intsave = UNINITIALIZED_VALUE;
+	private int wissave = UNINITIALIZED_VALUE;
+	private int chasave = UNINITIALIZED_VALUE;
 	
-	private int casterLevel = -1;
-	private int casterDc = -1;
-	private int casterInnateDc = -1;
-	private int casterToHit = -1;
+	private int casterLevel = UNINITIALIZED_VALUE;
+	private int casterDc = UNINITIALIZED_VALUE;
+	private int casterInnateDc = UNINITIALIZED_VALUE;
+	private int casterToHit = UNINITIALIZED_VALUE;
 	
 	private Map<Spell.SLOTLEVEL, List<Spell>> spells;
 	private Map<Spell.SLOTLEVEL, Integer> slotMapping;
@@ -41,7 +42,7 @@ public class MonsterBuilder {
 	private Map<Spell, Integer> innateSpells;
 	private Map<Action, Integer> actions;
 	
-	private int legendaryActionCharges = -1;
+	private int legendaryActionCharges = UNINITIALIZED_VALUE;
 	private Map<LegendaryAction, Integer> legendaryActions;
 	
 	public MonsterBuilder(String humanReadableName) {
@@ -172,45 +173,45 @@ public class MonsterBuilder {
 	}
 	
 	public MonsterTemplate build() {
-		if(strsave == -1) {
+		if(strsave == UNINITIALIZED_VALUE) {
 			strsave = Helpers.getModifierFromAbility(str);
 		}
-		if(dexsave == -1) {
+		if(dexsave == UNINITIALIZED_VALUE) {
 			dexsave = Helpers.getModifierFromAbility(dex);
 		}
-		if(consave == -1) {
+		if(consave == UNINITIALIZED_VALUE) {
 			consave = Helpers.getModifierFromAbility(con);
 		}
-		if(intsave == -1) {
+		if(intsave == UNINITIALIZED_VALUE) {
 			intsave = Helpers.getModifierFromAbility(inte);
 		}
-		if(wissave == -1) {
+		if(wissave == UNINITIALIZED_VALUE) {
 			wissave = Helpers.getModifierFromAbility(wis);
 		}
-		if(chasave == -1) {
+		if(chasave == UNINITIALIZED_VALUE) {
 			chasave = Helpers.getModifierFromAbility(cha);
 		}
 		
-		if(maxHP == -1 ||
-				str == -1 ||
-				dex == -1 ||
-				con == -1 ||
-				inte == -1 ||
-				wis == -1 ||
-				cha == -1) {
+		if(maxHP == UNINITIALIZED_VALUE ||
+				str == UNINITIALIZED_VALUE ||
+				dex == UNINITIALIZED_VALUE ||
+				con == UNINITIALIZED_VALUE ||
+				inte == UNINITIALIZED_VALUE ||
+				wis == UNINITIALIZED_VALUE ||
+				cha == UNINITIALIZED_VALUE) {
 			throw new IllegalArgumentException("All stats must be supplied");
 		}
-		if((casterDc == -1 || casterLevel == -1 || casterToHit == -1) && (casterDc != casterLevel || casterDc != casterToHit)) {
+		if((casterDc == UNINITIALIZED_VALUE || casterLevel == UNINITIALIZED_VALUE || casterToHit == UNINITIALIZED_VALUE) && (casterDc != casterLevel || casterDc != casterToHit)) {
 			throw new IllegalArgumentException("Must have all caster stats or none");
 		}else if((spells == null && slotMapping != null) || (spells != null && slotMapping == null)){
 			throw new IllegalArgumentException("Casters must have spells and slot mappings");
 		}
 		
-		if(casterInnateDc == -1 && innateSpells != null) {
+		if(casterInnateDc == UNINITIALIZED_VALUE && innateSpells != null) {
 			throw new IllegalArgumentException("Innate casters must have spells and slot mappings");
 		}
 		
-		if(legendaryActionCharges == -1 && legendaryActions != null) {
+		if(legendaryActionCharges == UNINITIALIZED_VALUE && legendaryActions != null) {
 			throw new IllegalArgumentException("Need legendary action charges if giving legendary actions");
 		}
 		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryActionCharges, legendaryActions);

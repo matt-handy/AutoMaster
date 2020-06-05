@@ -31,7 +31,7 @@ class MainTest {
 
 	@Test
 	void test() {
-		Main main = new Main();
+		EncounterRunner main = new EncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -66,7 +66,7 @@ class MainTest {
 	
 	@Test
 	void testLegendaryActions() {
-		Main main = new Main();
+		EncounterRunner main = new EncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -120,7 +120,7 @@ class MainTest {
 	
 	@Test
 	void testActions() {
-		Main main = new Main();
+		EncounterRunner main = new EncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -149,7 +149,7 @@ class MainTest {
 
 	@Test
 	void testLair() {
-		Main main = new Main();
+		EncounterRunner main = new EncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -183,7 +183,7 @@ class MainTest {
 	
 	@Test
 	void testInnateSpellcast() {
-		Main main = new Main();
+		EncounterRunner main = new EncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -211,7 +211,7 @@ class MainTest {
 	
 	@Test
 	void testLoadMonsters() {
-		Main main = new Main();
+		EncounterRunner main = new EncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -276,7 +276,7 @@ class MainTest {
 			fail(e.getMessage());
 		}
 		
-		Main main = new Main();
+		EncounterRunner main = new EncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
