@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<!-- Steve Handy homebrew -->
+<mname>Zombie Devourer (HB)</mname>
+<!--AC 10 -->
+<!-- Speed 35 -->
+<hp>28</hp>
+<str>16</str>
+<dex>10</dex>
+<con>16</con>
+<int>3</int>
+<wis>6</wis>
+<cha>5</cha>
+<!--
+Undead Fortitude - if zombie reduced to 0 HP, it makes a con save of DC 5+damage taken, unless radiant or from
+a critical hit. On success, zombie drops to 1 hp;
+-->
+
+<attacks>
+	<set>
+		<attack>
+			<name>Claw</name>
+			<toHit>5</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Claw</name>
+			<toHit>5</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>

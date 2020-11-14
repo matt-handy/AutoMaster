@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<!-- Steve Handy homebrew -->
+<mname>Skeletal Archer (HB)</mname>
+<!-- AC 12 -->
+<!-- Speed 30 -->
+<hp>24</hp>
+<str>13</str>
+<dex>6</dex>
+<con>16</con>
+<int>3</int>
+<wis>6</wis>
+<cha>5</cha>
+<!--
+Immune to poison and exhaustion. Vulnerable to bludgeoning
+-->
+
+<attacks>
+	<set>
+		<attack>
+			<name>Longbow</name>
+			<toHit>4</toHit>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>2</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Longbow</name>
+			<toHit>4</toHit>
+			<damage>
+				<type>PIERCING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>2</modifier>
+			</damage>
+		</attack>
+	</set>
+	<set>
+		<attack>
+			<name>Bite</name>
+			<toHit>4</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>2</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Bite</name>
+			<toHit>4</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>2</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>

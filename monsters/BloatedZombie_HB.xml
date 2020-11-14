@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<!-- Steve Handy homebrew -->
+<mname>Bloated Zombie (HB)</mname>
+<!-- AC 8 -->
+<!-- Speed 20 -->
+<hp>24</hp>
+<str>13</str>
+<dex>6</dex>
+<con>16</con>
+<int>3</int>
+<wis>6</wis>
+<cha>5</cha>
+<!--
+Undead Fortitude - if zombie reduced to 0 HP, it makes a con save of DC 5+damage taken, unless radiant or from
+a critical hit. On success, zombie drops to 1 hp;
+
+Explode - If the zombie drops to 0 hp, it explodes in a violent mass of diseased flesh. Every creature within 15
+feet must make a DC 14 Dex saving throw. On failure, they take 4d6 necrotic damage and are poisoned for a minute.
+Half damage on save and are not poisoned.
+-->
+
+<attacks>
+	<set>
+		<attack>
+			<name>Claw</name>
+			<toHit>3</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+			</damage>
+		</attack>
+		<attack>
+			<name>Bite</name>
+			<toHit>3</toHit>
+			<damage>
+				<type>SLASHING</type>
+				<dice>D8</dice>
+				<diceCount>1</diceCount>
+				<modifier>3</modifier>
+			</damage>
+			<damage>
+				<type>POISON</type>
+				<dice>D4</dice>
+				<diceCount>2</diceCount>
+				<modifier>0</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+</monster>
