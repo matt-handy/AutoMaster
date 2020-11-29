@@ -12,6 +12,11 @@
 <consave>13</consave>
 <wissave>7</wissave>
 <chasave>11</chasave>
+<ac>19</ac>
+<speed>40</speed>
+<attr>Legendary Resistance (3/Day): If the Dragon fails a saving throw, it can choose to succeed instead.
+Frightful Presence: Each creature of the dragon's choice that is within 120 ft. of the Dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become Frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the Effect on itself on a success. If a creature's saving throw is successful or the Effect ends for it, the creature is immune to the dragon's Frightful Presence for the next 24 hours.
+</attr>
 <attacks>
 	<set>
 		<attack>

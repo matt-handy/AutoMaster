@@ -8,6 +8,10 @@
 <int>17</int>
 <wis>12</wis>
 <cha>11</cha>
+<ac>12</ac>
+<speed>30</speed>
+<attr>N/A 
+</attr>
 <intsave>6</intsave>
 <wissave>4</wissave>
 <casterDc>14</casterDc>

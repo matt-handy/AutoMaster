@@ -45,6 +45,10 @@ class MonsterTest {
 			assertEquals(fireGiant.wissave, 2);
 			assertEquals(fireGiant.chasave, 5);
 			
+			assertEquals(fireGiant.ac, 18);
+			assertEquals(fireGiant.speed, 30);
+			assertEquals(fireGiant.attrs, "N/A");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -116,6 +120,21 @@ class MonsterTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		}
+	}
+	
+	@Test 
+	void testPrintAttributes() {
+		try {
+			MonsterTemplate drowMage = MonsterParser.load("monsters\\drow_mage.xml");
+			MonsterInstance trogdor = drowMage.getInstance("Trogdor");
+			
+			assertTrue(trogdor.listStats().startsWith("AC: 12" + System.lineSeparator() + "Speed: 30" + System.lineSeparator() +
+					"Attributes: Fey Ancestry. The drow has advantage on saving throws against being charmed, and magic can't put the drow to sleep."));
+			assertTrue(trogdor.listStats().contains("Sunlight Sensitivity. While in sunlight, the drow has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight. ")); 
+			
+		}catch(Exception ex) {
+			fail(ex.getMessage());
 		}
 	}
 	

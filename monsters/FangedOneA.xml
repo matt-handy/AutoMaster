@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster>
 <mname>Fanged One A (HB)</mname>
-<!--  Damage Resistances Cold, Fire, Lightning; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks
-Damage Immunities Poison
-Condition Immunities Poisoned -->
 <hp>85</hp>
 <str>18</str>
 <dex>14</dex>
@@ -11,6 +8,12 @@ Condition Immunities Poisoned -->
 <int>17</int>
 <wis>12</wis>
 <cha>11</cha>
+<ac>18</ac>
+<speed>50</speed>
+<attr>Damage Resistances Cold, Fire, Lightning; Bludgeoning, Piercing, and Slashing from Nonmagical Attacks
+Damage Immunities Poison
+Condition Immunities Poisoned 
+</attr>
 <strsave>5</strsave>
 <intsave>6</intsave>
 <wissave>4</wissave>

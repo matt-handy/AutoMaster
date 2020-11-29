@@ -8,6 +8,13 @@
 <int>12</int>
 <wis>16</wis>
 <cha>18</cha>
+<ac>20</ac>
+<speed>30</speed>
+<attr>Undead Nature. A death knight doesn't require air, food, drink, or sleep.
+Magic Resistance. The death knight has advantage on saving throws against spells and other magical effects.
+Marshal Undead. Unless the death knight is incapacitated, it and undead creatures of its choice within 60 feet of it have advantage on saving throws against features that turn undead.
+Parry. The death knight adds 6 to its AC against one melee attack that would hit it. To do so, the death knight must see the attacker and be wielding a melee weapon.
+</attr>
 <dexsave>6</dexsave>
 <wissave>9</wissave>
 <chasave>9</chasave>

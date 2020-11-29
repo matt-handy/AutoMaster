@@ -8,6 +8,12 @@
 <int>2</int>
 <wis>13</wis>
 <cha>7</cha>
+<ac>17</ac>
+<speed>40</speed>
+<attr>Endurance. The bear has advantage on Constitution saving throws against exhaustion.
+Tough. The bear gains 2 extra hit points per hit die (included in the hit point total).
+Keen Smell. The bear has advantage on Wisdom (Perception) checks that rely on smell. 
+</attr>
 <attacks>
 	<set>
 		<attack>

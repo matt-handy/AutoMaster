@@ -2,8 +2,6 @@
 <monster>
 <!-- Steve Handy homebrew -->
 <mname>Black Rider (HB)</mname>
-<!-- AC 17 -->
-<!-- Speed 60 -->
 <hp>79</hp>
 <str>18</str>
 <dex>14</dex>
@@ -11,19 +9,22 @@
 <int>10</int>
 <wis>8</wis>
 <cha>5</cha>
-<!--
-Immune to poison, fear, necrotic damage. 
+<ac>17</ac>
+<speed>60</speed>
+<attr>Immune to poison, fear, necrotic damage. 
 Resistant to bludgeoning, piercing, slashing from non-magical weapons
+Spectral Bond: rider is bonded to his ethereal mount. The mount has resistance against attacks fro all nonmagical
+weapons and the rider cannot be dismounted except through death.
+Ghostly hooves: the horse hovers several inches above the ground. the horseman is not affected by difficult terrain
+or ground based traps. He can run across gaps like canyons without losing altitude.
+</attr>
+<!--
 ACTION:
 Aura of fear - each target that the black rider can see makes a DC 14 WIS or Char save or be frightened.
 Player remakes save at end of turns
 ACTION:
 Bolster minions: requires concentration, cannot move. Black rider raises his fist and bolsters his undead minions
-All undead that can see or hear him gain advantage on their attacks and saving throws.
-Spectral Bond: rider is bonded to his ethereal mount. The mount has resistance against attacks fro all nonmagical
-weapons and the rider cannot be dismounted except through death.
-Ghostly hooves: the horse hovers several inches above the ground. the horseman is not affected by difficult terrain
-or ground based traps. He can run across gaps like canyons without losing altitude. 
+All undead that can see or hear him gain advantage on their attacks and saving throws. 
 -->
 
 <attacks>

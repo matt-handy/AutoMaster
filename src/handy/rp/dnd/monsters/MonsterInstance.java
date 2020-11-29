@@ -63,11 +63,16 @@ public class MonsterInstance extends Entity{
 	private int currentCharges;
 	private Map<LegendaryAction, Integer> legendaryActions;
 	
+	public final int ac;
+	public final int speed;
+	public final String attrs;
+	
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName, int currentHp,
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, 
-			Map<Spell, Integer> innateSpells, Map<Action, Integer> actions, int legendaryCharges, Map<LegendaryAction, Integer> legendaryActions){
+			Map<Spell, Integer> innateSpells, Map<Action, Integer> actions, int legendaryCharges, Map<LegendaryAction, Integer> legendaryActions,
+			int ac, int speed, String attrs){
 		super(personalName);
 		this.currentHp = currentHp;
 		this.humanReadableName = humanReadableName;
@@ -87,6 +92,10 @@ public class MonsterInstance extends Entity{
 		this.intsave = intsave;
 		this.wissave = wissave;
 		this.chasave = chasave;
+		
+		this.ac = ac;
+		this.speed = speed;
+		this.attrs = attrs;
 		
 		this.casterLevel = casterLevel;
 		this.casterDc = casterDc;
@@ -127,11 +136,13 @@ public class MonsterInstance extends Entity{
 			int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, Map<Spell, Integer> innateSpells,
-			Map<Action, Integer> actions, int legendaryCharges, Map<LegendaryAction, Integer> legendaryActions){
+			Map<Action, Integer> actions, int legendaryCharges, Map<LegendaryAction, Integer> legendaryActions,
+			int ac, int speed, String attrs){
 		this(humanReadableName, maxHP, attackLists, personalName, maxHP,
 				str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, 
 				strsave, dexsave, consave, intsave, wissave, chasave,
-				spells, slotMapping, innateSpells, actions, legendaryCharges, legendaryActions);
+				spells, slotMapping, innateSpells, actions, legendaryCharges, legendaryActions,
+				ac, speed, attrs);
 	}
 	
 	public void resetTurn() {
@@ -541,5 +552,18 @@ public class MonsterInstance extends Entity{
 		bonusActedThisTurn = false;
 		hasCastNonCantripSpell = false;
 		currentCharges = maxCharges;
+	}
+	
+	@Override
+	public String listStats() {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("AC: " + ac);
+		sb.append(System.lineSeparator());
+		sb.append("Speed: " + speed);
+		sb.append(System.lineSeparator());
+		sb.append("Attributes: " + attrs);
+		
+		return sb.toString();
 	}
 }

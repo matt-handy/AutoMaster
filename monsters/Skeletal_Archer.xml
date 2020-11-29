@@ -2,8 +2,6 @@
 <monster>
 <!-- Steve Handy homebrew -->
 <mname>Skeletal Archer (HB)</mname>
-<!-- AC 12 -->
-<!-- Speed 30 -->
 <hp>24</hp>
 <str>13</str>
 <dex>6</dex>
@@ -11,9 +9,10 @@
 <int>3</int>
 <wis>6</wis>
 <cha>5</cha>
-<!--
-Immune to poison and exhaustion. Vulnerable to bludgeoning
--->
+<ac>12</ac>
+<speed>30</speed>
+<attr>Immune to poison and exhaustion. Vulnerable to bludgeoning 
+</attr>
 
 <attacks>
 	<set>

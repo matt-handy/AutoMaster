@@ -8,6 +8,10 @@
 <int>10</int>
 <wis>11</wis>
 <cha>10</cha>
+<ac>17</ac>
+<speed>30</speed>
+<attr>Immune to poison and exhaustion. Vulnerable to bludgeoning 
+</attr>
 <attacks>
 	<set>
 		<attack>

@@ -25,4 +25,8 @@ public class Entity {
 		return "Cannot list actions, entity is not managed by this tool"; 
 	}
 	
+	public String listStats() {
+		return "Cannot list stats, entity is not managed by this tool";
+	}
+	
 }

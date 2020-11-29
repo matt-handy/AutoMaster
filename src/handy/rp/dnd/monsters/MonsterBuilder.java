@@ -45,6 +45,22 @@ public class MonsterBuilder {
 	private int legendaryActionCharges = UNINITIALIZED_VALUE;
 	private Map<LegendaryAction, Integer> legendaryActions;
 	
+	private int ac = UNINITIALIZED_VALUE;
+	private int speed = UNINITIALIZED_VALUE;
+	private String attrs = null;
+	
+	public void addAc(int ac) {
+		this.ac = ac;
+	}
+	
+	public void addSpeed(int speed) {
+		this.speed = speed;
+	}
+	
+	public void addAttrs(String attrs) {
+		this.attrs = attrs;
+	}
+	
 	public MonsterBuilder(String humanReadableName) {
 		this.humanReadableName = humanReadableName;
 	}
@@ -214,7 +230,7 @@ public class MonsterBuilder {
 		if(legendaryActionCharges == UNINITIALIZED_VALUE && legendaryActions != null) {
 			throw new IllegalArgumentException("Need legendary action charges if giving legendary actions");
 		}
-		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryActionCharges, legendaryActions);
+		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryActionCharges, legendaryActions, ac, speed, attrs);
 	}
 	
 }

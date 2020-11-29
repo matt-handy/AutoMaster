@@ -67,6 +67,7 @@ class MonsterActionTest {
 			
 			assertTrue(foundDeathKnight);
 			assertTrue(foundDrow);
+			assertTrue(foundYRD);
 		} catch (Exception ex) {
 			fail(ex.getMessage());
 		}

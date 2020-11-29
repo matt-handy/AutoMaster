@@ -71,6 +71,10 @@ public class MonsterParser {
 		monsterBuilder.addWis(Integer.parseInt(document.getElementsByTagName("wis").item(0).getTextContent()));
 		monsterBuilder.addCha(Integer.parseInt(document.getElementsByTagName("cha").item(0).getTextContent()));
 		
+		monsterBuilder.addAc(Integer.parseInt(document.getElementsByTagName("ac").item(0).getTextContent()));
+		monsterBuilder.addSpeed(Integer.parseInt(document.getElementsByTagName("speed").item(0).getTextContent()));
+		monsterBuilder.addAttrs(document.getElementsByTagName("attr").item(0).getTextContent());
+		
 		NodeList strsaveList = document.getElementsByTagName("strsave");
 		if(strsaveList != null && strsaveList.item(0) != null) {
 			monsterBuilder.addStrsave(Integer.parseInt(strsaveList.item(0).getTextContent()));

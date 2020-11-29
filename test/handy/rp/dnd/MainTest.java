@@ -132,6 +132,9 @@ class MainTest {
 		main.addMonster(args);
 		main.startCombat();
 		
+		String stats = main.getAttrs(new String[] {"listAttr", "0"});
+		assertEquals("AC: 18" + System.lineSeparator() + "Speed: 40" + System.lineSeparator() + "Attributes: N/A", stats);
+		
 		String listActResults = main.listActions();
 		assertEquals(listActResults, "Name: Fire Breath (fire_breath) Daily charges: At will" + System.lineSeparator() + 
 				"Rechargable spell, ready? true" + System.lineSeparator());

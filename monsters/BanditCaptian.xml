@@ -11,6 +11,10 @@
 <strsave>4</strsave>
 <dexsave>5</dexsave>
 <wissave>2</wissave>
+<ac>15</ac>
+<speed>30</speed>
+<attr>Parry: The captain adds 2 to its AC against one melee Attack that would hit it. To do so, the captain must see the attacker and be wielding a melee weapon.
+</attr>
 <attacks>
 	<set>
 		<attack>

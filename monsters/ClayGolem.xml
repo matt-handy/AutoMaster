@@ -8,6 +8,14 @@
 <int>3</int>
 <wis>8</wis>
 <cha>1</cha>
+<ac>14</ac>
+<speed>20</speed>
+<attr>Acid Absorption: Whenever the golem is subjected to acid damage, it takes no damage and instead regains a number of Hit Points equal to the acid damage dealt.
+Berserk: Whenever the golem starts its turn with 60 Hit Points or fewer, roll a d6. On a 6, the golem goes berserk. On each of its turns while berserk, the golem attacks the nearest creature it can see. If no creature is near enough to move to and Attack, the golem attacks an object, with preference for an object smaller than itself. Once the golem goes berserk, it continues to do so until it is destroyed or regains all its Hit Points.
+Immutable Form: The golem is immune to any spell or Effect that would alter its form.
+Magic Resistance: The golem has advantage on Saving Throws against Spells and other magical Effects.
+Magic Weapons: The golem's weapon attacks are magical.
+</attr>
 <attacks>
 	<set>
 		<attack>
@@ -30,6 +38,9 @@
 				<modifier>5</modifier>
 			</damage>
 		</attack>
+		<!--
+		Haste (Recharge 5-6). Until the end of its next turn, the golem magically gains a +2 bonus to its AC, has advantage on Dexterity saving throws, and can use its slam attack as a bonus action.
+		-->
 	</set>
 </attacks>
 </monster>

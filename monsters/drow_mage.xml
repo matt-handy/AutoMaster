@@ -8,6 +8,10 @@
 <int>17</int>
 <wis>13</wis>
 <cha>12</cha>
+<ac>12</ac>
+<speed>30</speed>
+<attr>Fey Ancestry. The drow has advantage on saving throws against being charmed, and magic can't put the drow to sleep.
+Sunlight Sensitivity. While in sunlight, the drow has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight. </attr>
 <casterDc>14</casterDc>
 <casterInnateDc>12</casterInnateDc>
 <casterToHit>6</casterToHit>

@@ -163,6 +163,7 @@ public class EncounterRunner {
 				
 				console.writer().println("act <action name> => take action");
 				console.writer().println("listact => lists actions");
+				console.writer().println("listattr <index> => lists attributes of entity");
 				
 				console.writer().println("lact <actor index> <action name> <optional - actee name> => take legendary action");
 				console.writer().println("listlact <optional idx> => lists legendary actions, assumes current actor");
@@ -171,6 +172,8 @@ public class EncounterRunner {
 				console.writer().println("setlair <Index> => Sets Lair");
 				console.writer().println("lairact <Index> => Takes Lair Action");
 				break;
+			case "listAttr": 	
+				console.writer().println(getAttrs(args));
 			case "breakSpell":
 				if(currentEntity instanceof MonsterInstance) {
 					MonsterInstance mi = (MonsterInstance) currentEntity;
@@ -242,6 +245,7 @@ public class EncounterRunner {
 				console.writer().println("Next in order: " + currentEntity.personalName);
 				currentEntity.notifyNewTurn();
 				console.writer().println(currentEntity.listAvailableActionsAttackSpells());
+				console.writer().println(currentEntity.listStats());
 				break;
 			case "li":
 			case "listinitiative":
@@ -342,6 +346,17 @@ public class EncounterRunner {
 				break;
 			}
 		}
+	}
+	
+	String getAttrs(String[] args) {
+		int midx;
+		try {
+			midx = Integer.parseInt(args[1]); 
+		}catch(NumberFormatException ex) {
+			return "Need monster index";
+		}
+		Entity target = currentInitiativeList.get(midx);
+		return target.listStats();
 	}
 	
 	String addPlayerCharacter(String[] args) {

@@ -8,6 +8,10 @@
 <int>5</int>
 <wis>9</wis>
 <cha>6</cha>
+<ac>13</ac>
+<speed>40</speed>
+<attr>N/A 
+</attr>
 <attacks>
 	<set>
 		<attack>

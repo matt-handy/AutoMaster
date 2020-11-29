@@ -2,8 +2,6 @@
 <monster>
 <!-- Steve Handy homebrew -->
 <mname>Skeletal Warrior (HB)</mname>
-<!-- AC 15 -->
-<!-- Speed 30 -->
 <hp>28</hp>
 <str>16</str>
 <dex>14</dex>
@@ -11,9 +9,10 @@
 <int>6</int>
 <wis>8</wis>
 <cha>5</cha>
-<!--
-Immune to poison and exhaustion. Vulnerable to bludgeoning
--->
+<ac>15</ac>
+<speed>30</speed>
+<attr>Immune to poison and exhaustion. Vulnerable to bludgeoning 
+</attr>
 
 <attacks>
 	<set>

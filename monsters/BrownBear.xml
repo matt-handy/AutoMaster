@@ -8,6 +8,10 @@
 <int>2</int>
 <wis>13</wis>
 <cha>7</cha>
+<ac>11</ac>
+<speed>40</speed>
+<attr>Keen Smell: The bear has advantage on Wisdom (Perception) checks that rely on smell.
+</attr>
 <attacks>
 	<set>
 		<attack>
