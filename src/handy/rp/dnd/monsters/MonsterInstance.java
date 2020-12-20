@@ -227,7 +227,7 @@ public class MonsterInstance extends Entity{
 				if(dropActionCharge) {
 					legendaryActions.put(laction, charges - 1);
 				}
-				return laction.expendAction();
+				return laction.expendAction(this);
 			}
 		}catch(IllegalArgumentException ex) {
 			return ex.getMessage();
@@ -250,7 +250,7 @@ public class MonsterInstance extends Entity{
 			}
 			
 			actedThisTurn = true;
-			return action.expendAction();
+			return action.expendAction(this);
 		}catch(IllegalArgumentException ex) {
 			return ex.getMessage();
 		}

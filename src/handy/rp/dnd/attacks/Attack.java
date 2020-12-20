@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Condition;
 
 import handy.rp.Dice;
+import handy.rp.dnd.Entity;
+import handy.rp.dnd.EntityCondition;
+import handy.rp.dnd.monsters.MonsterInstance;
 
 public class Attack {
 	
@@ -32,7 +36,7 @@ public class Attack {
 		return lastDamage;
 	}
 	
-	public static String readDamage(Set<Damage> damages, Attack attack) {
+	public static String readDamage(Set<Damage> damages, Attack attack, Entity entity) {
 		StringBuilder sBuilder = new StringBuilder(attack.readableAttackName);
 		sBuilder.append(" hits for ");
 		
@@ -45,6 +49,20 @@ public class Attack {
 				sBuilder.append(" and ");
 			}
 			sBuilder.append(damage.getHumanReadableDamage());
+		}
+		
+		int attackRollOne = Dice.d20() + attack.toHit;
+		int attackRollTwo = Dice.d20() + attack.toHit;
+		if(entity != null) {
+			if(EntityCondition.hasAdvantageOnAttack(entity.getConditions())) {
+				int roll = attackRollOne >= attackRollTwo ? attackRollOne : attackRollTwo;
+				sBuilder.append(" with advantage (" + roll + ") " + attackRollOne + "|" + attackRollTwo);
+				return sBuilder.toString();
+			}else if(EntityCondition.hasDisadvantageOnAttack(entity.getConditions())) {
+				int roll = attackRollOne <= attackRollTwo ? attackRollOne : attackRollTwo;
+				sBuilder.append(" with disadvantage (" + roll + ") " + attackRollOne + "|" + attackRollTwo);
+				return sBuilder.toString();
+			}
 		}
 		
 		sBuilder.append(" with a hit dice of " + (Dice.d20() + attack.toHit) + " | "+ (Dice.d20() + attack.toHit));

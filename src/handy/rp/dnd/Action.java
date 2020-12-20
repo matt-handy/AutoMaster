@@ -29,7 +29,7 @@ public class Action {
 		this.rechargeDiceMeets = rechargeDiceMeets;
 	}
 	
-	public String expendAction() {
+	public String expendAction(Entity entity) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(name);
 		sb.append(System.lineSeparator());
@@ -40,7 +40,7 @@ public class Action {
 		if(attack != null) {
 			for(Attack at : attack) {
 				Set<Damage> damages = at.rollDamage();
-				String result = Attack.readDamage(damages, at);
+				String result = Attack.readDamage(damages, at, entity);
 				sb.append(result);
 				sb.append(System.lineSeparator());
 			}

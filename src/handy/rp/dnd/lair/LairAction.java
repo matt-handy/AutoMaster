@@ -55,7 +55,7 @@ public class LairAction {
 	
 	public String expendAction() throws Exception{
 		if(useAction()) {
-			return action.expendAction();
+			return action.expendAction(null);
 		}else {
 			throw new Exception("Unable to expend action " + action.name + ", not ready");
 		}

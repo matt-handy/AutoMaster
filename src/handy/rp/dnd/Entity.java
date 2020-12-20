@@ -1,9 +1,14 @@
 package handy.rp.dnd;
 
+import java.util.EnumSet;
+
+import handy.rp.dnd.EntityCondition.CONDITIONS;
+
 public class Entity {
 
 	public final String personalName;
 	protected int currentInitiative;
+	private EnumSet<CONDITIONS> conditions = EnumSet.noneOf(CONDITIONS.class);
 	
 	public Entity(String personalName) {
 		this.personalName = personalName;
@@ -29,4 +34,15 @@ public class Entity {
 		return "Cannot list stats, entity is not managed by this tool";
 	}
 	
+	public EnumSet<CONDITIONS> getConditions(){
+		return conditions;
+	}
+	
+	public void addCondition(CONDITIONS condition) {
+		conditions.add(condition);
+	}
+	
+	public void removeConditions(CONDITIONS condition) {
+		conditions.remove(condition);
+	}
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import handy.rp.Dice;
+import handy.rp.dnd.EntityCondition.CONDITIONS;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.lair.Lair;
@@ -171,6 +172,8 @@ public class EncounterRunner {
 				console.writer().println("listlairs => all available lairs");
 				console.writer().println("setlair <Index> => Sets Lair");
 				console.writer().println("lairact <Index> => Takes Lair Action");
+				
+				console.writer().println("addCon|rmCon <Condition abbreviation> <optional - entity index>");
 				break;
 			case "listAttr": 	
 				console.writer().println(getAttrs(args));
@@ -246,6 +249,7 @@ public class EncounterRunner {
 				currentEntity.notifyNewTurn();
 				console.writer().println(currentEntity.listAvailableActionsAttackSpells());
 				console.writer().println(currentEntity.listStats());
+				console.writer().println(currentEntity.getConditions());
 				break;
 			case "li":
 			case "listinitiative":
@@ -346,6 +350,40 @@ public class EncounterRunner {
 				break;
 			}
 		}
+	}
+	
+	String addOrRemoveCondition(String[] args) {
+		boolean amAdding = false;
+		if(args[0].equals("addCon")) {
+			amAdding = true;
+		}
+		try {
+			CONDITIONS condition = EntityCondition.getCondition(args[1]);
+			Entity entity = currentEntity;
+			if(args.length == 3) {
+				int midx;
+				try {
+					midx = Integer.parseInt(args[1]); 
+				}catch(NumberFormatException ex) {
+					return "Need entity index";
+				}
+				entity = currentInitiativeList.get(midx);
+			}
+			
+			String message;
+			if(amAdding) {
+				entity.addCondition(condition);
+				message = "Adding condition to " + entity.personalName + ": " + condition;
+			}else {
+				entity.removeConditions(condition);
+				message = "Removing condition from " + entity.personalName + ": " + condition;
+			}
+			log(message);
+			return message;
+		}catch(IllegalArgumentException ex) {
+			return ex.getMessage();
+		}
+		
 	}
 	
 	String getAttrs(String[] args) {
@@ -558,6 +596,10 @@ public class EncounterRunner {
 			return "Must be a monster to attack";
 		}
 		
+		if(!EntityCondition.canAttack(currentEntity.getConditions())) {
+			return "Monster cannot attack in its current condition";
+		}
+		
 		MonsterInstance monster = (MonsterInstance) currentInitiativeList.get(currentPlace);
 		
 		try {
@@ -565,7 +607,7 @@ public class EncounterRunner {
 			try {
 				Attack chosenAttack = monster.expendAttack(attackIdx);
 				Set<Damage> damages = chosenAttack.rollDamage();
-				String result = Attack.readDamage(damages, chosenAttack);
+				String result = Attack.readDamage(damages, chosenAttack, monster);
 				if(args.length == 3) {
 					try {
 						int attackee = Integer.parseInt(args[2]);
