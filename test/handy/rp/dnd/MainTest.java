@@ -65,6 +65,28 @@ class MainTest {
 	}
 	
 	@Test
+	void savingThrowTest() {
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+		String args[] = {"amon", "Adult Red Dragon", "Dave"};
+		main.addMonster(args);
+		main.startCombat();
+		
+		String argsConSave[] = {"rollSave", "str"};
+		String result = main.rollSave(argsConSave);
+		String targetStr = "Dave rolls a strength saving throw of ";
+		assertTrue(result.startsWith(targetStr));
+		int sthrow = Integer.parseInt(result.substring(targetStr.length()));
+		assertTrue(sthrow >= 4 && sthrow <= 23);
+	}
+	
+	@Test
 	void testLegendaryActions() {
 		EncounterRunner main = new EncounterRunner();
 		try {

@@ -174,6 +174,7 @@ public class EncounterRunner {
 				console.writer().println("lairact <Index> => Takes Lair Action");
 				
 				console.writer().println("addCon|rmCon <Condition abbreviation> <optional - entity index>");
+				console.writer().println("rollSave <str|dex|con|int|wis|cha> <optional - entity index>");
 				break;
 			case "listAttr": 	
 				console.writer().println(getAttrs(args));
@@ -345,10 +346,52 @@ public class EncounterRunner {
 			case "lairact":
 				console.writer().println(lairAct(args));
 				break;
+			case "addCon":
+			case "rmCon":
+				console.writer().println(addOrRemoveCondition(args));
+				break;
+			case "rollSave":
+				console.writer().println(rollSave(args));
+				break;
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
 			}
+		}
+	}
+	
+	String rollSave(String[] args) {
+		String saveType = args[1];
+		Entity entity = currentEntity;
+		if(args.length == 3) {
+			int midx;
+			try {
+				midx = Integer.parseInt(args[1]); 
+			}catch(NumberFormatException ex) {
+				return "Need entity index";
+			}
+			entity = currentInitiativeList.get(midx);
+		}
+		
+		if(entity instanceof MonsterInstance) {
+			MonsterInstance mi = (MonsterInstance) entity;
+			if(saveType.equalsIgnoreCase("str")) {
+				return mi.personalName + " rolls a strength saving throw of " + (Dice.d20() + mi.strsave);
+			}else if(saveType.equalsIgnoreCase("dex")) {
+				return mi.personalName + " rolls a dexterity saving throw of " + (Dice.d20() + mi.dexsave);
+			}else if(saveType.equalsIgnoreCase("con")) {
+				return mi.personalName + " rolls a constitution saving throw of " + (Dice.d20() + mi.consave);
+			}else if(saveType.equalsIgnoreCase("wis")) {
+				return mi.personalName + " rolls a wisdom saving throw of " + (Dice.d20() + mi.wissave);
+			}else if(saveType.equalsIgnoreCase("int")) {
+				return mi.personalName + " rolls a intelligence saving throw of " + (Dice.d20() + mi.intsave);
+			}else if(saveType.equalsIgnoreCase("cha")) {
+				return mi.personalName + " rolls a charisma saving throw of " + (Dice.d20() + mi.chasave);
+			}else {
+				return "Invalid saving throw type: " + saveType;
+			}
+		}else {
+			return "Only monsters can roll saving throws for now";
 		}
 	}
 	
