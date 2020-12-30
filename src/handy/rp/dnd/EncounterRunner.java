@@ -175,6 +175,7 @@ public class EncounterRunner {
 				
 				console.writer().println("addCon|rmCon <Condition abbreviation> <optional - entity index>");
 				console.writer().println("rollSave <str|dex|con|int|wis|cha> <optional - entity index>");
+				console.writer().println("react <reaction string. oppAtt for opportunity attack> <entity index> <optional - target index>");
 				break;
 			case "listAttr": 	
 				console.writer().println(getAttrs(args));
@@ -234,23 +235,7 @@ public class EncounterRunner {
 				break;
 			case "advturn":
 			case "advanceturn":
-				if(currentEntity instanceof MonsterInstance) {
-					MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
-					mi.resetTurn();
-				}
-				if (currentPlace + 1 == currentInitiativeList.size()) {
-					roundCount++;
-					console.writer().println("New round! Current round: " + roundCount);
-					currentPlace = 0;
-				}else {
-					currentPlace++;
-				}
-				currentEntity = currentInitiativeList.get(currentPlace);
-				console.writer().println("Next in order: " + currentEntity.personalName);
-				currentEntity.notifyNewTurn();
-				console.writer().println(currentEntity.listAvailableActionsAttackSpells());
-				console.writer().println(currentEntity.listStats());
-				console.writer().println(currentEntity.getConditions());
+				console.writer().println(advanceTurn());
 				break;
 			case "li":
 			case "listinitiative":
@@ -353,10 +338,78 @@ public class EncounterRunner {
 			case "rollSave":
 				console.writer().println(rollSave(args));
 				break;
+			case "react":
+				console.writer().println(takeReaction(args));
+				break;
 			default:
 				console.writer().println("Unknown command: " + command);
 				break;
 			}
+		}
+	}
+	
+	String advanceTurn() {
+		StringBuilder sb = new StringBuilder();
+		if(currentEntity instanceof MonsterInstance) {
+			MonsterInstance mi = (MonsterInstance) currentInitiativeList.get(currentPlace);
+			mi.resetTurn();
+		}
+		if (currentPlace + 1 == currentInitiativeList.size()) {
+			roundCount++;
+			sb.append("New round! Current round: " + roundCount);
+			sb.append(System.lineSeparator());
+			currentPlace = 0;
+		}else {
+			currentPlace++;
+		}
+		currentEntity = currentInitiativeList.get(currentPlace);
+		sb.append("Next in order: " + currentEntity.personalName);
+		sb.append(System.lineSeparator());
+		currentEntity.notifyNewTurn();
+		sb.append(currentEntity.listAvailableActionsAttackSpells());
+		sb.append(System.lineSeparator());
+		sb.append(currentEntity.listStats());
+		sb.append(System.lineSeparator());
+		sb.append(currentEntity.getConditions());
+		return sb.toString();
+	}
+	
+	String takeReaction(String[] args) {
+		String reaction = args[1];
+		int midx;
+		try {
+			midx = Integer.parseInt(args[2]); 
+		}catch(NumberFormatException ex) {
+			return "Need reactor index";
+		}
+		if(midx >= currentInitiativeList.size()) {
+			return "Invalid index";
+		}
+		Entity reactorE = currentInitiativeList.get(midx);
+		
+		Entity target = null;
+		if(args.length == 4) {
+			int tidx;
+			try {
+				tidx = Integer.parseInt(args[3]); 
+			}catch(NumberFormatException ex) {
+				return "Need entity index";
+			}
+			target = currentInitiativeList.get(tidx);
+		}
+		if(reactorE instanceof MonsterInstance) {
+			MonsterInstance mi = (MonsterInstance) reactorE;
+			String actionString = mi.expendReaction(reaction);
+			String message = mi.personalName + " takes reaction";
+			if(target != null) {
+				message += " on " + target.personalName;
+			}
+			message += System.lineSeparator();
+			message += actionString;
+			log(message);
+			return message;
+		}else {
+			return "Only monsters can take reactions now";
 		}
 	}
 	
@@ -366,13 +419,14 @@ public class EncounterRunner {
 		if(args.length == 3) {
 			int midx;
 			try {
-				midx = Integer.parseInt(args[1]); 
+				midx = Integer.parseInt(args[2]); 
 			}catch(NumberFormatException ex) {
 				return "Need entity index";
 			}
 			entity = currentInitiativeList.get(midx);
 		}
 		
+		//TODO: I really should be logging these saves
 		if(entity instanceof MonsterInstance) {
 			MonsterInstance mi = (MonsterInstance) entity;
 			if(saveType.equalsIgnoreCase("str")) {

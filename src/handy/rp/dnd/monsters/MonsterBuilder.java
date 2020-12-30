@@ -49,6 +49,8 @@ public class MonsterBuilder {
 	private int speed = UNINITIALIZED_VALUE;
 	private String attrs = null;
 	
+	private Map<String, String> reactions = null;
+	
 	public void addAc(int ac) {
 		this.ac = ac;
 	}
@@ -188,6 +190,13 @@ public class MonsterBuilder {
 		this.casterToHit = casterToHit;
 	}
 	
+	public void addReaction(String name, String description) {
+		if(reactions == null) {
+			reactions = new HashMap<>();
+		}
+		reactions.put(name, description);
+	}
+	
 	public MonsterTemplate build() {
 		if(strsave == UNINITIALIZED_VALUE) {
 			strsave = Helpers.getModifierFromAbility(str);
@@ -230,7 +239,7 @@ public class MonsterBuilder {
 		if(legendaryActionCharges == UNINITIALIZED_VALUE && legendaryActions != null) {
 			throw new IllegalArgumentException("Need legendary action charges if giving legendary actions");
 		}
-		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryActionCharges, legendaryActions, ac, speed, attrs);
+		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryActionCharges, legendaryActions, ac, speed, attrs, reactions);
 	}
 	
 }

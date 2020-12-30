@@ -186,6 +186,15 @@ public class MonsterParser {
 			monsterBuilder.addLegendaryActionsCharges(Integer.parseInt(lactionsList.item(0).getTextContent()));
 		}
 		
+		NodeList reactionSet = document.getElementsByTagName("reaction");
+		for(int idx = 0; idx < reactionSet.getLength(); idx++){
+			Node actionItem = reactionSet.item(idx);
+			Element actionElement = (Element) actionItem;
+			String reactionName = actionElement.getElementsByTagName("name").item(0).getTextContent();
+			String reactionDesription = actionElement.getElementsByTagName("desc").item(0).getTextContent();
+			monsterBuilder.addReaction(reactionName, reactionDesription);
+		}
+		
 		NodeList lactionSet = document.getElementsByTagName("laction");
 		for(int idx = 0; idx < lactionSet.getLength(); idx++){
 			Node actionItem = lactionSet.item(idx);

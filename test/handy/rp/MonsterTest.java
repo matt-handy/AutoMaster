@@ -182,6 +182,25 @@ class MonsterTest {
 	}
 	
 	@Test
+	void testReaction() {
+		try {
+			MonsterTemplate dk = MonsterParser.load("monsters\\DeathKnight.xml");
+			MonsterInstance arthas = dk.getInstance("Arthas");
+			String response = arthas.expendReaction("parry");
+			assertEquals(response, "Arthas takes reaction: parry" + System.lineSeparator() + "The death knight adds 6 to its AC against one melee attack that would hit it. To do so, the death knight must see the attacker and be wielding a melee weapon.");
+			response = arthas.expendReaction("oppAtt");
+			assertEquals(response, "Arthas cannot take reaction: oppAtt");
+			arthas.notifyNewTurn();
+			response = arthas.expendReaction("oppAtt");
+			assertTrue(response.contains("Available attacks for opportunity attack: Longsword hits for "));
+			assertTrue(response.contains("\r\nLongsword hits for "));
+			assertTrue(response.contains("\r\nHeavy Crossbow hits for "));
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
 	void testLoadAll() {
 		try {
 			List<MonsterTemplate> allLoaded = MonsterParser.loadAll("monsters");

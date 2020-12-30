@@ -90,4 +90,8 @@ Parry. The death knight adds 6 to its AC against one melee attack that would hit
 	<acname>hellfire_orb</acname>
 	<acharges>1</acharges>
 </action>
+<reaction>
+	<name>parry</name>
+	<desc>The death knight adds 6 to its AC against one melee attack that would hit it. To do so, the death knight must see the attacker and be wielding a melee weapon.</desc>
+</reaction>
 </monster>

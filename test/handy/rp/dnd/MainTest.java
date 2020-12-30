@@ -83,7 +83,66 @@ class MainTest {
 		String targetStr = "Dave rolls a strength saving throw of ";
 		assertTrue(result.startsWith(targetStr));
 		int sthrow = Integer.parseInt(result.substring(targetStr.length()));
-		assertTrue(sthrow >= 4 && sthrow <= 23);
+		assertTrue(sthrow >= 7 && sthrow <= 27);
+	}
+	
+	@Test
+	void testReactionIntegrationTest() {
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+		String args[] = {"amon", "Adult Red Dragon", "Dave"};
+		main.addMonster(args);
+		String argsApc[] = {"apc", "Larry", "-1"};
+		main.addPlayerCharacter(argsApc);
+		main.startCombat();
+		
+		String badIdxArcs[] = {"react", "oppAtt", "2"};
+		String response = main.takeReaction(badIdxArcs);
+		assertEquals(response, "Invalid index");
+		String badIdxArcs2[] = {"react", "oppAtt", "fart"};
+		response = main.takeReaction(badIdxArcs2);
+		assertEquals(response, "Need reactor index");
+		
+		String entityTest[] = {"react", "oppAtt", "1"};
+		response = main.takeReaction(entityTest);
+		assertEquals(response, "Only monsters can take reactions now");
+		
+		String oppAttTest[] = {"react", "oppAtt", "0"};
+		response = main.takeReaction(oppAttTest);
+		assertTrue(response.contains("Dave takes reaction"));
+		assertTrue(response.contains("Available attacks for opportunity attack: Bite hits for "));
+		assertTrue(response.contains("\r\nClaw hits for "));
+		
+		response = main.takeReaction(oppAttTest);
+		assertEquals(response, "Dave takes reaction\r\n" + 
+				"Dave cannot take reaction: oppAtt");
+		
+		response = main.advanceTurn();
+		assertEquals(response, "Next in order: Larry\r\n" + 
+				"Cannot list actions, entity is not managed by this tool\r\n" + 
+				"Cannot list stats, entity is not managed by this tool\r\n" + 
+				"[]");
+		response = main.advanceTurn();
+		assertTrue(response.contains("New round! Current round: 2\r\n" + 
+				"Next in order: Dave\r\n" + 
+				"Attack: 0 Bite hits for 2D6 + 0 Fire with 14 to hit and 2D10 + 8 Piercing with 14 to hit\r\n" + 
+				"Attack: 1 Claw hits for 2D6 + 8 Slashing with 14 to hit\r\n" + 
+				"Attack: 2 Claw hits for 2D6 + 8 Slashing with 14 to hit\r\n" + 
+				"\r\n" + 
+				"AC: 19\r\n" + 
+				"Speed: 40\r\n") 
+				);
+		response = main.takeReaction(oppAttTest);
+		assertTrue(response.contains("Dave takes reaction"));
+		assertTrue(response.contains("Available attacks for opportunity attack: Bite hits for "));
+		assertTrue(response.contains("\r\nClaw hits for "));
+		
 	}
 	
 	@Test

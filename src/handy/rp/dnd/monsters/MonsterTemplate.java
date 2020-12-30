@@ -46,12 +46,14 @@ public class MonsterTemplate {
 	public final int speed;
 	public final String attrs;
 	
+	private Map<String, String> reactions = null;
+	
 	MonsterTemplate(String humanReadableName, int maxHP, List<List<Attack>> attackLists,
 			int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterInnateDc, int casterToHit,
 			int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, Map<Spell, Integer> innateSpells,
 			Map<Action, Integer> actions, int legendaryCharges, Map<LegendaryAction, Integer> legendaryActions,
-			int ac, int speed, String attrs){
+			int ac, int speed, String attrs, Map<String, String> reactions){
 		this.humanReadableName = humanReadableName;
 		this.maxHP = maxHP;
 		this.attackLists = attackLists;
@@ -87,6 +89,8 @@ public class MonsterTemplate {
 		
 		this.legendaryActions = legendaryActions;
 		this.legendaryCharges = legendaryCharges;
+		
+		this.reactions = reactions;
 	}
 		
 	public List<List<Attack>> getAttacks(){
@@ -94,7 +98,7 @@ public class MonsterTemplate {
 	}
 	
 	public MonsterInstance getInstance(String personalName) {
-		return new MonsterInstance(humanReadableName, maxHP, attackLists, personalName, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryCharges, legendaryActions, ac, speed, attrs);
+		return new MonsterInstance(humanReadableName, maxHP, attackLists, personalName, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryCharges, legendaryActions, ac, speed, attrs, reactions);
 	}
 	
 }
