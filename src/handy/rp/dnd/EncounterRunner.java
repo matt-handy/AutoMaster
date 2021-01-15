@@ -176,6 +176,7 @@ public class EncounterRunner {
 				console.writer().println("addCon|rmCon <Condition abbreviation> <optional - entity index>");
 				console.writer().println("rollSave <str|dex|con|int|wis|cha> <optional - entity index>");
 				console.writer().println("react <reaction string. oppAtt for opportunity attack> <entity index> <optional - target index>");
+				console.writer().println("Ctrl-c for quit");
 				break;
 			case "listAttr": 	
 				console.writer().println(getAttrs(args));
