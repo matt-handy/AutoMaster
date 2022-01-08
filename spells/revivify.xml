@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>revivify</compname>
+	<readablename>Revivify</readablename>
+	<minLevel>3</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>false</hasToHit>
+	<readableeffect>You touch a creature that has died within the last minute. That creature returns to life with 1 hit point. This spell can’t return to life a creature that has died of old age, nor can it restore any missing body parts. Requires Diamonds worth 300 gp, which the spell consumes</readableeffect>
+</spell>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weapon>
+	<mname>Light Crossbow</mname>
+	<cname>light_crossbow</cname>
+
+	<damage>
+		<range>80/320</range>
+		<type>PIERCING</type>
+		<dice>D8</dice>
+		<diceCount>1</diceCount>
+		<modifier>0</modifier>
+		<attributes>two_handed,loading,ammunition</attributes>
+	</damage>
+
+</weapon>

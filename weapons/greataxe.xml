@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weapon>
+	<mname>Greataxe</mname>
+	<cname>greataxe</cname>
+
+	<damage>
+		<range>melee</range>
+		<type>SLASHING</type>
+		<dice>D12</dice>
+		<diceCount>1</diceCount>
+		<modifier>0</modifier>
+		<attributes>heavy,two_handed</attributes>
+	</damage>
+
+</weapon>

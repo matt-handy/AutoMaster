@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weapon>
+	<mname>Heavy Crossbow</mname>
+	<cname>heavy_crossbow</cname>
+
+	<damage>
+		<range>100/400</range>
+		<type>PIERCING</type>
+		<dice>D10</dice>
+		<diceCount>1</diceCount>
+		<modifier>0</modifier>
+		<attributes>heavy,two_handed,loading,ammunition</attributes>
+	</damage>
+
+</weapon>

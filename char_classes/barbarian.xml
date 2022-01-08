@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class>
+	<name>barbarian</name>
+	<saving_throw_proficiency>STR</saving_throw_proficiency>
+	<saving_throw_proficiency>CON</saving_throw_proficiency>
+	<hit_dice>D12</hit_dice>
+	
+	<class-resource>
+		<name>Rage</name>
+		<charges>
+			<level>1</level>
+			<count>2</count>
+		</charges>
+		<charges>
+			<level>3</level>
+			<count>3</count>
+		</charges>
+		<charges>
+			<level>6</level>
+			<count>4</count>
+		</charges>
+		<charges>
+			<level>15</level>
+			<count>5</count>
+		</charges>
+		<charges>
+			<level>17</level>
+			<count>6</count>
+		</charges>
+		<charges>
+			<level>20</level>
+			<count>99999</count>
+		</charges>
+		<recharge>long</recharge>
+	</class-resource>
+	<feature>
+		<name>Rage</name>
+		<minLevel>1</minLevel>
+		<description>In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action.
+While raging, you gain the following benefits if you aren’t wearing heavy armor:
+    You have advantage on Strength checks and Strength saving throws.
+    When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table.
+    You have resistance to bludgeoning, piercing, and slashing damage.
+If you are able to cast spells, you can’t cast them or concentrate on them while raging.
+Your rage lasts for 1 minute. It ends early if you are knocked unconscious or if your turn ends and you haven’t attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action.
+Once you have raged the number of times shown for your barbarian level in the Rages column of the Barbarian table, you must finish a long rest before you can rage again.</description>
+		<charges_used>1</charges_used>
+		<use_type>bonus_action</use_type>
+		<toggle>true</toggle>
+		<augdamages>
+			<hittype>melee</hittype>
+			<dam-level1>
+				<damage>2</damage>
+			</dam-level1>
+			<dam-level9>
+				<damage>3</damage>
+			</dam-level9>
+			<dam-level16>
+				<damage>4</damage>
+			</dam-level16>
+		</augdamages>
+	</feature>
+	<feature>
+		<name>Unarmored Defense</name>
+		<minLevel>1</minLevel>
+		<description>While you are not wearing any armor, your Armor Class equals 10 + your Dexterity modifier + your Constitution modifier. You can use a shield and still gain this benefit.</description>
+	</feature>
+	<feature>
+		<name>Danger Sense</name>
+		<minLevel>2</minLevel>
+		<description>At 2nd level, you gain an uncanny sense of when things nearby aren’t as they should be, giving you an edge when you dodge away from danger. You have advantage on Dexterity saving throws against effects that you can see, such as traps and spells. To gain this benefit, you can’t be blinded, deafened, or incapacitated.</description>
+	</feature>
+	<feature>
+		<name>Reckless Attack</name>
+		<minLevel>2</minLevel>
+		<description>Starting at 2nd level, you can throw aside all concern for defense to attack with fierce desperation. When you make your first attack on your turn, you can decide to attack recklessly. Doing so gives you advantage on melee weapon attack rolls using Strength during this turn, but attack rolls against you have advantage until your next turn.</description>
+	</feature>
+	<feature>
+		<name>Fast Movement</name>
+		<minLevel>5</minLevel>
+		<description>Starting at 5th level, your speed increases by 10 feet while you aren’t wearing heavy armor.</description>
+	</feature>
+	<feature>
+		<name>Extra Attack</name>
+		<minLevel>5</minLevel>
+		<description>Beginning at 5th level, you can attack twice, instead of once, whenever you take the Attack action on your turn.</description>
+		<extra_unconditional_attacks>1</extra_unconditional_attacks>
+	</feature>
+	<feature>
+		<name>Persistent Rage</name>
+		<minLevel>15</minLevel>
+		<description>Beginning at 15th level, your rage is so fierce that it ends early only if you fall unconscious or if you choose to end it.</description>
+	</feature>
+	<feature>
+		<name>Indomitable Might</name>
+		<minLevel>18</minLevel>
+		<description>Beginning at 18th level, if your total for a Strength check is less than your Strength score, you can use that score in place of the total.</description>
+	</feature>
+	<feature>
+		<name>Primal Champion</name>
+		<minLevel>20</minLevel>
+		<description>At 20th level, you embody the power of the wilds. Your Strength and Constitution scores increase by 4. Your maximum for those scores is now 24.</description>
+	</feature>
+	<feature>
+		<name>Brutal Critical</name>
+		<minLevel>9</minLevel>
+		<description>Beginning at 9th level, you can roll one additional weapon damage die when determining the extra damage for a critical hit with a melee attack. This increases to two additional dice at 13th level and three additional dice at 17th level.</description>
+		<extra_crit_dice>
+			<increase1>9</increase1>
+			<increase2>13</increase2>
+			<increase3>17</increase3>
+		</extra_crit_dice>
+	</feature>
+	<feature>
+		<name>Feral Instinct</name>
+		<minLevel>7</minLevel>
+		<description>By 7th level, your instincts are so honed that you have advantage on initiative rolls. Additionally, if you are surprised at the beginning of combat and aren’t incapacitated, you can act normally on your first turn, but only if you enter your rage before doing anything else on that turn.</description>
+		<initiative_advantage>true</initiative_advantage>
+	</feature>
+</class>

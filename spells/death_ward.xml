@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>death_ward</compname>
+	<readablename>Death Ward</readablename>
+	<minLevel>4</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>false</hasToHit>
+	<concentration>false</concentration>
+	<readableeffect>You touch a creature and grant it a measure of protection from death.
+The first time the target would drop to 0 hit points as a result of taking damage, the target instead drops to 1 hit point, and the spell ends.
+If the spell is still in effect when the target is subjected to an effect that would kill it instantaneously without dealing damage, that effect is instead negated against the target, and the spell ends.</readableeffect>
+</spell>

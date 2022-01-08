@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<player_char>
+	<name>barbie_the_barbarian</name>
+	<classInfo>
+		<levels>19</levels>
+		<class>Path of the Barbarian</class>
+	</classInfo>
+	<maxhp>200</maxhp>
+	<currenthp>200</currenthp>
+	<str>24</str>
+	<dex>16</dex>
+	<con>18</con>
+	<int>8</int>
+	<wis>18</wis>
+	<cha>10</cha>
+	<skill_proficiencies>
+	<proficiency>acrobatics</proficiency>
+	<proficiency>medicine</proficiency>
+	<proficiency>persuasion</proficiency>
+	<proficiency>survival</proficiency>
+	</skill_proficiencies>
+	<proficient_weapons>
+		<weapon>warhammer</weapon>
+		<weapon>light_crossbow</weapon>
+		<weapon>dagger</weapon>
+	</proficient_weapons>
+</player_char>

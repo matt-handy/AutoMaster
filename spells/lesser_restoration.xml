@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>lesser_restoration</compname>
+	<readablename>Lesser Restoration</readablename>
+	<minLevel>2</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>false</hasToHit>
+	<readableeffect>You touch a creature and can end either one disease or one condition afflicting it. The condition can be blinded, deafened, paralyzed, or poisoned.</readableeffect>
+</spell>

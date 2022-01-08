@@ -41,6 +41,16 @@ public class MonsterParser {
 	public static List<ActionSpell> actionSpellsList;
 	public static List<Action> actionList;
 	
+	//TODO Move this to a better class location. Unfuck this class layout in general, its too much of a common depot
+	public static Spell getSpellByName(String name) {
+		for(Spell spell : spellsList) {
+			if(spell.computerName.equals(name)) {
+				return spell;
+			}
+		}
+		return null;
+	}
+	
 	static {
 		try {
 			spellsList = SpellParser.loadAllSpells("spells");

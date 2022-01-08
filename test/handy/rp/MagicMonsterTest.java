@@ -153,7 +153,7 @@ class MagicMonsterTest {
 			
 			mageInst.notifyNewTurn();
 			assertTrue(mageInst.expendSpell("suggestion")
-					.cast(SLOTLEVEL.TWO, mageInst.casterLevel, mageInst.casterDc, mageInst.casterToHit)
+					.cast(SLOTLEVEL.TWO, mageInst.casterLevel, mageInst.casterDc, mageInst.casterToHit, -1)
 					.contains("Spell Save: 14"));
 
 		} catch (Exception e) {

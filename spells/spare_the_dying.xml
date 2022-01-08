@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>spare_the_dying</compname>
+	<readablename>Spare the Dying</readablename>
+	<minLevel>0</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>false</hasToHit>
+	<concentration>false</concentration>
+	<readableeffect>You touch a living creature that has 0 hit points. The creature becomes stable. This spell has no effect on undead or constructs.</readableeffect>
+</spell>

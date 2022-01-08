@@ -1,1 +1,1 @@
-java -cp AutoMaster.jar handy.rp.dnd.Main
+java -cp AutoMaster.jar handy.rp.dnd.EncounterRunner %1

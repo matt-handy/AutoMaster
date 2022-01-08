@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weapon>
+	<mname>Warhammer</mname>
+	<cname>warhammer</cname>
+
+	<damage>
+		<range>melee</range>
+		<type>BLUDGEONING</type>
+		<dice>D8</dice>
+		<diceCount>1</diceCount>
+		<modifier>0</modifier>
+		<attributes>versatile</attributes>
+	</damage>
+	<versatile>
+		<dice>D10</dice>
+	</versatile>
+
+</weapon>

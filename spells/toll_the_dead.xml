@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>toll_the_dead</compname>
+	<readablename>Toll the Dead</readablename>
+	<minLevel>0</minLevel>
+	<hasDc>true</hasDc>
+	<hasToHit>false</hasToHit>
+	<readableeffect>You point at one creature you can see within range, and the sound of a dolorous bell fills the air around it for a moment. The target must succeed on a Wisdom saving throw or take 1d8 necrotic damage. If the target is missing any of its hit points, it instead takes 1d12 necrotic damage. AutoMaster will roll the d12 as primary damage and d8 as the alternative option.</readableeffect>
+	<damages>
+		<damage>
+			<type>NECROTIC</type>
+			<dice>D12</dice>
+			<diceCount>1</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>true</stdCantripIncrease>
+		</damage>
+	</damages>
+	<altdamages>
+		<altdamage>
+			<type>NECROTIC</type>
+			<dice>D8</dice>
+			<diceCount>1</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>true</stdCantripIncrease>
+		</altdamage>
+	</altdamages>
+</spell>

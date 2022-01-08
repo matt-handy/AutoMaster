@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>sacred_flame</compname>
+	<readablename>Sacred Flame</readablename>
+	<minLevel>0</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>true</hasToHit>
+	<readableeffect>Flame-like radiance descends on a creature that you can see within range. The target must succeed on a Dexterity saving throw or take 1d8 radiant damage. The target gains no benefit from cover for this saving throw.</readableeffect>
+	<damages>
+		<damage>
+			<type>RADIANT</type>
+			<dice>D8</dice>
+			<diceCount>1</diceCount>
+			<modifier>0</modifier>
+			<extraDicePerLevel>false</extraDicePerLevel>
+			<stdCantripIncrease>true</stdCantripIncrease>
+		</damage>
+	</damages>
+</spell>

@@ -17,6 +17,7 @@ public class Entity {
 
 	public String expendReaction(String reactionName) {
 		if (canTakeReaction()) {
+			reactionsRemaining--;
 			return personalName + " takes reaction: " + reactionName;
 		} else {
 			return personalName + " cannot take reaction: " + reactionName;
@@ -37,7 +38,6 @@ public class Entity {
 
 	public void notifyNewTurn() {
 		reactionsRemaining = 1;
-
 	}
 
 	public String listAvailableActionsAttackSpells() {

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<player_char>
+	<name>Durnt-life-cleric</name>
+	<classInfo>
+		<levels>9</levels>
+		<class>Life Domain Cleric</class>
+	</classInfo>
+	<maxhp>51</maxhp>
+	<currenthp>51</currenthp>
+	<str>14</str>
+	<dex>12</dex>
+	<con>15</con>
+	<int>8</int>
+	<wis>18</wis>
+	<cha>10</cha>
+	<cantrips>
+		<spell>spare_the_dying</spell>
+		<spell>sacred_flame</spell>
+		<spell>thaumaturgy</spell>
+		<spell>toll_the_dead</spell>
+	</cantrips>
+	<prepared_spells>
+		<spell>identify</spell>
+		<spell>searing_smite</spell>
+		<spell>bane</spell>
+		<spell>cure_wounds</spell>
+		<spell>shield_of_faith</spell>
+		<spell>detect_good_and_evil</spell>
+		<spell>guiding_bolt</spell>
+		<spell>heat_metal</spell>
+		<spell>magic_weapon</spell>
+		<spell>hold_person</spell>
+		<spell>zone_of_truth</spell>
+		<spell>spirit_guardians</spell>
+		<spell>magic_circle</spell>
+		<spell>protection_from_energy</spell>
+		<spell>guardian_of_faith</spell>
+		<spell>death_ward</spell>
+	</prepared_spells>
+	<proficient_weapons>
+		<weapon>warhammer</weapon>
+		<weapon>light_crossbow</weapon>
+		<weapon>dagger</weapon>
+	</proficient_weapons>
+</player_char>

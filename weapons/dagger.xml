@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weapon>
+	<mname>Dagger</mname>
+	<cname>dagger</cname>
+
+	<damage>
+		<range>melee</range>
+		<type>PIERCING</type>
+		<dice>D4</dice>
+		<diceCount>1</diceCount>
+		<modifier>0</modifier>
+		<attributes>finesse,light,thrown</attributes>
+	</damage>
+	<thrown>
+		<range>20/60</range>
+	</thrown>
+
+</weapon>

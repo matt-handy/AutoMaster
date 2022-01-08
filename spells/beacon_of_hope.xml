@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spell>
+	<compname>beacon_of_hope</compname>
+	<readablename>Beacon of Hope</readablename>
+	<minLevel>3</minLevel>
+	<hasDc>false</hasDc>
+	<hasToHit>false</hasToHit>
+	<concentration>true</concentration>
+	<readableeffect>This spell bestows hope and vitality. Choose any number of creatures within range. For the duration, each target has advantage on Wisdom saving throws and death saving throws, and regains the maximum number of hit points possible from any healing.</readableeffect>
+</spell>
