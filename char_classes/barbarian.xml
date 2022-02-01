@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class>
-	<name>barbarian</name>
+	<name>Barbarian</name>
 	<saving_throw_proficiency>STR</saving_throw_proficiency>
 	<saving_throw_proficiency>CON</saving_throw_proficiency>
 	<hit_dice>D12</hit_dice>
-	
+	<subclass_level_choice>3</subclass_level_choice>
 	<class-resource>
 		<name>Rage</name>
 		<charges>

@@ -108,13 +108,13 @@ class MonsterTest {
 			MonsterInstance giant1 = hillGiant.getInstance("Trogdor");
 			assertEquals(giant1.personalName, "Trogdor");
 			assertEquals(giant1.humanReadableName, "Hill Giant");
-			assertEquals(giant1.maxHP, 105);
-			assertEquals(giant1.str, 21);
-			assertEquals(giant1.con, 19);
-			assertEquals(giant1.dex, 8);
-			assertEquals(giant1.inte, 5);
-			assertEquals(giant1.wis, 9);
-			assertEquals(giant1.cha, 6);
+			assertEquals(giant1.getMaxHp(), 105);
+			assertEquals(giant1.getStr(), 21);
+			assertEquals(giant1.getCon(), 19);
+			assertEquals(giant1.getDex(), 8);
+			assertEquals(giant1.getInte(), 5);
+			assertEquals(giant1.getWis(), 9);
+			assertEquals(giant1.getCha(), 6);
 			assertEquals(giant1.getCurrentHp(), 105);
 			
 		} catch (Exception e) {

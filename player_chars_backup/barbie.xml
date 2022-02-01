@@ -3,7 +3,7 @@
 	<name>barbie_the_barbarian</name>
 	<classInfo>
 		<levels>19</levels>
-		<class>Path of the Barbarian</class>
+		<class>Path of the Berserker Barbarian</class>
 	</classInfo>
 	<maxhp>200</maxhp>
 	<currenthp>200</currenthp>

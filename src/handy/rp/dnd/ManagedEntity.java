@@ -12,12 +12,12 @@ import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
 public abstract class ManagedEntity extends Entity {
 
-	public final int str;
-	public final int dex;
-	public final int con;
-	public final int inte;
-	public final int wis;
-	public final int cha;
+	protected int str;
+	protected int dex;
+	protected int con;
+	protected int inte;
+	protected int wis;
+	protected int cha;
 
 	protected int strsave;
 	protected int dexsave;
@@ -26,7 +26,7 @@ public abstract class ManagedEntity extends Entity {
 	protected int wissave;
 	protected int chasave;
 
-	public final int maxHP;
+	protected int maxHP;
 	protected int currentHp;
 
 	protected Spell concentratedSpell = null;
@@ -57,15 +57,47 @@ public abstract class ManagedEntity extends Entity {
 
 		this.spells = spells;
 
+		regenerateSpellSlots(slotMapping);
+		replenishSpellSlots();
+	}
+	
+	public void regenerateSpellSlots(Map<Spell.SLOTLEVEL, Integer> slotMapping) {
 		maxSpellSlots = new HashMap<>();
 		if (slotMapping != null) {
 			for (Spell.SLOTLEVEL slot : slotMapping.keySet()) {
 				maxSpellSlots.put(slot, slotMapping.get(slot));
 			}
 		}
-		replenishSpellSlots();
 	}
 	
+	public int getMaxHp() {
+		return maxHP;
+	}
+	
+	public int getStr() {
+		return str;
+	}
+
+	public int getDex() {
+		return dex;
+	}
+
+	public int getCon() {
+		return con;
+	}
+
+	public int getInte() {
+		return inte;
+	}
+
+	public int getWis() {
+		return wis;
+	}
+
+	public int getCha() {
+		return cha;
+	}
+
 	protected void restoreSpellSlots(Map<SLOTLEVEL, Integer> slots) {
 		this.slotsRemaining = slots;
 	}

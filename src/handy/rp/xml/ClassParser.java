@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
 
 import handy.rp.Dice.DICE_TYPE;
 import handy.rp.dnd.CharClass;
-import handy.rp.dnd.CharClass.SAVING_THROW_PROFICIENCY;
+import handy.rp.dnd.CharClass.ESSENTIAL_ABILITY_SCORE;
 import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
@@ -48,6 +48,10 @@ public class ClassParser {
 		}
 	}
 
+	public static List<CharClass> getBaseCharClasses(){
+		return new ArrayList<>(charClasses);
+	}
+	
 	public static CharClass getCharClass(String name) {
 		for (CharClass cClass : charClasses) {
 			if (cClass.name.equals(name)) {
@@ -79,23 +83,24 @@ public class ClassParser {
 		NodeList nameList = document.getElementsByTagName("name");
 		String name = nameList.item(0).getTextContent();
 		DICE_TYPE hitDice = DICE_TYPE.getDice(document.getElementsByTagName("hit_dice").item(0).getTextContent());
-
-		List<CharClass.SAVING_THROW_PROFICIENCY> savingThrowProficiencies = new ArrayList<>();
+		int subClassLevel = Integer.parseInt(document.getElementsByTagName("subclass_level_choice").item(0).getTextContent());
+		
+		List<CharClass.ESSENTIAL_ABILITY_SCORE> savingThrowProficiencies = new ArrayList<>();
 		NodeList profList = document.getElementsByTagName("saving_throw_proficiency");
 		for (int idx = 0; idx < profList.getLength(); idx++) {
 			String prof = profList.item(idx).getTextContent();
 			if (prof.equals("STR")) {
-				savingThrowProficiencies.add(SAVING_THROW_PROFICIENCY.STRENGTH);
+				savingThrowProficiencies.add(ESSENTIAL_ABILITY_SCORE.STRENGTH);
 			} else if (prof.equals("DEX")) {
-				savingThrowProficiencies.add(SAVING_THROW_PROFICIENCY.DEXTERITY);
+				savingThrowProficiencies.add(ESSENTIAL_ABILITY_SCORE.DEXTERITY);
 			} else if (prof.equals("INT")) {
-				savingThrowProficiencies.add(SAVING_THROW_PROFICIENCY.INTELLIGENCE);
+				savingThrowProficiencies.add(ESSENTIAL_ABILITY_SCORE.INTELLIGENCE);
 			} else if (prof.equals("CON")) {
-				savingThrowProficiencies.add(SAVING_THROW_PROFICIENCY.CONSTITUTION);
+				savingThrowProficiencies.add(ESSENTIAL_ABILITY_SCORE.CONSTITUTION);
 			} else if (prof.equals("WIS")) {
-				savingThrowProficiencies.add(SAVING_THROW_PROFICIENCY.WISDOM);
+				savingThrowProficiencies.add(ESSENTIAL_ABILITY_SCORE.WISDOM);
 			} else if (prof.equals("CHA")) {
-				savingThrowProficiencies.add(SAVING_THROW_PROFICIENCY.CHARISMA);
+				savingThrowProficiencies.add(ESSENTIAL_ABILITY_SCORE.CHARISMA);
 			} else {
 				throw new IllegalArgumentException(
 						"Class definition does not have a valid Saving Throw Proficiency: " + prof);
@@ -168,7 +173,7 @@ public class ClassParser {
 		}
 
 		CharClass newClass = new CharClass(name, slotsPerLevel, spellcastingModifier, savingThrowProficiencies, hitDice, features,
-				resource);
+				resource, subClassLevel);
 		for(ClassFeature feature : features) {
 			feature.setParentClass(newClass);
 		}

@@ -814,7 +814,7 @@ class PlayerCharacterTest {
 				feature = durnt.expendFeature(2);
 				fail("There should be an error saying we need charges for the feature");
 			}catch(Exception ex) {
-				assertEquals("Insufficient charges for class: cleric", ex.getMessage());
+				assertEquals("Insufficient charges for class: Cleric", ex.getMessage());
 			}
 			
 			durnt.takeLongRest();

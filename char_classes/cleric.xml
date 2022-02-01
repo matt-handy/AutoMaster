@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class>
-	<name>cleric</name>
+	<name>Cleric</name>
 	<spellcast_mod>WISDOM</spellcast_mod>
 	<saving_throw_proficiency>WIS</saving_throw_proficiency>
 	<saving_throw_proficiency>CHA</saving_throw_proficiency>
 	<hit_dice>D8</hit_dice>
+	<subclass_level_choice>2</subclass_level_choice>
 	<slots>
 		<slot-level>
 			<level>1</level>

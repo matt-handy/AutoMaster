@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <subclass>
-	<parent>barbarian</parent>
-	<name>Path of the Barbarian</name>
+	<parent>Barbarian</parent>
+	<name>Path of the Berserker Barbarian</name>
 	
 	<feature>
 		<name>Mindless Rage</name>

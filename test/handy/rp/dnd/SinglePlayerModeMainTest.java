@@ -39,6 +39,49 @@ class SinglePlayerModeMainTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	void testLevelUpWizardIsIntegrated() {
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("lvl");
+		builder.println("0");
+		builder.println("wis");
+		builder.println("WIS");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.singlePlayerMode(builder, br, "Durnt-reference");
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertEquals(br.readLine(), "0: Forge Domain Cleric at level 7");
+			assertEquals(br.readLine(), "Select 1 for a new multiclass option");
+
+			assertEquals(br.readLine(), "Select first ability score area (str, dex, con, int, wis, cha): ");
+			assertEquals(br.readLine(), "Select second ability score area (str, dex, con, int, wis, cha): ");
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
 	@Test
 	void testMainHelp() {
 		EncounterRunner main = new EncounterRunner();
@@ -83,6 +126,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "ls | listspells => prints list of current monster spells");
 			assertEquals(br.readLine(), "lsa | listattacks => prints list attack options");
 			assertEquals(br.readLine(), "lss | listspellslots => prints list of current monster spell slots");
+			assertEquals(br.readLine(), "lvl | levelup => begins the level up process");
 			assertEquals(br.readLine(), "react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 			assertEquals(br.readLine(), "rollInit | rollInitiative => roll initiative for character");
 			assertEquals(br.readLine(), "savethrow <STR|DEX|CON|INT|WIS|CHA> => roll a saving throw for character");

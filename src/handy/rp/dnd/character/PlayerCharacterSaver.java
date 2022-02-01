@@ -37,15 +37,15 @@ public class PlayerCharacterSaver {
 				pw.println("</classInfo>");
 			}
 
-			pw.println("<maxhp>" + pc.maxHP + "</maxhp>");
+			pw.println("<maxhp>" + pc.getMaxHp() + "</maxhp>");
 			pw.println("<currenthp>" + pc.getCurrentHp() + "</currenthp>");
 
-			pw.println("<str>" + pc.str + "</str>");
-			pw.println("<dex>" + pc.dex + "</dex>");
-			pw.println("<con>" + pc.con + "</con>");
-			pw.println("<int>" + pc.inte + "</int>");
-			pw.println("<wis>" + pc.wis + "</wis>");
-			pw.println("<cha>" + pc.cha + "</cha>");
+			pw.println("<str>" + pc.getStr() + "</str>");
+			pw.println("<dex>" + pc.getDex() + "</dex>");
+			pw.println("<con>" + pc.getCon() + "</con>");
+			pw.println("<int>" + pc.getInte() + "</int>");
+			pw.println("<wis>" + pc.getWis() + "</wis>");
+			pw.println("<cha>" + pc.getCha() + "</cha>");
 
 			pw.println("<skill_proficiencies>");
 			for (SKILL_CHECK skill : pc.getSkillProficiencies()) {

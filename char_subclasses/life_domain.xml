@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <subclass>
-	<parent>cleric</parent>
+	<parent>Cleric</parent>
 	<name>Life Domain Cleric</name>
 	<extraSpells>
 		<spell>

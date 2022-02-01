@@ -8,7 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 import handy.rp.Dice.DICE_TYPE;
-import handy.rp.dnd.CharClass.SAVING_THROW_PROFICIENCY;
+import handy.rp.dnd.CharClass.ESSENTIAL_ABILITY_SCORE;
 import handy.rp.dnd.ClassFeature.DAMAGE_EFFECT;
 import handy.rp.dnd.ClassFeature.RECHARGE_DURATION;
 import handy.rp.dnd.ClassFeature.USE_TYPE;
@@ -26,7 +26,7 @@ class CharClassTest {
 	void testClericFeatureLoad() {
 		boolean foundCleric = false;
 		for(CharClass cClass : ClassParser.charClasses) {
-			if(cClass.name.equals("cleric")) {
+			if(cClass.name.equals("Cleric")) {
 				foundCleric = true;
 			}else {
 				continue;
@@ -211,7 +211,7 @@ class CharClassTest {
 	
 	@Test
 	void testExtraCritDice() {
-		CharClass cClass = SubClassParser.getCharClass("barbarian");
+		CharClass cClass = SubClassParser.getCharClass("Barbarian");
 		ClassFeature extraCrit = null;
 		for(ClassFeature feature : cClass.getFeatures()) {
 			if(feature.featureName.equals("Brutal Critical")) {
@@ -355,7 +355,45 @@ class CharClassTest {
 		assertTrue(spells.contains(MonsterParser.getSpellByName("raise_dead")));
 	}
 	
-	
+	@Test 
+	void testFindSubclasses() {
+		CharClass cleric = null;
+		for(CharClass cClass : ClassParser.charClasses) {
+			if(cClass.name.equals("Cleric")) {
+				cleric = cClass;
+			}else {
+				continue;
+			}
+		}
+		assertTrue(cleric != null);
+		
+		List<CharClass> subclasses = SubClassParser.getAllSubclassesForParent(cleric);
+		boolean foundLifeCleric = false;
+		boolean foundForgeCleric = false;
+		boolean foundBerserker = false;
+		boolean foundBarbarian = false;
+		boolean foundCleric = false;
+		for(CharClass cClass : subclasses) {
+			if(cClass.name.equals("Cleric")) {
+				foundCleric = true;
+			}else if(cClass.name.equals("Barbarian")) {
+				foundBarbarian = true;
+			}else if(cClass.name.equals("Forge Domain Cleric")) {
+				foundForgeCleric = true;
+			}else if(cClass.name.equals("Life Domain Cleric")) {
+				foundLifeCleric = true;
+			}else if(cClass.name.equals("Path of the Berserker Barbarian")) {
+				foundBerserker = true;
+			}
+		}
+		
+		assertTrue(foundLifeCleric);
+		assertTrue(foundForgeCleric);
+		assertFalse(foundBerserker);
+		assertFalse(foundBarbarian);
+		assertFalse(foundCleric);//Cleric is not a subclass of cleric
+			
+	}
 	
 	@Test
 	void testLoadForgeDomainCleric() {
@@ -374,11 +412,13 @@ class CharClassTest {
 	void testLoadCleric() {
 		boolean foundCleric = false;
 		for(CharClass cClass : ClassParser.charClasses) {
-			if(cClass.name.equals("cleric")) {
+			if(cClass.name.equals("Cleric")) {
 				foundCleric = true;
 			}else {
 				continue;
 			}
+			
+			assertEquals(2, cClass.subClassLevel);
 			
 			Map<Spell.SLOTLEVEL, Integer> l1 = cClass.slotsPerLevel.get(1);
 			assertEquals(l1.get(SLOTLEVEL.ONE), 2);
@@ -600,8 +640,8 @@ class CharClassTest {
 			assertEquals(testLevel.get(SLOTLEVEL.EIGHT), 1);
 			assertEquals(testLevel.get(SLOTLEVEL.NINE), 1);
 			
-			assertTrue(cClass.savingThrowProficiencies.contains(SAVING_THROW_PROFICIENCY.WISDOM));
-			assertTrue(cClass.savingThrowProficiencies.contains(SAVING_THROW_PROFICIENCY.CHARISMA));
+			assertTrue(cClass.savingThrowProficiencies.contains(ESSENTIAL_ABILITY_SCORE.WISDOM));
+			assertTrue(cClass.savingThrowProficiencies.contains(ESSENTIAL_ABILITY_SCORE.CHARISMA));
 		}
 		assertTrue(foundCleric);
 	}

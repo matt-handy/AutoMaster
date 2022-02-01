@@ -16,6 +16,7 @@ import handy.rp.dnd.EntityCondition.CONDITIONS;
 import handy.rp.dnd.SkillCheckInfo.SKILL_CHECK;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
+import handy.rp.dnd.character.LevelUpWizard;
 import handy.rp.dnd.character.PlayerCharacter;
 import handy.rp.dnd.lair.Lair;
 import handy.rp.dnd.lair.LairAction;
@@ -171,6 +172,7 @@ public class EncounterRunner {
 				pw.println("ls | listspells => prints list of current monster spells");
 				pw.println("lsa | listattacks => prints list attack options");
 				pw.println("lss | listspellslots => prints list of current monster spell slots");
+				pw.println("lvl | levelup => begins the level up process");
 				pw.println("react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 				pw.println("rollInit | rollInitiative => roll initiative for character");
 				pw.println("savethrow <STR|DEX|CON|INT|WIS|CHA> => roll a saving throw for character");
@@ -259,6 +261,10 @@ public class EncounterRunner {
 			case "lss":
 			case "listspellslots":
 				pw.println(pc.listSpellSlotsRemaining());
+				break;
+			case "lvl":
+			case "levelup":
+				LevelUpWizard.levelUpCharacter(pc, pw, br);
 				break;
 			case "react":
 				if(args.length != 3) {

@@ -111,13 +111,13 @@ class MagicMonsterTest {
 			MonsterInstance mageInst = mage.getInstance("Tim");
 			assertEquals(mageInst.personalName, "Tim");
 			assertEquals(mageInst.humanReadableName, "Mage");
-			assertEquals(mageInst.maxHP, 40);
-			assertEquals(mageInst.str, 9);
-			assertEquals(mageInst.con, 11);
-			assertEquals(mageInst.dex, 14);
-			assertEquals(mageInst.inte, 17);
-			assertEquals(mageInst.wis, 12);
-			assertEquals(mageInst.cha, 11);
+			assertEquals(mageInst.getMaxHp(), 40);
+			assertEquals(mageInst.getStr(), 9);
+			assertEquals(mageInst.getCon(), 11);
+			assertEquals(mageInst.getDex(), 14);
+			assertEquals(mageInst.getInte(), 17);
+			assertEquals(mageInst.getWis(), 12);
+			assertEquals(mageInst.getCha(), 11);
 			assertEquals(mageInst.getCurrentHp(), 40);
 
 			assertTrue(mageInst.listSpells().contains("Level: 1 Detect Magic, Mage Armor, Magic Missile, Shield, "));

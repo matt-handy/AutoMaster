@@ -45,6 +45,19 @@ public class SubClassParser {
 		}
 		return null;
 	}
+	
+	public static List<CharClass> getAllSubclassesForParent(CharClass cClass){
+		List<CharClass> subclasses = new ArrayList<>();
+		for(CharClass option : charClasses) {
+			//Test if the candidate class is itself a root class
+			if(!option.getRootClass().equals(option)) {
+				if(option.getRootClass().equals(cClass)) {
+					subclasses.add(option);
+				}
+			}
+		}
+		return subclasses;
+	}
 
 	public static List<CharClass> loadAll(String directory) throws Exception {
 		List<CharClass> actions = new ArrayList<>();

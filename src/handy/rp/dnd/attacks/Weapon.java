@@ -105,8 +105,8 @@ public class Weapon {
 		int toHitRoll = 0;
 		int advHitRoll = 0;
 		if (isRanged) {
-			toHitRoll = Dice.d20() + Helpers.getModifierFromAbility(entity.dex);
-			advHitRoll = Dice.d20() + Helpers.getModifierFromAbility(entity.dex);
+			toHitRoll = Dice.d20() + Helpers.getModifierFromAbility(entity.getDex());
+			advHitRoll = Dice.d20() + Helpers.getModifierFromAbility(entity.getDex());
 			if (entityIsProficient) {
 				toHitRoll += entity.getProficiencyBonus();
 				advHitRoll += entity.getProficiencyBonus();
@@ -115,16 +115,16 @@ public class Weapon {
 				advHitRoll = toHitRoll;
 			}
 			
-			int damage = rollDamage(Helpers.getModifierFromAbility(entity.dex), diceType);
-			int critDamage = rollCritDamage(Helpers.getModifierFromAbility(entity.dex), diceType, entity.extraCritDice());
+			int damage = rollDamage(Helpers.getModifierFromAbility(entity.getDex()), diceType);
+			int critDamage = rollCritDamage(Helpers.getModifierFromAbility(entity.getDex()), diceType, entity.extraCritDice());
 			
 			message.append(entity.personalName + " uses " + name + " to hit at range(" + range + ") with a to hit of "
 					+ toHitRoll + " (with adv " + advHitRoll + " ) for " + damage + " ( crit " + critDamage + " ) " 
 					+ damageType.readableName + " damage.");
 		} else {
-			int abilityMod = Helpers.getModifierFromAbility(entity.str);
+			int abilityMod = Helpers.getModifierFromAbility(entity.getStr());
 			if (attrs.contains(WEAPON_ATTRIBUTES.FINESSE)) {
-				int dexOption = Helpers.getModifierFromAbility(entity.dex);
+				int dexOption = Helpers.getModifierFromAbility(entity.getDex());
 				if (dexOption > abilityMod) {
 					abilityMod = dexOption;
 					message.append(entity.personalName + " uses DEX to attack with finesse." + System.lineSeparator());

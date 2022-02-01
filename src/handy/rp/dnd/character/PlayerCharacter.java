@@ -9,7 +9,7 @@ import java.util.Map;
 import handy.rp.Dice;
 import handy.rp.Dice.DICE_TYPE;
 import handy.rp.dnd.CharClass;
-import handy.rp.dnd.CharClass.SAVING_THROW_PROFICIENCY;
+import handy.rp.dnd.CharClass.ESSENTIAL_ABILITY_SCORE;
 import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.ClassFeature;
 import handy.rp.dnd.ClassFeature.DAMAGE_EFFECT;
@@ -87,6 +87,54 @@ public class PlayerCharacter extends ManagedEntity {
 		for(DICE_TYPE dice : hitDice.keySet()) {
 			this.hitDice.put(dice, hitDice.get(dice));
 		}
+	}
+	
+	public void levelUp(int hpIncrease, List<ESSENTIAL_ABILITY_SCORE> asis, CharClass cClass, int newLevel) {
+		//Fix HP
+		maxHP += hpIncrease;
+		currentHp += hpIncrease;
+		
+		//Adjust asis
+		for(ESSENTIAL_ABILITY_SCORE asi : asis) {
+			if(asi == ESSENTIAL_ABILITY_SCORE.STRENGTH) {
+				str++;
+			}else if(asi == ESSENTIAL_ABILITY_SCORE.DEXTERITY) {
+				dex++;
+			}else if(asi == ESSENTIAL_ABILITY_SCORE.CONSTITUTION) {
+				con++;
+			}else if(asi == ESSENTIAL_ABILITY_SCORE.INTELLIGENCE) {
+				inte++;
+			}else if(asi == ESSENTIAL_ABILITY_SCORE.WISDOM) {
+				wis++;
+			}else if(asi == ESSENTIAL_ABILITY_SCORE.CHARISMA) {
+				cha++;
+			}
+		}
+		
+		//For cClass, do a simple lookup and increment. If cClass level is > 1 and not present, then replaces
+		//parent
+		if(classes.keySet().contains(cClass) || newLevel == 1) {
+			classes.put(cClass, newLevel);
+		}else { //It's a new subclass
+			if(classes.containsKey(cClass.getRootClass())) {
+				classes.remove(cClass.getRootClass());
+				classes.put(cClass, newLevel);
+			}else {
+				throw new IllegalArgumentException("Improper class given, no parent available for replacement");
+			}
+		}
+		
+		regenerateSpellSlots(deriveSlotMapping(classes));
+		refreshSpellCastingModifier();
+		refreshSavingThrowProficiencies();
+		notifyNewTurn();
+		replenishHitDice();
+		addClassBonusSpells();
+		regenerateFeatureList();
+		refreshExtraAttacksPerTurn();
+		refreshClassResourceCounters();
+		
+		PlayerCharacterSaver.saveCharacter(this, originalFile);
 	}
 	
 	private void restoreFeatureCharges(Map<String, Integer> featureCharges) {
@@ -636,7 +684,7 @@ public class PlayerCharacter extends ManagedEntity {
 
 	private void refreshSavingThrowProficiencies() {
 		for (CharClass cClass : classes.keySet()) {
-			for (SAVING_THROW_PROFICIENCY prof : cClass.savingThrowProficiencies) {
+			for (ESSENTIAL_ABILITY_SCORE prof : cClass.savingThrowProficiencies) {
 				switch (prof) {
 				case STRENGTH:
 					strsave = getProficiencyBonus();
@@ -689,8 +737,15 @@ public class PlayerCharacter extends ManagedEntity {
 	private static Map<SLOTLEVEL, Integer> deriveSlotMapping(Map<CharClass, Integer> classes) {
 		Map<SLOTLEVEL, Integer> slotMapping = new HashMap<>();
 		for (CharClass cClass : classes.keySet()) {
+			//Skip this class if they have spells/slots
+			if(cClass.slotsPerLevel == null) {
+				continue;
+			}
 			Integer classLevel = classes.get(cClass);
 			for (SLOTLEVEL level : SLOTLEVEL.values()) {
+				if(cClass.slotsPerLevel.get(classLevel) == null) {
+					continue;
+				}
 				if (slotMapping.containsKey(level)) {
 					slotMapping.put(level, slotMapping.get(level) + cClass.slotsPerLevel.get(classLevel).get(level));
 				} else {
