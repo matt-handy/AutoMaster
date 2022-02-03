@@ -28,8 +28,6 @@ import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 public class PlayerCharacter extends ManagedEntity {
 
 	private static final int[] PROFICIENCY_BONUS = { 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6 };
-	private SPELLCASTING_MODIFIER spellcastingModifier = SPELLCASTING_MODIFIER.NA;
-
 	private Map<CharClass, Integer> classes;
 
 	private List<CharacterWeapon> weapons;
@@ -54,12 +52,11 @@ public class PlayerCharacter extends ManagedEntity {
 			List<CharacterWeapon> weapons, List<SKILL_CHECK> skillProficiencies, Path originalFile, Map<Spell.SLOTLEVEL, Integer> restoredSlotsRemaining,
 			List<String> activeFeatureNames, Map<String, Integer> classToResource, Map<String, Integer> featureCharges,
 			Map<DICE_TYPE, Integer> hitDice) {
-		super(personalName, str, dex, con, inte, wis, cha, spells, deriveSlotMapping(classes), maxHp, currentHp);
+		super(personalName, str, dex, con, inte, wis, cha, spells, deriveSlotMapping(classes), maxHp, currentHp, refreshSpellCastingModifier(classes));
 		this.classes = classes;
 		this.weapons = weapons;
 		this.skillProficiencies = skillProficiencies;
 		attacksPerTurn = 1;
-		refreshSpellCastingModifier();
 		refreshSavingThrowProficiencies();
 		notifyNewTurn();
 		replenishHitDice();
@@ -125,7 +122,7 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 		
 		regenerateSpellSlots(deriveSlotMapping(classes));
-		refreshSpellCastingModifier();
+		spellcastingMod = refreshSpellCastingModifier(classes);
 		refreshSavingThrowProficiencies();
 		notifyNewTurn();
 		replenishHitDice();
@@ -640,24 +637,8 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 	}
 
-	public SPELLCASTING_MODIFIER getSpellcastingModifier() {
-		return spellcastingModifier;
-	}
-
-	public int getSpellcastingModifierValue() {
-		if (getSpellcastingModifier() == SPELLCASTING_MODIFIER.CHARISMA) {
-			return Helpers.getModifierFromAbility(cha);
-		} else if (spellcastingModifier == SPELLCASTING_MODIFIER.WISDOM) {
-			return Helpers.getModifierFromAbility(wis);
-		} else if (spellcastingModifier == SPELLCASTING_MODIFIER.INTELLIGENCE) {
-			return Helpers.getModifierFromAbility(inte);
-		} else {
-			throw new IllegalArgumentException("This player does not cast spells");
-		}
-	}
-
 	public Integer getSpellSaveDC() {
-		if (spellcastingModifier == SPELLCASTING_MODIFIER.NA) {
+		if (spellcastingMod == SPELLCASTING_MODIFIER.NA) {
 			return null;
 		}
 		int baseModifier = 8 + getProficiencyBonus() + getSpellcastingModifierValue();
@@ -667,16 +648,16 @@ public class PlayerCharacter extends ManagedEntity {
 	//TODO: Support automatic saving rolls on hit for things like Relentless Rage or the Orc equivalent
 	
 	public Integer getSpellToHit() {
-		if (spellcastingModifier == SPELLCASTING_MODIFIER.NA) {
+		if (spellcastingMod == SPELLCASTING_MODIFIER.NA) {
 			return null;
 		}
 		int baseModifier = getProficiencyBonus();
-		if (spellcastingModifier == SPELLCASTING_MODIFIER.WISDOM) {
+		if (spellcastingMod == SPELLCASTING_MODIFIER.WISDOM) {
 			baseModifier += Helpers.getModifierFromAbility(wis);
-		} else if (spellcastingModifier == SPELLCASTING_MODIFIER.INTELLIGENCE) {
+		} else if (spellcastingMod == SPELLCASTING_MODIFIER.INTELLIGENCE) {
 			baseModifier += Helpers.getModifierFromAbility(inte);
 		}
-		if (spellcastingModifier == SPELLCASTING_MODIFIER.CHARISMA) {
+		if (spellcastingMod == SPELLCASTING_MODIFIER.CHARISMA) {
 			baseModifier += Helpers.getModifierFromAbility(cha);
 		}
 		return baseModifier;
@@ -709,12 +690,13 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 	}
 
-	private void refreshSpellCastingModifier() {
+	private static SPELLCASTING_MODIFIER refreshSpellCastingModifier(Map<CharClass, Integer> classes) {
 		for (CharClass cClass : classes.keySet()) {
 			if (cClass.spellcastingModifier != SPELLCASTING_MODIFIER.NA) {
-				spellcastingModifier = cClass.spellcastingModifier;
+				return cClass.spellcastingModifier;
 			}
 		}
+		return SPELLCASTING_MODIFIER.NA;
 	}
 
 	public int getCharacterLevel() {

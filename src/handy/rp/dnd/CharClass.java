@@ -9,7 +9,19 @@ import handy.rp.dnd.spells.Spell;
 
 public class CharClass {
 	public enum SPELLCASTING_MODIFIER {
-		CHARISMA, WISDOM, INTELLIGENCE, NA
+		CHARISMA, WISDOM, INTELLIGENCE, NA;
+		
+		public static SPELLCASTING_MODIFIER getFromName(String name) {
+			if(name.equalsIgnoreCase("INT") || name.equalsIgnoreCase("INTELLIGENCE")) {
+				return INTELLIGENCE;
+			}else if(name.equalsIgnoreCase("WIS") || name.equalsIgnoreCase("WISDOM")) {
+				return WISDOM;
+			}else if(name.equalsIgnoreCase("CHA") || name.equalsIgnoreCase("CHARISMA")) {
+				return CHARISMA;
+			}else {
+				throw new IllegalArgumentException("Unknown modifier: " + name);
+			}
+		}
 	};
 
 	public enum ESSENTIAL_ABILITY_SCORE {

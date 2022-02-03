@@ -436,6 +436,62 @@ class MainTest {
 	}
 	
 	@Test
+	void testMonsterCastHealSpell() {
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("amon priest Dave");
+		builder.println("sc");
+		builder.println("cast cure_wounds");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.runEncounter(builder, br);
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertTrue(br.readLine().startsWith("Added Priest as Dave with initiative "));
+			assertEquals(br.readLine(),
+					"First in order: Dave");
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			assertEquals("Cure Wounds: ", br.readLine());
+			assertEquals("A creature you touch regains a number of hit points equal to 1d8 + your spellcasting ability modifier. This spell has no effect on undead or constructs.", br.readLine());
+			assertEquals("At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d8 for each slot level above 1st.", br.readLine());
+			assertEquals("", br.readLine());
+			String healedForMessage = "Healed for : ";
+			String message = br.readLine();
+			assertTrue(message.startsWith(healedForMessage));
+			int healVal = Integer.parseInt(message.substring(healedForMessage.length()));
+			assertTrue(healVal <= 8 + 3 && healVal >= 1 + 3);
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+		main.shutdown();
+	}
+	
+	@Test
 	void testLoadMonsters() {
 		EncounterRunner main = new EncounterRunner();
 		try {

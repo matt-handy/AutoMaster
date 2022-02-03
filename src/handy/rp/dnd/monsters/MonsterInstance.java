@@ -9,6 +9,7 @@ import java.util.Set;
 
 import handy.rp.Dice;
 import handy.rp.dnd.Action;
+import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.Entity;
 import handy.rp.dnd.Helpers;
 import handy.rp.dnd.LegendaryAction;
@@ -26,7 +27,7 @@ public class MonsterInstance extends ManagedEntity {
 	public final int casterDc;
 	public final int casterToHit;
 	public final int casterInnateDc;
-
+	
 	private List<Attack> attacksThisTurn = null;
 
 	// Innate spells possessed, plus number of charges per day
@@ -48,12 +49,12 @@ public class MonsterInstance extends ManagedEntity {
 
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName,
 			int currentHp, int str, int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc,
-			int casterInnateDc, int casterToHit, int strsave, int dexsave, int consave, int intsave, int wissave,
+			int casterInnateDc, int casterToHit, SPELLCASTING_MODIFIER spellcastingMod, int strsave, int dexsave, int consave, int intsave, int wissave,
 			int chasave, Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping,
 			Map<Spell, Integer> innateSpells, Map<Action, Integer> actions, int legendaryCharges,
 			Map<LegendaryAction, Integer> legendaryActions, int ac, int speed, String attrs,
 			Map<String, String> reactions) {
-		super(personalName, str, dex, con, inte, wis, cha, spells, slotMapping, currentHp, currentHp);
+		super(personalName, str, dex, con, inte, wis, cha, spells, slotMapping, currentHp, currentHp, spellcastingMod);
 		this.humanReadableName = humanReadableName;
 		this.attackLists = attackLists;
 
@@ -96,16 +97,16 @@ public class MonsterInstance extends ManagedEntity {
 
 	MonsterInstance(String humanReadableName, int maxHP, List<List<Attack>> attackLists, String personalName, int str,
 			int dex, int con, int inte, int wis, int cha, int casterLevel, int casterDc, int casterInnateDc,
-			int casterToHit, int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
+			int casterToHit, SPELLCASTING_MODIFIER spellcastingMod, int strsave, int dexsave, int consave, int intsave, int wissave, int chasave,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping,
 			Map<Spell, Integer> innateSpells, Map<Action, Integer> actions, int legendaryCharges,
 			Map<LegendaryAction, Integer> legendaryActions, int ac, int speed, String attrs,
 			Map<String, String> reactions) {
 		this(humanReadableName, maxHP, attackLists, personalName, maxHP, str, dex, con, inte, wis, cha, casterLevel,
-				casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells,
+				casterDc, casterInnateDc, casterToHit, spellcastingMod, strsave, dexsave, consave, intsave, wissave, chasave, spells,
 				slotMapping, innateSpells, actions, legendaryCharges, legendaryActions, ac, speed, attrs, reactions);
 	}
-
+	
 	@Override
 	public int strSaveThrow() {
 		int save = Dice.d20();

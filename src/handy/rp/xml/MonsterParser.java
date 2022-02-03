@@ -24,6 +24,7 @@ import org.xml.sax.InputSource;
 import handy.rp.Dice;
 import handy.rp.Dice.DICE_TYPE;
 import handy.rp.dnd.Action;
+import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.LegendaryAction;
 import handy.rp.dnd.attacks.AttackBuilder;
 import handy.rp.dnd.attacks.DamageComponent;
@@ -119,6 +120,8 @@ public class MonsterParser {
 			monsterBuilder.addCasterLevel(Integer.parseInt(document.getElementsByTagName("casterLevel").item(0).getTextContent()));
 			monsterBuilder.addCasterDc(Integer.parseInt(document.getElementsByTagName("casterDc").item(0).getTextContent()));
 			monsterBuilder.addCasterToHit(Integer.parseInt(document.getElementsByTagName("casterToHit").item(0).getTextContent()));
+			SPELLCASTING_MODIFIER spellMod = SPELLCASTING_MODIFIER.getFromName(document.getElementsByTagName("casterModifier").item(0).getTextContent());
+			monsterBuilder.addSpellcastingModifier(spellMod);
 		}catch(Exception ex) {
 			//Caster Level not given, ignore
 		}

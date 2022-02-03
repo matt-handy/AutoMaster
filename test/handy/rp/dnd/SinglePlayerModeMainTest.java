@@ -256,7 +256,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(),
 					"At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d8 for each slot level above 1st.");
 			System.out.println(br.readLine());// Blank Line
-			assertEquals(br.readLine(), "WARNING: HEALING NOT YET SUPPORTED FOR MONSTERS");
+			assertTrue(br.readLine().startsWith("Healed for : "));
 			assertEquals(br.readLine(), "Durnt-reference has taken a long rest.");
 			assertEquals(br.readLine(), "Level 1: 4, Level 2: 3, Level 3: 3, Level 4: 1, ");
 			System.out.println(br.readLine());// blank line
@@ -371,7 +371,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(),
 					"At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d8 for each slot level above 1st.");
 			br.readLine();// Blank Line
-			assertEquals(br.readLine(), "WARNING: HEALING NOT YET SUPPORTED FOR MONSTERS");
+			assertTrue(br.readLine().startsWith("Healed for : "));
 			assertEquals(br.readLine(),
 					"Can only cast cantrip after casting a spell on the same turn, and only if prior spell was a bonus action spell");
 			assertEquals(br.readLine(), "Cure Wounds: ");
@@ -380,7 +380,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(),
 					"At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d8 for each slot level above 1st.");
 			br.readLine();// Blank Line
-			assertEquals(br.readLine(), "WARNING: HEALING NOT YET SUPPORTED FOR MONSTERS");
+			assertTrue(br.readLine().startsWith("Healed for : "));
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
@@ -706,7 +706,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(),
 					"At Higher Levels. When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d8 for each slot level above 1st.");
 			br.readLine();
-			assertEquals(br.readLine(), "WARNING: HEALING NOT YET SUPPORTED FOR MONSTERS");
+			assertTrue(br.readLine().startsWith("Healed for : "));
 			assertEquals(br.readLine(), "Level 1: 3, Level 2: 3, Level 3: 3, Level 4: 1, ");
 			br.readLine();
 			assertEquals(br.readLine(),

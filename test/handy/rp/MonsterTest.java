@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
@@ -18,14 +19,6 @@ import handy.rp.dnd.monsters.MonsterTemplate;
 import handy.rp.xml.MonsterParser;
 
 class MonsterTest {
-
-	@BeforeEach
-	void setUp() throws Exception {
-	}
-
-	@AfterEach
-	void tearDown() throws Exception {
-	}
 
 	@Test
 	void testFireGiant() {
@@ -48,6 +41,8 @@ class MonsterTest {
 			assertEquals(fireGiant.ac, 18);
 			assertEquals(fireGiant.speed, 30);
 			assertEquals(fireGiant.attrs, "N/A");
+			
+			assertEquals(fireGiant.spellcastingMod, SPELLCASTING_MODIFIER.NA);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

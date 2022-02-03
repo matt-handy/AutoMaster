@@ -16,6 +16,7 @@ Sunlight Sensitivity. While in sunlight, the drow has disadvantage on attack rol
 <casterInnateDc>12</casterInnateDc>
 <casterToHit>6</casterToHit>
 <casterLevel>10</casterLevel>
+<casterModifier>CHA</casterModifier>
 <attacks>
 	<set>
 		<attack>

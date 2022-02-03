@@ -1100,12 +1100,7 @@ public class EncounterRunner {
 					Spell.SLOTLEVEL slotLevel = Spell.SLOTLEVEL.get(spellLevel);
 					Spell spell = monster.expendSpell(args[1], slotLevel);
 					PlayerCharacter optionalPc = null;
-					int casterModifier = -1;
-					if(monster instanceof PlayerCharacter) {
-						optionalPc = (PlayerCharacter) monster;
-						casterModifier = optionalPc.getSpellcastingModifierValue();
-					}
-					String result = spell.cast(slotLevel, monster.getCasterLevel(), monster.getSpellSaveDC(), monster.getSpellToHit(), casterModifier, optionalPc);
+					String result = spell.cast(slotLevel, monster.getCasterLevel(), monster.getSpellSaveDC(), monster.getSpellToHit(), monster.getSpellcastingModifierValue(), optionalPc);
 					log(currentEntity.personalName + " cast " + spell.readableName);
 					log(result);
 					return result;
@@ -1119,7 +1114,7 @@ public class EncounterRunner {
 		}else {
 			try {
 				Spell spell = monster.expendSpell(args[1]);
-				String result = spell.cast(spell.minimumLevel, monster.getCasterLevel(), monster.getSpellSaveDC(), monster.getSpellToHit(), -1);
+				String result = spell.cast(spell.minimumLevel, monster.getCasterLevel(), monster.getSpellSaveDC(), monster.getSpellToHit(), monster.getSpellcastingModifierValue());
 				log(currentEntity.personalName + " cast " + spell.readableName);
 				log(result);
 				return result;

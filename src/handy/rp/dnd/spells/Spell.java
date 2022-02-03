@@ -133,11 +133,7 @@ public class Spell {
 		}
 		if(healingComponent != null) {
 			int upCastNum = level.level - minimumLevel.level;
-			if(casterModifier == -1) {
-				attackBuilder.append("WARNING: HEALING NOT YET SUPPORTED FOR MONSTERS");
-			}else {
-				attackBuilder.append("Healed for : " + healingComponent.rollHealing(casterModifier, upCastNum));
-			}
+			attackBuilder.append("Healed for : " + healingComponent.rollHealing(casterModifier, upCastNum));
 			if(pc != null) {
 				List<ClassFeatureHealingModifier> otherHeals = pc.getFeatureOtherHealingBonus();
 				for(ClassFeatureHealingModifier heal : otherHeals) {

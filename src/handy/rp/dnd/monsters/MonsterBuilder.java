@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import handy.rp.dnd.Action;
+import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.Helpers;
 import handy.rp.dnd.LegendaryAction;
 import handy.rp.dnd.attacks.Attack;
@@ -35,6 +36,7 @@ public class MonsterBuilder {
 	private int casterDc = UNINITIALIZED_VALUE;
 	private int casterInnateDc = UNINITIALIZED_VALUE;
 	private int casterToHit = UNINITIALIZED_VALUE;
+	private SPELLCASTING_MODIFIER spellcastingMod = SPELLCASTING_MODIFIER.NA;
 	
 	private Map<Spell.SLOTLEVEL, List<Spell>> spells;
 	private Map<Spell.SLOTLEVEL, Integer> slotMapping;
@@ -190,6 +192,10 @@ public class MonsterBuilder {
 		this.casterToHit = casterToHit;
 	}
 	
+	public void addSpellcastingModifier(SPELLCASTING_MODIFIER spellcastingMod) {
+		this.spellcastingMod = spellcastingMod;
+	}
+	
 	public void addReaction(String name, String description) {
 		if(reactions == null) {
 			reactions = new HashMap<>();
@@ -239,7 +245,7 @@ public class MonsterBuilder {
 		if(legendaryActionCharges == UNINITIALIZED_VALUE && legendaryActions != null) {
 			throw new IllegalArgumentException("Need legendary action charges if giving legendary actions");
 		}
-		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryActionCharges, legendaryActions, ac, speed, attrs, reactions);
+		return new MonsterTemplate(humanReadableName, maxHP, attackLists, str, dex, con, inte, wis, cha, casterLevel, casterDc, casterInnateDc, casterToHit, spellcastingMod, strsave, dexsave, consave, intsave, wissave, chasave, spells, slotMapping, innateSpells, actions, legendaryActionCharges, legendaryActions, ac, speed, attrs, reactions);
 	}
 	
 }

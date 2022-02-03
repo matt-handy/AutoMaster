@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster>
+<mname>Priest</mname>
+<hp>27</hp>
+<str>10</str>
+<dex>10</dex>
+<con>12</con>
+<int>13</int>
+<wis>16</wis>
+<cha>13</cha>
+<ac>13</ac>
+<speed>25</speed>
+<attr>N/A 
+</attr>
+<casterDc>13</casterDc>
+<casterToHit>5</casterToHit>
+<casterLevel>5</casterLevel>
+<casterModifier>WIS</casterModifier>
+<attacks>
+	<set>
+		<attack>
+			<name>Mace</name>
+			<toHit>2</toHit>
+			<damage>
+				<type>BLUDGEONING</type>
+				<dice>D6</dice>
+				<diceCount>1</diceCount>
+				<modifier>0</modifier>
+			</damage>
+		</attack>
+	</set>
+</attacks>
+<spells>
+	<slots>
+		<first>4</first>
+		<second>3</second>
+		<third>2</third>
+	</slots>
+	<spell>light</spell>
+	<spell>sacred_flame</spell>
+	<spell>thaumaturgy</spell>
+	<spell>cure_wounds</spell>
+	<spell>guiding_bolt</spell>
+	<spell>sanctuary</spell>
+	<spell>lesser_restoration</spell>
+	<spell>spiritual_weapon</spell>
+	<spell>dispel_magic</spell>
+	<spell>spirit_guardians</spell>
+</spells>
+</monster>

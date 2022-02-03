@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
@@ -119,6 +120,12 @@ class MagicMonsterTest {
 			assertEquals(mageInst.getWis(), 12);
 			assertEquals(mageInst.getCha(), 11);
 			assertEquals(mageInst.getCurrentHp(), 40);
+			
+			assertEquals(mageInst.casterDc, 14);
+			assertEquals(mageInst.getSpellcastingModifier(), SPELLCASTING_MODIFIER.INTELLIGENCE);
+			assertEquals(mageInst.casterLevel, 9);
+			assertEquals(mageInst.casterToHit, 6);
+			assertEquals(mageInst.getSpellcastingModifierValue(), 3);
 
 			assertTrue(mageInst.listSpells().contains("Level: 1 Detect Magic, Mage Armor, Magic Missile, Shield, "));
 			assertTrue(mageInst.listSpells().contains("Level: 2 Misty Step, Suggestion, "));

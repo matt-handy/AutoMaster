@@ -20,6 +20,7 @@ Condition Immunities Poisoned
 <casterDc>14</casterDc>
 <casterToHit>6</casterToHit>
 <casterLevel>9</casterLevel>
+<casterModifier>INT</casterModifier>
 <attacks>
 	<set>
 		<attack>

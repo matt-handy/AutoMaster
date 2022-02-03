@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import handy.rp.Dice;
+import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
@@ -31,6 +32,7 @@ public abstract class ManagedEntity extends Entity {
 
 	protected Spell concentratedSpell = null;
 	protected Spell.SLOTLEVEL concratedSpellCastLevel = null;
+	protected SPELLCASTING_MODIFIER spellcastingMod;
 
 	protected boolean actedThisTurn = false;
 	protected boolean bonusActedThisTurn = false;
@@ -42,7 +44,7 @@ public abstract class ManagedEntity extends Entity {
 
 	public ManagedEntity(String personalName, int str, int dex, int con, int inte, int wis, int cha,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, int maxHp,
-			int currentHp) {
+			int currentHp, SPELLCASTING_MODIFIER spellcastingMod) {
 		super(personalName);
 
 		this.str = str;
@@ -59,6 +61,7 @@ public abstract class ManagedEntity extends Entity {
 
 		regenerateSpellSlots(slotMapping);
 		replenishSpellSlots();
+		this.spellcastingMod = spellcastingMod;
 	}
 	
 	public void regenerateSpellSlots(Map<Spell.SLOTLEVEL, Integer> slotMapping) {
@@ -152,6 +155,22 @@ public abstract class ManagedEntity extends Entity {
 
 	public abstract Integer getSpellToHit();
 
+	public SPELLCASTING_MODIFIER getSpellcastingModifier() {
+		return spellcastingMod;
+	}
+
+	public int getSpellcastingModifierValue() {
+		if (spellcastingMod == SPELLCASTING_MODIFIER.CHARISMA) {
+			return Helpers.getModifierFromAbility(cha);
+		} else if (spellcastingMod == SPELLCASTING_MODIFIER.WISDOM) {
+			return Helpers.getModifierFromAbility(wis);
+		} else if (spellcastingMod == SPELLCASTING_MODIFIER.INTELLIGENCE) {
+			return Helpers.getModifierFromAbility(inte);
+		} else {
+			throw new IllegalArgumentException("This player does not cast spells");
+		}
+	}
+	
 	public void breakConcentration() {
 		concentratedSpell = null;
 	}
