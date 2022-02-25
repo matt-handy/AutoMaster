@@ -28,6 +28,7 @@ class PlayerCharacterTest {
 		try {
 			Files.copy(Paths.get("player_chars_backup", "durnt_reference.xml"), Paths.get("player_chars", "durnt_reference.xml"), StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "durnt_life.xml"), Paths.get("player_chars", "durnt_life.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "durnt_lvl1.xml"), Paths.get("player_chars", "durnt_lvl1.xml"), StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "barbie.xml"), Paths.get("player_chars", "barbie.xml"), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -40,6 +41,7 @@ class PlayerCharacterTest {
 			Files.copy(Paths.get("player_chars_backup", "durnt_reference.xml"), Paths.get("player_chars", "durnt_reference.xml"), StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "durnt_life.xml"), Paths.get("player_chars", "durnt_life.xml"), StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "barbie.xml"), Paths.get("player_chars", "barbie.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "durnt_lvl1.xml"), Paths.get("player_chars", "durnt_lvl1.xml"), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -537,6 +539,43 @@ class PlayerCharacterTest {
 			fail(e.getMessage());
 		}
 	}
+	
+	@Test
+	void testPlusTwoWeaponWarhammer() {
+		try {
+			List<PlayerCharacter> characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");
+			PlayerCharacter durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("Durnt-life-cleric")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Durnt reference");
+			for (int i = 0; i < 100; i++) {
+				String failedAttack = durnt.attack("warhammer", true, false);
+				assertEquals("Warhammer cannot be thrown", failedAttack);
+				String successAttack = durnt.attack("warhammer", false, false);
+				String hitStartString = "Durnt-life-cleric strikes with Warhammer with a to hit of ";
+				assertTrue(successAttack.startsWith(hitStartString));
+				String[] remainingElements = successAttack.substring(hitStartString.length()).split(" ");
+				int toHit = Integer.parseInt(remainingElements[0]);
+				assertTrue(toHit <= 27 & toHit >= 8);
+				toHit = Integer.parseInt(remainingElements[3]);
+				assertTrue(toHit <= 27 & toHit >= 8);
+				int oneHandDamage = Integer.parseInt(remainingElements[6]);
+				assertTrue(oneHandDamage <= 12 & oneHandDamage >= 5);
+				int twoHandDamage = Integer.parseInt(remainingElements[18]);
+				assertTrue(twoHandDamage <= 14 & twoHandDamage >= 5);
+				assertTrue(successAttack.contains(" Bludgeoning damage if used one-handed, or for "));
+				assertTrue(successAttack.contains(" if used two-handed. Divine Strike hits for an extra "));
+				String failedSecondAttack = durnt.attack("warhammer", false, false);
+				assertEquals("No attacks remaining this turn", failedSecondAttack);
+				durnt.notifyNewTurn();
+			}
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
 
 	@Test
 	void testWarhammer() {
@@ -549,6 +588,87 @@ class PlayerCharacterTest {
 				}
 			}
 			assertTrue(durnt != null, "Didn't load Durnt reference");
+			for (int i = 0; i < 100; i++) {
+				String failedAttack = durnt.attack("warhammer", true, false);
+				assertEquals("Warhammer cannot be thrown", failedAttack);
+				String successAttack = durnt.attack("warhammer", false, false);
+				String hitStartString = "Durnt-reference strikes with Warhammer with a to hit of ";
+				assertTrue(successAttack.startsWith(hitStartString));
+				String[] remainingElements = successAttack.substring(hitStartString.length()).split(" ");
+				int toHit = Integer.parseInt(remainingElements[0]);
+				assertTrue(toHit <= 25 & toHit >= 6);
+				toHit = Integer.parseInt(remainingElements[3]);
+				assertTrue(toHit <= 25 & toHit >= 6);
+				int oneHandDamage = Integer.parseInt(remainingElements[6]);
+				assertTrue(oneHandDamage <= 10 & oneHandDamage >= 3);
+				int twoHandDamage = Integer.parseInt(remainingElements[18]);
+				assertTrue(twoHandDamage <= 12 & twoHandDamage >= 3);
+				assertTrue(successAttack.contains(" Bludgeoning damage if used one-handed, or for "));
+				assertTrue(successAttack.endsWith(" if used two-handed."));
+				String failedSecondAttack = durnt.attack("warhammer", false, false);
+				assertEquals("No attacks remaining this turn", failedSecondAttack);
+				durnt.notifyNewTurn();
+			}
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	void testWarhammerTempPlusOne() {
+		try {
+			List<PlayerCharacter> characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");
+			PlayerCharacter durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("Durnt-reference")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Durnt reference");
+			for (int i = 0; i < 100; i++) {
+				String failedAttack = durnt.attack("warhammer", true, false);
+				assertEquals("Warhammer cannot be thrown", failedAttack);
+				String successAttack = durnt.attack("warhammer", false, false);
+				String hitStartString = "Durnt-reference strikes with Warhammer with a to hit of ";
+				assertTrue(successAttack.startsWith(hitStartString));
+				String[] remainingElements = successAttack.substring(hitStartString.length()).split(" ");
+				int toHit = Integer.parseInt(remainingElements[0]);
+				assertTrue(toHit <= 25 & toHit >= 6);
+				toHit = Integer.parseInt(remainingElements[3]);
+				assertTrue(toHit <= 25 & toHit >= 6);
+				int oneHandDamage = Integer.parseInt(remainingElements[6]);
+				assertTrue(oneHandDamage <= 10 & oneHandDamage >= 3);
+				int twoHandDamage = Integer.parseInt(remainingElements[18]);
+				assertTrue(twoHandDamage <= 12 & twoHandDamage >= 3);
+				assertTrue(successAttack.contains(" Bludgeoning damage if used one-handed, or for "));
+				assertTrue(successAttack.endsWith(" if used two-handed."));
+				String failedSecondAttack = durnt.attack("warhammer", false, false);
+				assertEquals("No attacks remaining this turn", failedSecondAttack);
+				durnt.notifyNewTurn();
+			}
+			durnt.makeTempPlusWeapon("warhammer", 2);
+			for (int i = 0; i < 100; i++) {
+				String failedAttack = durnt.attack("warhammer", true, false);
+				assertEquals("Warhammer cannot be thrown", failedAttack);
+				String successAttack = durnt.attack("warhammer", false, false);
+				String hitStartString = "Durnt-reference strikes with Warhammer with a to hit of ";
+				assertTrue(successAttack.startsWith(hitStartString));
+				String[] remainingElements = successAttack.substring(hitStartString.length()).split(" ");
+				int toHit = Integer.parseInt(remainingElements[0]);
+				assertTrue(toHit <= 27 & toHit >= 8);
+				toHit = Integer.parseInt(remainingElements[3]);
+				assertTrue(toHit <= 27 & toHit >= 8);
+				int oneHandDamage = Integer.parseInt(remainingElements[6]);
+				assertTrue(oneHandDamage <= 12 & oneHandDamage >= 5);
+				int twoHandDamage = Integer.parseInt(remainingElements[18]);
+				assertTrue(twoHandDamage <= 14 & twoHandDamage >= 5);
+				assertTrue(successAttack.contains(" Bludgeoning damage if used one-handed, or for "));
+				assertTrue(successAttack.endsWith(" if used two-handed."));
+				String failedSecondAttack = durnt.attack("warhammer", false, false);
+				assertEquals("No attacks remaining this turn", failedSecondAttack);
+				durnt.notifyNewTurn();
+			}
+			durnt.resetTempPlusWeapon("warhammer");
 			for (int i = 0; i < 100; i++) {
 				String failedAttack = durnt.attack("warhammer", true, false);
 				assertEquals("Warhammer cannot be thrown", failedAttack);
@@ -887,13 +1007,13 @@ class PlayerCharacterTest {
 			assertTrue(successAttack.startsWith(hitStartString));
 			String[] remainingElements = successAttack.substring(hitStartString.length()).split(" ");
 			int toHit = Integer.parseInt(remainingElements[0]);
-			assertTrue(toHit <= 25 & toHit >= 6);
+			assertTrue(toHit <= 27 & toHit >= 8);
 			toHit = Integer.parseInt(remainingElements[3]);
-			assertTrue(toHit <= 25 & toHit >= 6);
+			assertTrue(toHit <= 27 & toHit >= 8);
 			int oneHandDamage = Integer.parseInt(remainingElements[6]);
-			assertTrue(oneHandDamage <= 10 & oneHandDamage >= 3);
+			assertTrue(oneHandDamage <= 12 & oneHandDamage >= 5);
 			int twoHandDamage = Integer.parseInt(remainingElements[18]);
-			assertTrue(twoHandDamage <= 12 & twoHandDamage >= 3);
+			assertTrue(twoHandDamage <= 14 & twoHandDamage >= 5);
 			assertTrue(successAttack.contains(" Bludgeoning damage if used one-handed, or for "));
 			assertTrue(successAttack.contains(" if used two-handed. Divine Strike hits for an extra "));
 			assertTrue(successAttack.endsWith(" Radiant damage"));

@@ -78,17 +78,18 @@ public class Weapon {
 		return info.toString();
 	}
 
-	private int rollDamage(int playerModifier, DICE_TYPE dice) {
+	private int rollDamage(int playerModifier, DICE_TYPE dice, int plusWeaponModifier) {
 		int diceDamage = 0;
 		for (int idx = 0; idx < diceCount; idx++) {
 			diceDamage += dice.roll();
 		}
 		diceDamage += modifier;
 		diceDamage += playerModifier;
+		diceDamage += plusWeaponModifier;
 		return diceDamage;
 	}
 	
-	private int rollCritDamage(int playerModifier, DICE_TYPE dice, int extraCritDice) {
+	private int rollCritDamage(int playerModifier, DICE_TYPE dice, int extraCritDice, int plusWeaponModifier) {
 		int diceDamage = 0;
 		int critDiceCount = (diceCount * 2) + extraCritDice;
 		for (int idx = 0; idx < critDiceCount; idx++) {
@@ -96,17 +97,18 @@ public class Weapon {
 		}
 		diceDamage += modifier;
 		diceDamage += playerModifier;
+		diceDamage += plusWeaponModifier;
 		return diceDamage;
 	}
 
-	public String rollAttack(PlayerCharacter entity, boolean entityIsProficient, boolean useRangedOption)
+	public String rollAttack(PlayerCharacter entity, boolean entityIsProficient, boolean useRangedOption, int plusWeaponModifier)
 			throws Exception {
 		StringBuilder message = new StringBuilder();
 		int toHitRoll = 0;
 		int advHitRoll = 0;
 		if (isRanged) {
-			toHitRoll = Dice.d20() + Helpers.getModifierFromAbility(entity.getDex());
-			advHitRoll = Dice.d20() + Helpers.getModifierFromAbility(entity.getDex());
+			toHitRoll = Dice.d20() + Helpers.getModifierFromAbility(entity.getDex()) + plusWeaponModifier;
+			advHitRoll = Dice.d20() + Helpers.getModifierFromAbility(entity.getDex()) + plusWeaponModifier;
 			if (entityIsProficient) {
 				toHitRoll += entity.getProficiencyBonus();
 				advHitRoll += entity.getProficiencyBonus();
@@ -115,8 +117,8 @@ public class Weapon {
 				advHitRoll = toHitRoll;
 			}
 			
-			int damage = rollDamage(Helpers.getModifierFromAbility(entity.getDex()), diceType);
-			int critDamage = rollCritDamage(Helpers.getModifierFromAbility(entity.getDex()), diceType, entity.extraCritDice());
+			int damage = rollDamage(Helpers.getModifierFromAbility(entity.getDex()), diceType, plusWeaponModifier);
+			int critDamage = rollCritDamage(Helpers.getModifierFromAbility(entity.getDex()), diceType, entity.extraCritDice(), plusWeaponModifier);
 			
 			message.append(entity.personalName + " uses " + name + " to hit at range(" + range + ") with a to hit of "
 					+ toHitRoll + " (with adv " + advHitRoll + " ) for " + damage + " ( crit " + critDamage + " ) " 
@@ -131,15 +133,15 @@ public class Weapon {
 				}
 			}
 
-			toHitRoll = Dice.d20() + abilityMod;
-			advHitRoll = Dice.d20() + abilityMod;
+			toHitRoll = Dice.d20() + abilityMod + plusWeaponModifier;
+			advHitRoll = Dice.d20() + abilityMod + plusWeaponModifier;
 			if (entityIsProficient) {
 				toHitRoll += entity.getProficiencyBonus();
 				advHitRoll += entity.getProficiencyBonus();
 			}
 
-			int damageRoll = rollDamage(abilityMod, diceType);
-			int critDamage = rollCritDamage(abilityMod, diceType, entity.extraCritDice());
+			int damageRoll = rollDamage(abilityMod, diceType, plusWeaponModifier);
+			int critDamage = rollCritDamage(abilityMod, diceType, entity.extraCritDice(), plusWeaponModifier);
 
 			if (useRangedOption) {
 				if (!hasThrownOption) {
@@ -150,8 +152,8 @@ public class Weapon {
 								+ toHitRoll + " for " + damageRoll + " " + damageType.readableName + " damage.");
 			} else {
 				if (versatileDiceType != null) {
-					int vDamageRoll = rollDamage(abilityMod, versatileDiceType);
-					int vCritDamageRoll = rollCritDamage(abilityMod, versatileDiceType, entity.extraCritDice());
+					int vDamageRoll = rollDamage(abilityMod, versatileDiceType, plusWeaponModifier);
+					int vCritDamageRoll = rollCritDamage(abilityMod, versatileDiceType, entity.extraCritDice(), plusWeaponModifier);
 					message.append(entity.personalName + " strikes with " + name + " with a to hit of " + toHitRoll
 							+ " (with adv " + advHitRoll + " ) for " + damageRoll + " ( crit " + critDamage + " ) " + damageType.readableName
 							+ " damage if used one-handed, or for " + vDamageRoll +" ( crit " + vCritDamageRoll + " ) if used two-handed.");

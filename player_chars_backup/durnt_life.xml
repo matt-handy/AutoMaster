@@ -38,8 +38,15 @@
 		<spell>death_ward</spell>
 	</prepared_spells>
 	<proficient_weapons>
-		<weapon>warhammer</weapon>
-		<weapon>light_crossbow</weapon>
-		<weapon>dagger</weapon>
+		<weapon>
+			<name>warhammer</name>
+			<plusMod>2</plusMod>
+		</weapon>
+		<weapon>
+			<name>light_crossbow</name>
+		</weapon>
+		<weapon>
+			<name>dagger</name>
+		</weapon>
 	</proficient_weapons>
 </player_char>

@@ -127,6 +127,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "lsa | listattacks => prints list attack options");
 			assertEquals(br.readLine(), "lss | listspellslots => prints list of current monster spell slots");
 			assertEquals(br.readLine(), "lvl | levelup => begins the level up process");
+			assertEquals(br.readLine(), "makeplusweapon <name> <modifier> => temporarily make a plus weapon");
 			assertEquals(br.readLine(), "react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 			assertEquals(br.readLine(), "rollInit | rollInitiative => roll initiative for character");
 			assertEquals(br.readLine(), "savethrow <STR|DEX|CON|INT|WIS|CHA> => roll a saving throw for character");
@@ -135,6 +136,7 @@ class SinglePlayerModeMainTest {
 			assertEquals("skillcheck <skill> => player rolls a skill check", br.readLine());
 			assertEquals(br.readLine(), "sr | shortrest => player takes a short rest");
 			assertEquals("uf | usefeature <idx> => player uses a feature", br.readLine());
+			assertEquals(br.readLine(), "unmakeplusweapon <name> => remove buff on weapon");
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
@@ -771,6 +773,51 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold. For a 5th level cleric, CR 1/2 or lower. For a 8th level cleric, CR 1 or lower, For a 11th level cleric, CR 2 or lower, For a 14th level cleric, CR 3 or lower, For a 17th level cleric, CR 4 or lower.");
 			assertEquals(br.readLine(), "Unable to use feature at idx: barf For input string: \"barf\"");
 			assertEquals(br.readLine(), "Channel Divinity 1 available out of 2");
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	void testPlayerMakePlusWeapon() {
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("makeplusweapon narf");
+		builder.println("makeplusweapon barf barf");
+		builder.println("makeplusweapon warhammer 2");
+		builder.println("unmakeplusweapon");
+		builder.println("unmakeplusweapon dingdong");
+		builder.println("unmakeplusweapon warhammer");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.singlePlayerMode(builder, br, "Durnt-reference");
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertEquals("Improper format: makeplusweapon narf", br.readLine());
+			assertEquals("Must supply a number: barf", br.readLine());
+			assertEquals("Character weapon modifier has been set", br.readLine());
+			assertEquals("Improper format: unmakeplusweapon", br.readLine());
+			assertEquals("Character does not have this weapon available", br.readLine());
+			assertEquals("Character weapon modifier has been reset", br.readLine());
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}

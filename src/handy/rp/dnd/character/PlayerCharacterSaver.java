@@ -81,14 +81,24 @@ public class PlayerCharacterSaver {
 			pw.println("<proficient_weapons>");
 			for (CharacterWeapon weapon : pc.getWeaponsInfo()) {
 				if (weapon.isProficient) {
-					pw.println("<weapon>" + weapon.weapon.cname + "</weapon>");
+					pw.println("<weapon>");
+					pw.println("<name>"+ weapon.weapon.cname + "</name>");
+					if(weapon.getPlusWeaponMod() != 0) {
+						pw.println("<plusMod>"+ weapon.getPlusWeaponMod() + "</plusMod>");
+					}
+					pw.println("</weapon>");
 				}
 			}
 			pw.println("</proficient_weapons>");
 			pw.println("<nonproficient_weapons>");
 			for (CharacterWeapon weapon : pc.getWeaponsInfo()) {
 				if (!weapon.isProficient) {
-					pw.println("<weapon>" + weapon.weapon.cname + "</weapon>");
+					pw.println("<weapon>");
+					pw.println("<name>"+ weapon.weapon.cname + "</name>");
+					if(weapon.getPlusWeaponMod() != 0) {
+						pw.println("<plusMod>"+ weapon.getPlusWeaponMod() + "</plusMod>");
+					}
+					pw.println("</weapon>");
 				}
 			}
 			pw.println("</nonproficient_weapons>");

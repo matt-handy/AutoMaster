@@ -571,6 +571,36 @@ public class PlayerCharacter extends ManagedEntity {
 		return false;
 	}
 
+	public String makeTempPlusWeapon(String weaponName, int plusModifier) {
+		CharacterWeapon weapon = null;
+		for (CharacterWeapon cur : weapons) {
+			if (cur.weapon.cname.equalsIgnoreCase(weaponName)) {
+				weapon = cur;
+			}
+		}
+		if (weapon == null) {
+			return "Character does not have this weapon available";
+		}else {
+			weapon.setTempPlusWeaponMod(plusModifier);
+			return "Character weapon modifier has been set";
+		}
+	}
+	
+	public String resetTempPlusWeapon(String weaponName) {
+		CharacterWeapon weapon = null;
+		for (CharacterWeapon cur : weapons) {
+			if (cur.weapon.cname.equalsIgnoreCase(weaponName)) {
+				weapon = cur;
+			}
+		}
+		if (weapon == null) {
+			return "Character does not have this weapon available";
+		}else {
+			weapon.resetTempPlusWeapon();
+			return "Character weapon modifier has been reset";
+		}
+	}
+	
 	public String attack(String weaponName, boolean throwWeapon, boolean isOpportunityAttack) {
 		boolean usingBonusAttack = false;
 		boolean usingReaction = false;
@@ -611,7 +641,7 @@ public class PlayerCharacter extends ManagedEntity {
 			return "Character does not have this weapon available";
 		}
 		try {
-			String attackInfo = weapon.weapon.rollAttack(this, weapon.isProficient, throwWeapon);
+			String attackInfo = weapon.weapon.rollAttack(this, weapon.isProficient, throwWeapon, weapon.getCurrentPlusWeaponMod());
 			if (usingBonusAttack) {
 				bonusActedThisTurn = true;
 			}else if(usingReaction) {

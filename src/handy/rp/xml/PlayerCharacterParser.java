@@ -79,10 +79,18 @@ public class PlayerCharacterParser {
 			NodeList profWeaponsList = profWeapListItemElement.getElementsByTagName("weapon");
 			{
 				for (int idx = 0; idx < profWeaponsList.getLength(); idx++) {
-					String weaponName = profWeaponsList.item(idx).getTextContent();
+					Node weaponNode = profWeaponsList.item(idx);
+					Element weaponElement = (Element) weaponNode;
+					String weaponName = weaponElement.getElementsByTagName("name").item(0).getTextContent();
+					int weaponMod = 0;
+					try {
+						weaponMod = Integer.parseInt(weaponElement.getElementsByTagName("plusMod").item(0).getTextContent());
+					}catch(NullPointerException ex) {
+						//There is no weapon mod
+					}
 					Weapon weapon = WeaponParser.getWeapon(weaponName);
 					if (weapon != null) {
-						weapons.add(new CharacterWeapon(weapon, true));
+						weapons.add(new CharacterWeapon(weapon, true, weaponMod));
 					} else {
 						throw new IllegalArgumentException(
 								weaponName + ": is not a valid weapon for character: " + name);
@@ -98,10 +106,18 @@ public class PlayerCharacterParser {
 			NodeList profWeaponsList = profWeapListItemElement.getElementsByTagName("weapon");
 			{
 				for (int idx = 0; idx < profWeaponsList.getLength(); idx++) {
-					String weaponName = profWeaponsList.item(idx).getTextContent();
+					Node weaponNode = profWeaponsList.item(idx);
+					Element weaponElement = (Element) weaponNode;
+					String weaponName = weaponElement.getElementsByTagName("name").item(0).getTextContent();
+					int weaponMod = 0;
+					try {
+						weaponMod = Integer.parseInt(weaponElement.getElementsByTagName("plusMod").item(0).getTextContent());
+					}catch(NullPointerException ex) {
+						//There is no weapon mod
+					}
 					Weapon weapon = WeaponParser.getWeapon(weaponName);
 					if (weapon != null) {
-						weapons.add(new CharacterWeapon(weapon, false));
+						weapons.add(new CharacterWeapon(weapon, false, weaponMod));
 					} else {
 						throw new IllegalArgumentException(
 								weaponName + ": is not a valid weapon for character: " + name);

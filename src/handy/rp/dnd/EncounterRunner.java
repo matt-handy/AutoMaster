@@ -173,6 +173,7 @@ public class EncounterRunner {
 				pw.println("lsa | listattacks => prints list attack options");
 				pw.println("lss | listspellslots => prints list of current monster spell slots");
 				pw.println("lvl | levelup => begins the level up process");
+				pw.println("makeplusweapon <name> <modifier> => temporarily make a plus weapon");
 				pw.println("react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 				pw.println("rollInit | rollInitiative => roll initiative for character");
 				pw.println("savethrow <STR|DEX|CON|INT|WIS|CHA> => roll a saving throw for character");
@@ -180,6 +181,7 @@ public class EncounterRunner {
 				pw.println("skillcheck <skill> => player rolls a skill check");
 				pw.println("sr | shortrest => player takes a short rest");
 				pw.println("uf | usefeature <idx> => player uses a feature");
+				pw.println("unmakeplusweapon <name> => remove buff on weapon");
 				break;
 			case "advturn":
 			case "advanceturn":
@@ -265,6 +267,25 @@ public class EncounterRunner {
 			case "lvl":
 			case "levelup":
 				LevelUpWizard.levelUpCharacter(pc, pw, br);
+				break;
+			case "makeplusweapon":
+				if(args.length != 3) {
+					pw.println("Improper format: " + nextCommand);
+				}else {
+					try {
+						int modifier = Integer.parseInt(args[2]);
+						pw.println(pc.makeTempPlusWeapon(args[1], modifier));
+					}catch(NumberFormatException ex) {
+						pw.println("Must supply a number: " + args[2]);
+					}
+				}
+				break;
+			case "unmakeplusweapon":
+				if(args.length != 2) {
+					pw.println("Improper format: " + nextCommand);
+				}else {
+					pw.println(pc.resetTempPlusWeapon(args[1]));
+				}
 				break;
 			case "react":
 				if(args.length != 3) {
