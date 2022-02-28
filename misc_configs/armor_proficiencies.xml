@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<armor_proficiencies>
+	<proficiency>light</proficiency>
+	<proficiency>medium</proficiency>
+	<proficiency>heavy</proficiency>
+	<proficiency>shield</proficiency>
+</armor_proficiencies>

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import handy.rp.Dice.DICE_TYPE;
+import handy.rp.dnd.character.Proficiency;
 import handy.rp.dnd.spells.Spell;
 
 public class CharClass {
@@ -55,6 +56,9 @@ public class CharClass {
 	public final ClassResource resource;
 	public final int subClassLevel;
 	
+	private List<Proficiency> armorProficiencies;
+	private List<Proficiency> toolProficiencies;
+	
 	public CharClass(String name, CharClass other) {
 		this.name = name;
 		this.slotsPerLevel = other.slotsPerLevel;
@@ -64,11 +68,13 @@ public class CharClass {
 		this.features = other.features;
 		this.resource = other.resource;
 		this.subClassLevel = other.subClassLevel;
+		this.armorProficiencies = new ArrayList<>(other.armorProficiencies);
+		this.toolProficiencies = new ArrayList<>(other.toolProficiencies);
 	}
 	
 	public CharClass(String name, Map<Integer, Map<Spell.SLOTLEVEL, Integer>> slotsPerLevel,
 			SPELLCASTING_MODIFIER spellcastingModifier, List<ESSENTIAL_ABILITY_SCORE> savingThrowProficiencies,
-			DICE_TYPE hitDice, List<ClassFeature> features, ClassResource resource, int subClassLevel) {
+			DICE_TYPE hitDice, List<ClassFeature> features, ClassResource resource, int subClassLevel, List<Proficiency> armorProficiencies, List<Proficiency> toolProficiencies) {
 		this.name = name;
 		this.slotsPerLevel = slotsPerLevel;
 		this.spellcastingModifier = spellcastingModifier;
@@ -77,6 +83,16 @@ public class CharClass {
 		this.features = features;
 		this.resource = resource;
 		this.subClassLevel = subClassLevel;
+		this.toolProficiencies = toolProficiencies;
+		this.armorProficiencies = armorProficiencies;
+	}
+	
+	public List<Proficiency> getArmorProficiencies(){
+		return new ArrayList<>(armorProficiencies); 
+	}
+	
+	public List<Proficiency> getToolProficiencies(){
+		return new ArrayList<>(toolProficiencies); 
 	}
 	
 	public List<ClassFeature> getFeatures(){

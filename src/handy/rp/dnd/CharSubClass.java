@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import handy.rp.dnd.character.Proficiency;
 import handy.rp.dnd.spells.Spell;
 
 public class CharSubClass extends CharClass {
@@ -12,13 +13,26 @@ public class CharSubClass extends CharClass {
 	private Map<Integer, List<Spell>> automaticSpells;
 	private CharClass parent;
 	
+	private List<Proficiency> armorProficiencies;
+	private List<Proficiency> toolProficiencies;
+	
 	public CharSubClass(String name, CharClass parent, List<ClassFeature> features,
-			Map<Integer, List<Spell>> automaticSpells) {
+			Map<Integer, List<Spell>> automaticSpells, List<Proficiency> armorProficiencies, List<Proficiency> toolProficiencies) {
 		super(name, parent);
 		this.features = new ArrayList<>(parent.getFeatures());
 		this.features.addAll(features);
 		this.automaticSpells = automaticSpells;
 		this.parent = parent;
+		this.toolProficiencies = toolProficiencies;
+		this.armorProficiencies = armorProficiencies;
+	}
+	
+	public List<Proficiency> getArmorProficiencies(){
+		return new ArrayList<>(armorProficiencies); 
+	}
+	
+	public List<Proficiency> getToolProficiencies(){
+		return new ArrayList<>(toolProficiencies); 
 	}
 	
 	@Override

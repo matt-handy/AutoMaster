@@ -2,6 +2,12 @@
 <subclass>
 	<parent>Cleric</parent>
 	<name>Forge Domain Cleric</name>
+	<armor_proficiencies>
+		<proficiency>heavy</proficiency>
+	</armor_proficiencies>
+	<tool_proficiencies>
+		<proficiency>smith</proficiency>
+	</tool_proficiencies>
 	<extraSpells>
 		<spell>
 			<name>identify</name>

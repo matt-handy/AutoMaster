@@ -14,6 +14,7 @@ import handy.rp.dnd.ClassFeature.RECHARGE_DURATION;
 import handy.rp.dnd.ClassFeature.USE_TYPE;
 import handy.rp.dnd.attacks.CoreDamageComponent;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
+import handy.rp.dnd.character.Proficiency;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 import handy.rp.xml.ClassParser;
@@ -401,6 +402,10 @@ class CharClassTest {
 		for(CharClass cClass : SubClassParser.charClasses) {
 			if(cClass.name.equals("Forge Domain Cleric")) {
 				foundCleric = true;
+				assertEquals(1, cClass.getToolProficiencies().size());
+				assertEquals("smith", cClass.getToolProficiencies().get(0).name);
+				assertEquals(1, cClass.getArmorProficiencies().size());
+				assertEquals("heavy", cClass.getArmorProficiencies().get(0).name);
 			}else {
 				continue;
 			}
@@ -419,6 +424,24 @@ class CharClassTest {
 			}
 			
 			assertEquals(2, cClass.subClassLevel);
+			
+			assertEquals(0, cClass.getToolProficiencies().size());
+			assertEquals(3, cClass.getArmorProficiencies().size());
+			boolean foundLight = false;
+			boolean foundMedium = false;
+			boolean foundShield = false;
+			for(Proficiency prof : cClass.getArmorProficiencies()) {
+				if(prof.name.equals("light")) {
+					foundLight = true;
+				}else if(prof.name.equals("medium")) {
+					foundMedium = true;
+				}else if(prof.name.equals("shield")) {
+					foundShield = true;
+				} 
+			}
+			assertTrue(foundLight);
+			assertTrue(foundMedium);
+			assertTrue(foundShield);
 			
 			Map<Spell.SLOTLEVEL, Integer> l1 = cClass.slotsPerLevel.get(1);
 			assertEquals(l1.get(SLOTLEVEL.ONE), 2);

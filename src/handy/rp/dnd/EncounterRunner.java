@@ -168,6 +168,7 @@ public class EncounterRunner {
 				pw.println("lcr | listclassresources => lists all class resource counters (channel divinity, rage, etc)");
 				pw.println("lf | listfeatures => list features available to character");
 				pw.println("lfa | listfeaturesactive => list features available to character");
+				pw.println("lp | listproficiencies => list proficiencies");
 				pw.println("lr | longrest => player takes a long rest");
 				pw.println("ls | listspells => prints list of current monster spells");
 				pw.println("lsa | listattacks => prints list attack options");
@@ -246,6 +247,10 @@ public class EncounterRunner {
 					pw.println(jdx + " : " + feature.featureName);
 					jdx++;
 				}
+				break;
+			case "lp":
+			case "listproficiencies":
+				pw.println(pc.printProficiencies());
 				break;
 			case "lr":
 			case "longrest":

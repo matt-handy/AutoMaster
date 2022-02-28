@@ -9,6 +9,7 @@ import handy.rp.dnd.ClassResource;
 import handy.rp.dnd.ClassResource.RECHARGE_INTERVAL;
 import handy.rp.dnd.attacks.CoreDamageComponent;
 import handy.rp.dnd.attacks.DamageComponent.DAMAGE_TYPE;
+import handy.rp.dnd.character.Proficiency;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,10 +49,10 @@ public class ClassParser {
 		}
 	}
 
-	public static List<CharClass> getBaseCharClasses(){
+	public static List<CharClass> getBaseCharClasses() {
 		return new ArrayList<>(charClasses);
 	}
-	
+
 	public static CharClass getCharClass(String name) {
 		for (CharClass cClass : charClasses) {
 			if (cClass.name.equals(name)) {
@@ -83,8 +84,9 @@ public class ClassParser {
 		NodeList nameList = document.getElementsByTagName("name");
 		String name = nameList.item(0).getTextContent();
 		DICE_TYPE hitDice = DICE_TYPE.getDice(document.getElementsByTagName("hit_dice").item(0).getTextContent());
-		int subClassLevel = Integer.parseInt(document.getElementsByTagName("subclass_level_choice").item(0).getTextContent());
-		
+		int subClassLevel = Integer
+				.parseInt(document.getElementsByTagName("subclass_level_choice").item(0).getTextContent());
+
 		List<CharClass.ESSENTIAL_ABILITY_SCORE> savingThrowProficiencies = new ArrayList<>();
 		NodeList profList = document.getElementsByTagName("saving_throw_proficiency");
 		for (int idx = 0; idx < profList.getLength(); idx++) {
@@ -105,6 +107,18 @@ public class ClassParser {
 				throw new IllegalArgumentException(
 						"Class definition does not have a valid Saving Throw Proficiency: " + prof);
 			}
+		}
+		
+		NodeList armorProfList = document.getElementsByTagName("armor_proficiencies");
+		List<Proficiency> armorProficiencies = new ArrayList<>();
+		if(armorProfList != null && armorProfList.item(0) != null) {
+			armorProficiencies = getApplicableProficencies(ProficiencyParser.armorProficiencies, (Element) armorProfList.item(0));
+		}
+		
+		NodeList toolProfList = document.getElementsByTagName("tool_proficiencies");
+		List<Proficiency> toolProfienciesList = new ArrayList<>();
+		if(toolProfList != null && toolProfList.item(0) != null) {
+			toolProfienciesList = getApplicableProficencies(ProficiencyParser.toolProficiencies, (Element) toolProfList.item(0));
 		}
 
 		ClassResource resource = null;
@@ -159,25 +173,39 @@ public class ClassParser {
 
 		NodeList slotLevels = document.getElementsByTagName("slot-level");
 		for (int jdx = 0; jdx < slotLevels.getLength(); jdx++) {
-			//Map<Spell.SLOTLEVEL, Integer> slots = new HashMap<>();
+			// Map<Spell.SLOTLEVEL, Integer> slots = new HashMap<>();
 			Node slotsXml = slotLevels.item(jdx);
 			Element slotsXmlElem = (Element) slotsXml;
 
 			NodeList levelNumNode = slotsXmlElem.getElementsByTagName("level");
 			String levelString = levelNumNode.item(0).getTextContent();
 			Integer level = Integer.parseInt(levelString);
-			
+
 			Map<Spell.SLOTLEVEL, Integer> slots = getSlotLevels(slotsXmlElem);
 
 			slotsPerLevel.put(level, slots);
 		}
 
-		CharClass newClass = new CharClass(name, slotsPerLevel, spellcastingModifier, savingThrowProficiencies, hitDice, features,
-				resource, subClassLevel);
-		for(ClassFeature feature : features) {
+		CharClass newClass = new CharClass(name, slotsPerLevel, spellcastingModifier, savingThrowProficiencies, hitDice,
+				features, resource, subClassLevel, armorProficiencies, toolProfienciesList);
+		for (ClassFeature feature : features) {
 			feature.setParentClass(newClass);
 		}
 		return newClass;
+	}
+
+	protected static List<Proficiency> getApplicableProficencies(List<Proficiency> canonList, Element listContainer) {
+		List<Proficiency> applicables = new ArrayList<>();
+		NodeList children = listContainer.getElementsByTagName("proficiency");
+		for (int idx = 0; idx < children.getLength(); idx++) {
+			String prof = children.item(idx).getTextContent();
+			for(Proficiency profiency : canonList) {
+				if(prof.equals(profiency.name)) {
+					applicables.add(profiency);
+				}
+			}
+		}
+		return applicables;
 	}
 
 	public static ClassFeature getFeature(Element slotsXmlElem) throws Exception {
@@ -205,50 +233,50 @@ public class ClassParser {
 			classResourceChargesUsed = Integer
 					.parseInt(slotsXmlElem.getElementsByTagName("charges_used").item(0).getTextContent());
 		}
-		
+
 		Integer extraAttacksUnconditional = 0;
 		if (slotsXmlElem.getElementsByTagName("extra_unconditional_attacks") != null
 				&& slotsXmlElem.getElementsByTagName("extra_unconditional_attacks").item(0) != null) {
-			extraAttacksUnconditional = Integer
-					.parseInt(slotsXmlElem.getElementsByTagName("extra_unconditional_attacks").item(0).getTextContent());
+			extraAttacksUnconditional = Integer.parseInt(
+					slotsXmlElem.getElementsByTagName("extra_unconditional_attacks").item(0).getTextContent());
 		}
-		
+
 		boolean toggle = false;
 		if (slotsXmlElem.getElementsByTagName("toggle") != null
 				&& slotsXmlElem.getElementsByTagName("toggle").item(0) != null) {
 			String val = slotsXmlElem.getElementsByTagName("toggle").item(0).getTextContent();
-			
-			if(val.equalsIgnoreCase("true")) {
+
+			if (val.equalsIgnoreCase("true")) {
 				toggle = true;
 			}
 		}
-		
+
 		boolean bonusActionAttack = false;
 		if (slotsXmlElem.getElementsByTagName("allow_bonus_action_attack") != null
 				&& slotsXmlElem.getElementsByTagName("allow_bonus_action_attack").item(0) != null) {
 			String val = slotsXmlElem.getElementsByTagName("allow_bonus_action_attack").item(0).getTextContent();
-			
-			if(val.equalsIgnoreCase("true")) {
+
+			if (val.equalsIgnoreCase("true")) {
 				bonusActionAttack = true;
 			}
 		}
-		
+
 		boolean reactionAttack = false;
 		if (slotsXmlElem.getElementsByTagName("allow_reaction_attack") != null
 				&& slotsXmlElem.getElementsByTagName("allow_reaction_attack").item(0) != null) {
 			String val = slotsXmlElem.getElementsByTagName("allow_reaction_attack").item(0).getTextContent();
-			
-			if(val.equalsIgnoreCase("true")) {
+
+			if (val.equalsIgnoreCase("true")) {
 				reactionAttack = true;
 			}
 		}
-		
+
 		boolean initiativeAdvantage = false;
 		if (slotsXmlElem.getElementsByTagName("initiative_advantage") != null
 				&& slotsXmlElem.getElementsByTagName("initiative_advantage").item(0) != null) {
 			String val = slotsXmlElem.getElementsByTagName("initiative_advantage").item(0).getTextContent();
-			
-			if(val.equalsIgnoreCase("true")) {
+
+			if (val.equalsIgnoreCase("true")) {
 				initiativeAdvantage = true;
 			}
 		}
@@ -273,14 +301,14 @@ public class ClassParser {
 		}
 
 		Map<Integer, Integer> levelsToExtraCritDice = new HashMap<>();
-		for(int i = 1; i <= 20; i++) {
+		for (int i = 1; i <= 20; i++) {
 			levelsToExtraCritDice.put(i, 0);
 		}
 		if (slotsXmlElem.getElementsByTagName("extra_crit_dice") != null
 				&& slotsXmlElem.getElementsByTagName("extra_crit_dice").item(0) != null) {
 			Node xml = slotsXmlElem.getElementsByTagName("extra_crit_dice").item(0);
 			Element elem = (Element) xml;
-			
+
 			List<Integer> listOfUppers = new ArrayList<>();
 			int count = 1;
 			String base = "increase";
@@ -297,9 +325,9 @@ public class ClassParser {
 				}
 				levelsToExtraCritDice.put(i, currentDieCount);
 			}
-			
+
 		}
-		
+
 		DAMAGE_EFFECT damageEffect = DAMAGE_EFFECT.NA;
 		Map<Integer, CoreDamageComponent> levelsToSpecialDamage = null;
 		if (slotsXmlElem.getElementsByTagName("augdamages") != null
@@ -318,18 +346,18 @@ public class ClassParser {
 				throw new Exception("Unknown damage effect type");
 			}
 			String base = "dam-level";
-			int newDamage = 0; 
-			for(int i = minLevel; i <= 20; i++) {
-				if(elem.getElementsByTagName(base + i) != null
+			int newDamage = 0;
+			for (int i = minLevel; i <= 20; i++) {
+				if (elem.getElementsByTagName(base + i) != null
 						&& elem.getElementsByTagName(base + i).item(0) != null) {
 					Element newLimit = (Element) elem.getElementsByTagName(base + i).item(0);
 					newDamage = Integer.parseInt(newLimit.getElementsByTagName("damage").item(0).getTextContent());
 				}
 				levelsToSpecialDamage.put(i, new CoreDamageComponent(null, null, 0, newDamage));
 			}
-			
+
 		}
-		
+
 		if (slotsXmlElem.getElementsByTagName("augdamage") != null
 				&& slotsXmlElem.getElementsByTagName("augdamage").item(0) != null) {
 			Node augDamageXml = slotsXmlElem.getElementsByTagName("augdamage").item(0);
@@ -365,7 +393,7 @@ public class ClassParser {
 				levelsToSpecialDamage.put(i, new CoreDamageComponent(damageType, dice, currentDieCount, 0));
 			}
 		}
-		
+
 		ClassFeatureHealingModifier selfHealingModifier = null;
 		if (slotsXmlElem.getElementsByTagName("selfHealMod") != null
 				&& slotsXmlElem.getElementsByTagName("selfHealMod").item(0) != null) {
@@ -373,7 +401,7 @@ public class ClassParser {
 			Element elem = (Element) xml;
 			selfHealingModifier = getHealingInfo(elem);
 		}
-		
+
 		ClassFeatureHealingModifier otherHealingModifier = null;
 		if (slotsXmlElem.getElementsByTagName("otherHealMod") != null
 				&& slotsXmlElem.getElementsByTagName("otherHealMod").item(0) != null) {
@@ -381,14 +409,15 @@ public class ClassParser {
 			Element elem = (Element) xml;
 			otherHealingModifier = getHealingInfo(elem);
 		}
-		
+
 		ClassFeature newFeature = new ClassFeature(name, description, minLevel, classResourceChargesUsed, damageEffect,
-				levelsToSpecialDamage, useType, recharge, charges, otherHealingModifier, selfHealingModifier, extraAttacksUnconditional, levelsToExtraCritDice,
-				initiativeAdvantage, toggle, bonusActionAttack, reactionAttack);
+				levelsToSpecialDamage, useType, recharge, charges, otherHealingModifier, selfHealingModifier,
+				extraAttacksUnconditional, levelsToExtraCritDice, initiativeAdvantage, toggle, bonusActionAttack,
+				reactionAttack);
 		return newFeature;
 	}
-	
-	public static Map<SLOTLEVEL, Integer> getSlotLevels(Element slotsXmlElem){
+
+	public static Map<SLOTLEVEL, Integer> getSlotLevels(Element slotsXmlElem) {
 		Map<SLOTLEVEL, Integer> slots = new HashMap<>();
 		NodeList level1NumNode = slotsXmlElem.getElementsByTagName("slevel1");
 		if (level1NumNode != null && level1NumNode.getLength() > 0) {
@@ -454,38 +483,38 @@ public class ClassParser {
 		}
 		return slots;
 	}
-	
-	private static ClassFeatureHealingModifier getHealingInfo(Element element) throws Exception{
+
+	private static ClassFeatureHealingModifier getHealingInfo(Element element) throws Exception {
 		int modifier = 0;
-		if(element.getElementsByTagName("modifier") != null &&
-				element.getElementsByTagName("modifier").item(0) != null) {
+		if (element.getElementsByTagName("modifier") != null
+				&& element.getElementsByTagName("modifier").item(0) != null) {
 			modifier = Integer.parseInt(element.getElementsByTagName("modifier").item(0).getTextContent());
 		}
 		boolean maxHealDice = false;
-		if(element.getElementsByTagName("maxSpellHealDice") != null &&
-				element.getElementsByTagName("maxSpellHealDice").item(0) != null) {
+		if (element.getElementsByTagName("maxSpellHealDice") != null
+				&& element.getElementsByTagName("maxSpellHealDice").item(0) != null) {
 			String boolRep = element.getElementsByTagName("maxSpellHealDice").item(0).getTextContent();
-			if(boolRep.equalsIgnoreCase("true")) {
+			if (boolRep.equalsIgnoreCase("true")) {
 				maxHealDice = true;
-			}else if(boolRep.equalsIgnoreCase("false")) {
+			} else if (boolRep.equalsIgnoreCase("false")) {
 				maxHealDice = false;
-			}else {
+			} else {
 				throw new Exception("Unknown maxSpellHealDice value: " + boolRep);
 			}
 		}
 		boolean useSpellDice = false;
-		if(element.getElementsByTagName("spellLevelIncrease") != null &&
-				element.getElementsByTagName("spellLevelIncrease").item(0) != null) {
+		if (element.getElementsByTagName("spellLevelIncrease") != null
+				&& element.getElementsByTagName("spellLevelIncrease").item(0) != null) {
 			String boolRep = element.getElementsByTagName("spellLevelIncrease").item(0).getTextContent();
-			if(boolRep.equalsIgnoreCase("true")) {
+			if (boolRep.equalsIgnoreCase("true")) {
 				useSpellDice = true;
-			}else if(boolRep.equalsIgnoreCase("false")) {
+			} else if (boolRep.equalsIgnoreCase("false")) {
 				useSpellDice = false;
-			}else {
+			} else {
 				throw new Exception("Unknown spellLevelIncrease value: " + boolRep);
 			}
 		}
-		
+
 		return new ClassFeatureHealingModifier(modifier, maxHealDice, useSpellDice);
 	}
 }

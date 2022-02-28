@@ -3,8 +3,10 @@ package handy.rp.dnd.character;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import handy.rp.Dice;
 import handy.rp.Dice.DICE_TYPE;
@@ -47,6 +49,9 @@ public class PlayerCharacter extends ManagedEntity {
 	
 	private final Path originalFile;
 	
+	private Set<Proficiency> armorProficiencies;
+	private Set<Proficiency> toolProficiencies;
+	
 	public PlayerCharacter(String personalName, int str, int dex, int con, int inte, int wis, int cha,
 			Map<SLOTLEVEL, List<Spell>> spells, Map<CharClass, Integer> classes, int maxHp, int currentHp,
 			List<CharacterWeapon> weapons, List<SKILL_CHECK> skillProficiencies, Path originalFile, Map<Spell.SLOTLEVEL, Integer> restoredSlotsRemaining,
@@ -78,6 +83,36 @@ public class PlayerCharacter extends ManagedEntity {
 		restoreClassResources(classToResource);
 		restoreFeatureCharges(featureCharges);
 		restoreHitDice(hitDice);
+		regenerateProficiencies();
+	}
+	
+	private void regenerateProficiencies() {
+		armorProficiencies = new HashSet<>();
+		toolProficiencies = new HashSet<>();
+		for(CharClass cClass : classes.keySet()) {
+			if(!cClass.getRootClass().name.equals(cClass.name)) {
+				for(Proficiency prof : cClass.getRootClass().getArmorProficiencies()) {
+					armorProficiencies.add(prof);
+				}
+				for(Proficiency prof : cClass.getRootClass().getToolProficiencies()) {
+					toolProficiencies.add(prof);
+				}
+			}
+			for(Proficiency prof : cClass.getArmorProficiencies()) {
+				armorProficiencies.add(prof);
+			}
+			for(Proficiency prof : cClass.getToolProficiencies()) {
+				toolProficiencies.add(prof);
+			}
+		}
+	}
+	
+	public Set<Proficiency> getArmorProficiencies(){
+		return new HashSet<>(armorProficiencies);
+	}
+	
+	public Set<Proficiency> getToolProficiencies(){
+		return new HashSet<>(toolProficiencies);
 	}
 	
 	private void restoreHitDice(Map<DICE_TYPE, Integer> hitDice) {
@@ -130,6 +165,7 @@ public class PlayerCharacter extends ManagedEntity {
 		regenerateFeatureList();
 		refreshExtraAttacksPerTurn();
 		refreshClassResourceCounters();
+		regenerateProficiencies();
 		
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 	}
@@ -787,5 +823,22 @@ public class PlayerCharacter extends ManagedEntity {
 			critDice += feature.getExtraCritDice(targetLevel);
 		}
 		return critDice;
+	}
+	
+	public String printProficiencies() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Skill Proficiencies" + System.lineSeparator());
+		for(SKILL_CHECK skill : skillProficiencies) {
+			sb.append(skill.name() + System.lineSeparator());
+		}
+		sb.append("Armor Proficiencies" + System.lineSeparator());
+		for(Proficiency prof : armorProficiencies) {
+			sb.append(prof.name + System.lineSeparator());
+		}
+		sb.append("Tool Proficiencies" + System.lineSeparator());
+		for(Proficiency prof : toolProficiencies) {
+			sb.append(prof.name + System.lineSeparator());
+		}
+		return sb.toString();
 	}
 }

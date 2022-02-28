@@ -21,25 +21,26 @@ import org.junit.jupiter.api.Test;
 
 class SinglePlayerModeMainTest {
 
-	
 	@BeforeEach
 	void setupDurnt() {
 		try {
-			Files.copy(Paths.get("player_chars_backup", "durnt_reference.xml"), Paths.get("player_chars", "durnt_reference.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "durnt_reference.xml"),
+					Paths.get("player_chars", "durnt_reference.xml"), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@AfterEach
 	void resetDurnt() {
 		try {
-			Files.copy(Paths.get("player_chars_backup", "durnt_reference.xml"), Paths.get("player_chars", "durnt_reference.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "durnt_reference.xml"),
+					Paths.get("player_chars", "durnt_reference.xml"), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Test
 	void testLevelUpWizardIsIntegrated() {
 		EncounterRunner main = new EncounterRunner();
@@ -81,7 +82,7 @@ class SinglePlayerModeMainTest {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
 	void testMainHelp() {
 		EncounterRunner main = new EncounterRunner();
@@ -119,16 +120,19 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "ef | endfeature <active feature index> => ends a feature");
 			assertEquals(br.readLine(), "hit | heal <hp> => hit or heal character for <hp>");
 			assertEquals(br.readLine(), "hitdice => lists available hit dice");
-			assertEquals("lcr | listclassresources => lists all class resource counters (channel divinity, rage, etc)", br.readLine());
+			assertEquals("lcr | listclassresources => lists all class resource counters (channel divinity, rage, etc)",
+					br.readLine());
 			assertEquals("lf | listfeatures => list features available to character", br.readLine());
 			assertEquals("lfa | listfeaturesactive => list features available to character", br.readLine());
+			assertEquals("lp | listproficiencies => list proficiencies", br.readLine());
 			assertEquals(br.readLine(), "lr | longrest => player takes a long rest");
 			assertEquals(br.readLine(), "ls | listspells => prints list of current monster spells");
 			assertEquals(br.readLine(), "lsa | listattacks => prints list attack options");
 			assertEquals(br.readLine(), "lss | listspellslots => prints list of current monster spell slots");
 			assertEquals(br.readLine(), "lvl | levelup => begins the level up process");
 			assertEquals(br.readLine(), "makeplusweapon <name> <modifier> => temporarily make a plus weapon");
-			assertEquals(br.readLine(), "react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
+			assertEquals(br.readLine(),
+					"react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 			assertEquals(br.readLine(), "rollInit | rollInitiative => roll initiative for character");
 			assertEquals(br.readLine(), "savethrow <STR|DEX|CON|INT|WIS|CHA> => roll a saving throw for character");
 			assertEquals(br.readLine(),
@@ -217,7 +221,7 @@ class SinglePlayerModeMainTest {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
 	void takeLongRest() {
 		EncounterRunner main = new EncounterRunner();
@@ -485,8 +489,8 @@ class SinglePlayerModeMainTest {
 			fail(ex.getMessage());
 		}
 	}
-	
-	@Test 
+
+	@Test
 	void testPlayerCharacterRecurringFeature() {
 		EncounterRunner main = new EncounterRunner();
 		try {
@@ -516,13 +520,14 @@ class SinglePlayerModeMainTest {
 
 		try {
 			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
-			assertEquals(br.readLine(), "Beginning at 10th level, you can use your action to frighten someone with your menacing presence. When you do so, choose one creature that you can see within 30 feet of you. If the creature can see or hear you, it must succeed on a Wisdom saving throw (DC equal to 8 + your proficiency bonus + your Charisma modifier) or be frightened of you until the end of your next turn. On subsequent turns, you can use your action to extend the duration of this effect on the frightened creature until the end of your next turn. This effect ends if the creature ends its turn out of line of sight or more than 60 feet away from you. If the creature succeeds on its saving throw, you can’t use this feature on that creature again for 24 hours.");
+			assertEquals(br.readLine(),
+					"Beginning at 10th level, you can use your action to frighten someone with your menacing presence. When you do so, choose one creature that you can see within 30 feet of you. If the creature can see or hear you, it must succeed on a Wisdom saving throw (DC equal to 8 + your proficiency bonus + your Charisma modifier) or be frightened of you until the end of your next turn. On subsequent turns, you can use your action to extend the duration of this effect on the frightened creature until the end of your next turn. This effect ends if the creature ends its turn out of line of sight or more than 60 feet away from you. If the creature succeeds on its saving throw, you can’t use this feature on that creature again for 24 hours.");
 			assertEquals(br.readLine(), "Active feature: Intimidating Presence");
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
 	void testPlayerCharacterManageActiveFeatures() {
 		EncounterRunner main = new EncounterRunner();
@@ -554,21 +559,27 @@ class SinglePlayerModeMainTest {
 
 		try {
 			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
-			assertEquals(br.readLine(), "In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action.");
-			assertEquals(br.readLine(), "While raging, you gain the following benefits if you aren’t wearing heavy armor:");
+			assertEquals(br.readLine(),
+					"In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action.");
+			assertEquals(br.readLine(),
+					"While raging, you gain the following benefits if you aren’t wearing heavy armor:");
 			assertEquals(br.readLine(), "    You have advantage on Strength checks and Strength saving throws.");
-			assertEquals(br.readLine(), "    When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table.");
+			assertEquals(br.readLine(),
+					"    When you make a melee weapon attack using Strength, you gain a bonus to the damage roll that increases as you gain levels as a barbarian, as shown in the Rage Damage column of the Barbarian table.");
 			assertEquals(br.readLine(), "    You have resistance to bludgeoning, piercing, and slashing damage.");
-			assertEquals(br.readLine(), "If you are able to cast spells, you can’t cast them or concentrate on them while raging.");
-			assertEquals(br.readLine(), "Your rage lasts for 1 minute. It ends early if you are knocked unconscious or if your turn ends and you haven’t attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action.");
-			assertEquals(br.readLine(), "Once you have raged the number of times shown for your barbarian level in the Rages column of the Barbarian table, you must finish a long rest before you can rage again.");
+			assertEquals(br.readLine(),
+					"If you are able to cast spells, you can’t cast them or concentrate on them while raging.");
+			assertEquals(br.readLine(),
+					"Your rage lasts for 1 minute. It ends early if you are knocked unconscious or if your turn ends and you haven’t attacked a hostile creature since your last turn or taken damage since then. You can also end your rage on your turn as a bonus action.");
+			assertEquals(br.readLine(),
+					"Once you have raged the number of times shown for your barbarian level in the Rages column of the Barbarian table, you must finish a long rest before you can rage again.");
 			assertEquals(br.readLine(), "0 : Rage");
 			assertEquals(br.readLine(), "Rage cleared.");
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
 	void testPlayerAttackOfOpportunity() {
 		EncounterRunner main = new EncounterRunner();
@@ -605,6 +616,54 @@ class SinglePlayerModeMainTest {
 			assertEquals("Unknown react argument: narf", br.readLine());
 			assertTrue(br.readLine().startsWith("Durnt-reference strikes with Warhammer with a to hit of "));
 			assertEquals("Character has already used reaction", br.readLine());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+
+	@Test
+	void testPlayerPrintProficiencies() {
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("lp");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.singlePlayerMode(builder, br, "Durnt-reference");
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertEquals(br.readLine(), "Skill Proficiencies");
+			assertEquals(br.readLine(), "Acrobatics");
+			assertEquals(br.readLine(), "Medicine");
+			assertEquals(br.readLine(), "Persuasion");
+			assertEquals(br.readLine(), "Survival");
+			assertEquals(br.readLine(),
+					"Armor Proficiencies");
+			br.readLine();//For proficiencies listed, tested elsewhere
+			br.readLine();//For proficiencies listed, tested elsewhere
+			br.readLine();//For proficiencies listed, tested elsewhere
+			br.readLine();//For proficiencies listed, tested elsewhere
+			assertEquals(br.readLine(),
+					"Tool Proficiencies");
+			assertEquals(br.readLine(), "smith");
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
@@ -721,11 +780,13 @@ class SinglePlayerModeMainTest {
 	private void testDurntSpellListing(BufferedReader br) throws IOException {
 		for (int idx = 0; idx < 5; idx++) {
 			String nextLine = br.readLine();
-			assertTrue(nextLine.equals("Level: 4 Guardian of Faith, Death Ward, Fabricate, Wall of Fire, ") || nextLine.equals(
-					"Level: 1 Identify, Searing Smite, Bane, Cure Wounds, Shield of Faith, Detect Good and Evil, Guiding Bolt, ")
+			assertTrue(nextLine.equals("Level: 4 Guardian of Faith, Death Ward, Fabricate, Wall of Fire, ")
+					|| nextLine.equals(
+							"Level: 1 Identify, Searing Smite, Bane, Cure Wounds, Shield of Faith, Detect Good and Evil, Guiding Bolt, ")
 					|| nextLine.equals("Level: 2 Heat Metal, Magic Weapon, Hold Person, Zone of Truth, ")
 					|| nextLine.equals("Level: Cantrip Spare the Dying, Sacred Flame, Thaumaturgy, Toll the Dead, ")
-					|| nextLine.equals("Level: 3 Spirit Guardians, Magic Circle, Protection From Energy, Elemental Weapon, "));
+					|| nextLine.equals(
+							"Level: 3 Spirit Guardians, Magic Circle, Protection From Energy, Elemental Weapon, "));
 		}
 	}
 
@@ -768,16 +829,19 @@ class SinglePlayerModeMainTest {
 			assertEquals("2 : Channel Divinity - Artisan's Blessing", br.readLine());
 			assertEquals("3 : Soul of the Forge", br.readLine());
 			assertEquals("4 : Blessing of the Forge", br.readLine());
-			assertEquals(br.readLine(), "As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead that can see or hear you within 30 feet of you must make a Wisdom saving throw. If the creature fails its saving throw, it is turned for 1 minute or until it takes any damage.");
-			assertEquals(br.readLine(), "A turned creature must spend its turns trying to move as far away from you as it can, and it can't willingly move to a space within 30 feet of you. It also can't take reactions. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If there's nowhere to move, the creature can use the Dodge action.");
-			assertEquals(br.readLine(), "Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold. For a 5th level cleric, CR 1/2 or lower. For a 8th level cleric, CR 1 or lower, For a 11th level cleric, CR 2 or lower, For a 14th level cleric, CR 3 or lower, For a 17th level cleric, CR 4 or lower.");
+			assertEquals(br.readLine(),
+					"As an action, you present your holy symbol and speak a prayer censuring the undead. Each undead that can see or hear you within 30 feet of you must make a Wisdom saving throw. If the creature fails its saving throw, it is turned for 1 minute or until it takes any damage.");
+			assertEquals(br.readLine(),
+					"A turned creature must spend its turns trying to move as far away from you as it can, and it can't willingly move to a space within 30 feet of you. It also can't take reactions. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If there's nowhere to move, the creature can use the Dodge action.");
+			assertEquals(br.readLine(),
+					"Starting at 5th level, when an undead fails its saving throw against your Turn Undead feature, the creature is instantly destroyed if its challenge rating is at or below a certain threshold. For a 5th level cleric, CR 1/2 or lower. For a 8th level cleric, CR 1 or lower, For a 11th level cleric, CR 2 or lower, For a 14th level cleric, CR 3 or lower, For a 17th level cleric, CR 4 or lower.");
 			assertEquals(br.readLine(), "Unable to use feature at idx: barf For input string: \"barf\"");
 			assertEquals(br.readLine(), "Channel Divinity 1 available out of 2");
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
 	void testPlayerMakePlusWeapon() {
 		EncounterRunner main = new EncounterRunner();
@@ -822,7 +886,7 @@ class SinglePlayerModeMainTest {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
 	void testPlayerHitAndHeal() {
 		EncounterRunner main = new EncounterRunner();
@@ -1063,7 +1127,7 @@ class SinglePlayerModeMainTest {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
 	void testPlayerCharacterRollInitiativeAdv() {
 		EncounterRunner main = new EncounterRunner();

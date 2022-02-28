@@ -20,6 +20,7 @@ import org.xml.sax.InputSource;
 import handy.rp.dnd.CharClass;
 import handy.rp.dnd.CharSubClass;
 import handy.rp.dnd.ClassFeature;
+import handy.rp.dnd.character.Proficiency;
 import handy.rp.dnd.spells.Spell;
 
 public class SubClassParser {
@@ -85,6 +86,18 @@ public class SubClassParser {
 			throw new Exception("Unknown parent class: " + parentStr);
 		}
 		
+		NodeList armorProfList = document.getElementsByTagName("armor_proficiencies");
+		List<Proficiency> armorProficiencies = new ArrayList<>();
+		if(armorProfList != null && armorProfList.item(0) != null) {
+			armorProficiencies = ClassParser.getApplicableProficencies(ProficiencyParser.armorProficiencies, (Element) armorProfList.item(0));
+		}
+		
+		NodeList toolProfList = document.getElementsByTagName("tool_proficiencies");
+		List<Proficiency> toolProfienciesList = new ArrayList<>();
+		if(toolProfList != null && toolProfList.item(0) != null) {
+			toolProfienciesList = ClassParser.getApplicableProficencies(ProficiencyParser.toolProficiencies, (Element) toolProfList.item(0));
+		}
+		
 		List<ClassFeature> features = new ArrayList<>();
 		NodeList featuresNode = document.getElementsByTagName("feature");
 		for (int jdx = 0; jdx < featuresNode.getLength(); jdx++) {
@@ -120,7 +133,7 @@ public class SubClassParser {
 			
 		}
 
-		CharSubClass newClass = new CharSubClass(name, parent, features, spells);
+		CharSubClass newClass = new CharSubClass(name, parent, features, spells, armorProficiencies, toolProfienciesList);
 		for(ClassFeature feature : features) {
 			feature.setParentClass(newClass);
 		}

@@ -5,6 +5,11 @@
 	<saving_throw_proficiency>CON</saving_throw_proficiency>
 	<hit_dice>D12</hit_dice>
 	<subclass_level_choice>3</subclass_level_choice>
+	<armor_proficiencies>
+		<proficiency>light</proficiency>
+		<proficiency>medium</proficiency>
+		<proficiency>shield</proficiency>
+	</armor_proficiencies>
 	<class-resource>
 		<name>Rage</name>
 		<charges>

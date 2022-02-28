@@ -2,6 +2,9 @@
 <subclass>
 	<parent>Cleric</parent>
 	<name>Life Domain Cleric</name>
+	<armor_proficiencies>
+		<proficiency>heavy</proficiency>
+	</armor_proficiencies>
 	<extraSpells>
 		<spell>
 			<name>bless</name>
