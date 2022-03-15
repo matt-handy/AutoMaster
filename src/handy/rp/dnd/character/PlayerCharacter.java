@@ -10,6 +10,7 @@ import java.util.Set;
 
 import handy.rp.Dice;
 import handy.rp.Dice.DICE_TYPE;
+import handy.rp.OutcomeNotification;
 import handy.rp.dnd.CharClass;
 import handy.rp.dnd.CharClass.ESSENTIAL_ABILITY_SCORE;
 import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
@@ -607,7 +608,7 @@ public class PlayerCharacter extends ManagedEntity {
 		return false;
 	}
 
-	public String makeTempPlusWeapon(String weaponName, int plusModifier) {
+	public OutcomeNotification makeTempPlusWeapon(String weaponName, int plusModifier) {
 		CharacterWeapon weapon = null;
 		for (CharacterWeapon cur : weapons) {
 			if (cur.weapon.cname.equalsIgnoreCase(weaponName)) {
@@ -615,14 +616,14 @@ public class PlayerCharacter extends ManagedEntity {
 			}
 		}
 		if (weapon == null) {
-			return "Character does not have this weapon available";
+			return new OutcomeNotification("Character does not have this weapon available", false);
 		}else {
 			weapon.setTempPlusWeaponMod(plusModifier);
-			return "Character weapon modifier has been set";
+			return  new OutcomeNotification("Character weapon modifier has been set", true);
 		}
 	}
 	
-	public String resetTempPlusWeapon(String weaponName) {
+	public OutcomeNotification resetTempPlusWeapon(String weaponName) {
 		CharacterWeapon weapon = null;
 		for (CharacterWeapon cur : weapons) {
 			if (cur.weapon.cname.equalsIgnoreCase(weaponName)) {
@@ -630,26 +631,26 @@ public class PlayerCharacter extends ManagedEntity {
 			}
 		}
 		if (weapon == null) {
-			return "Character does not have this weapon available";
+			return new OutcomeNotification("Character does not have this weapon available", false);
 		}else {
 			weapon.resetTempPlusWeapon();
-			return "Character weapon modifier has been reset";
+			return  new OutcomeNotification("Character weapon modifier has been reset", true);
 		}
 	}
 	
-	public String attack(String weaponName, boolean throwWeapon, boolean isOpportunityAttack) {
+	public OutcomeNotification attack(String weaponName, boolean throwWeapon, boolean isOpportunityAttack) {
 		boolean usingBonusAttack = false;
 		boolean usingReaction = false;
 		if(isOpportunityAttack) {
 			if(canTakeReaction()) {
 				usingReaction = true;
 			}else {
-				return "Character has already used reaction";
+				return new OutcomeNotification("Character has already used reaction", false);
 			}
 		}else {
 		if (actedThisTurn) {
 			if (attacksRemaining == attacksPerTurn) {
-				return "Character has already acted this turn";
+				return new OutcomeNotification("Character has already acted this turn", false);
 			}else if(attacksRemaining == 0) {
 				//We've taken an action, and are seeing if we can use a
 				//bonus action
@@ -663,7 +664,7 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 
 		if (attacksRemaining == 0 && !usingBonusAttack & !usingReaction) {
-			return "No attacks remaining this turn";
+			return new OutcomeNotification("No attacks remaining this turn", false);
 		}
 		}
 
@@ -674,7 +675,7 @@ public class PlayerCharacter extends ManagedEntity {
 			}
 		}
 		if (weapon == null) {
-			return "Character does not have this weapon available";
+			return new OutcomeNotification( "Character does not have this weapon available", false);
 		}
 		try {
 			String attackInfo = weapon.weapon.rollAttack(this, weapon.isProficient, throwWeapon, weapon.getCurrentPlusWeaponMod());
@@ -690,9 +691,9 @@ public class PlayerCharacter extends ManagedEntity {
 					attacksRemaining--;
 				}
 			}
-			return attackInfo;
+			return new OutcomeNotification(attackInfo, true) ;
 		} catch (Exception ex) {
-			return ex.getMessage();
+			return new OutcomeNotification(ex.getMessage(), false);
 		}
 
 	}

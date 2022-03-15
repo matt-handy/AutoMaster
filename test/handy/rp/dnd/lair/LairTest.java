@@ -34,7 +34,7 @@ class LairTest {
 			assertTrue(listActions.contains("Action: 0: Illusory Duplicate"));
 			assertTrue(listActions.contains("Action: 1: Darkness"));
 			
-			String duplicateResult = demogorgonLair.expendAction(demogorgonLair.actions.get(0));
+			String duplicateResult = demogorgonLair.expendAction(demogorgonLair.actions.get(0)).humanMessage;
 			assertTrue(duplicateResult.contains("Illusory Duplicate"));
 			assertTrue(duplicateResult.contains("The creature creates an illusory duplicate of himself, which appears in his own space and lasts until initiative count 20 of the next round. On his turn, the creature can move the illusory duplicate a distance equal to his walking speed (no action required). The first time a creature or object interacts physically with the creature (for example. hitting him with an attack). there is a 50 percent chance that it is the illusory duplicate that is being affected, not the creature himself, in which case the illusion disappears."));
 			

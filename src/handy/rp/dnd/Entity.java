@@ -2,6 +2,7 @@ package handy.rp.dnd;
 
 import java.util.EnumSet;
 
+import handy.rp.OutcomeNotification;
 import handy.rp.dnd.EntityCondition.CONDITIONS;
 
 public class Entity {
@@ -15,12 +16,12 @@ public class Entity {
 		return reactionsRemaining >= 1;
 	}
 
-	public String expendReaction(String reactionName) {
+	public OutcomeNotification expendReaction(String reactionName) {
 		if (canTakeReaction()) {
 			reactionsRemaining--;
-			return personalName + " takes reaction: " + reactionName;
+			return new OutcomeNotification(personalName + " takes reaction: " + reactionName, true);
 		} else {
-			return personalName + " cannot take reaction: " + reactionName;
+			return new OutcomeNotification(personalName + " cannot take reaction: " + reactionName, false);
 		}
 	}
 

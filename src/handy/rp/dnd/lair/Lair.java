@@ -3,6 +3,7 @@ package handy.rp.dnd.lair;
 import java.util.ArrayList;
 import java.util.List;
 
+import handy.rp.OutcomeNotification;
 import handy.rp.dnd.Entity;
 
 public class Lair extends Entity {
@@ -22,16 +23,16 @@ public class Lair extends Entity {
 		return new ArrayList<LairAction>(actions);
 	}
 	
-	public String expendAction(LairAction action) {
+	public OutcomeNotification expendAction(LairAction action) {
 		if(actedThisTurn) {
-			return "Cannot act this turn, already acted";
+			return new OutcomeNotification("Cannot act this turn, already acted", false);
 		}else {
 			try {
 				String result = action.expendAction();
 				actedThisTurn = true;
-				return result;
+				return new OutcomeNotification(result, true);
 			}catch(Exception ex) {
-				return "Unable to act: " + ex.getMessage();
+				return new OutcomeNotification("Unable to act: " + ex.getMessage(), false);
 			}
 		}
 	}

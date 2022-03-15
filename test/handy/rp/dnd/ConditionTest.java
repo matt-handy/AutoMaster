@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import handy.rp.OutcomeNotification;
 import handy.rp.dnd.EntityCondition.CONDITIONS;
 
 class ConditionTest {
@@ -63,18 +64,20 @@ class ConditionTest {
 		main.addOrRemoveCondition(argsCon);
 		
 		String argsAt[] = {"at", "0"};
-		String result = main.attack(argsAt);
-		assertEquals("Monster cannot attack in its current condition", result);
+		OutcomeNotification outcome = main.attack(argsAt);
+		assertEquals("Monster cannot attack in its current condition", outcome.humanMessage);
+		assertFalse(outcome.outcome);
 		
 		String argsRm[] = {"rmCon", "UNC"};
-		result = main.addOrRemoveCondition(argsRm);
+		String result = main.addOrRemoveCondition(argsRm).humanMessage;
 		assertEquals("Removing condition from Larry: UNCONSCIOUS", result);
 		String argBli[] = {"addCon", "BLI"};
-		result = main.addOrRemoveCondition(argBli);
+		result = main.addOrRemoveCondition(argBli).humanMessage;
 		assertEquals("Adding condition to Larry: BLINDED", result);
 		
-		result = main.attack(argsAt);
-		assertTrue(result.contains("disadvantage"));
+		outcome = main.attack(argsAt);
+		assertTrue(outcome.humanMessage.contains("disadvantage"));
+		assertTrue(outcome.outcome);
 	}
 	
 	@Test
@@ -94,10 +97,10 @@ class ConditionTest {
 		String argsAt[] = {"at", "0"};
 		
 		String argInv[] = {"addCon", "INV"};
-		String result = main.addOrRemoveCondition(argInv);
+		String result = main.addOrRemoveCondition(argInv).humanMessage;
 		assertEquals("Adding condition to Larry: INVISIBLE", result);
 		
-		result = main.attack(argsAt);
+		result = main.attack(argsAt).humanMessage;
 		assertTrue(result.contains(" advantage"));
 	}
 }

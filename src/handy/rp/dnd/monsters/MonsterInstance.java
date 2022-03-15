@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import handy.rp.Dice;
+import handy.rp.OutcomeNotification;
 import handy.rp.dnd.Action;
 import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.Entity;
@@ -201,7 +202,7 @@ public class MonsterInstance extends ManagedEntity {
 	}
 
 	@Override
-	public String expendReaction(String reactionName) {
+	public OutcomeNotification expendReaction(String reactionName) {
 		if (canTakeReaction()) {
 			reactionsRemaining--;
 			String response = personalName + " takes reaction: " + reactionName;
@@ -216,16 +217,16 @@ public class MonsterInstance extends ManagedEntity {
 						sb.append(System.lineSeparator());
 					}
 				}
-				return sb.toString();
+				return new OutcomeNotification(sb.toString(), true);
 			} else if (reactions != null || reactions.containsKey(reactionName)) {
 				response += System.lineSeparator();
 				response += reactions.get(reactionName);
-				return response;
+				return new OutcomeNotification(response, true);
 			} else {
-				return response;
+				return new OutcomeNotification(response, true);
 			}
 		} else {
-			return personalName + " cannot take reaction: " + reactionName;
+			return new OutcomeNotification(personalName + " cannot take reaction: " + reactionName, true);
 		}
 	}
 
@@ -233,7 +234,7 @@ public class MonsterInstance extends ManagedEntity {
 		return attacksThisTurn;
 	}
 
-	public String expandLegendaryAction(String cName) {
+	public OutcomeNotification expandLegendaryAction(String cName) {
 		try {
 			LegendaryAction laction = null;
 			boolean dropActionCharge = false;
@@ -258,22 +259,22 @@ public class MonsterInstance extends ManagedEntity {
 				throw new IllegalArgumentException("No such action: " + cName);
 			}
 			if (currentCharges - laction.charges < 0) {
-				return "Insufficient charges for legendary action: " + cName;
+				return new OutcomeNotification("Insufficient charges for legendary action: " + cName, false);
 			} else {
 				currentCharges -= laction.charges;
 				if (dropActionCharge) {
 					legendaryActions.put(laction, charges - 1);
 				}
-				return laction.expendAction(this);
+				return  new OutcomeNotification(laction.expendAction(this), true);
 			}
 		} catch (IllegalArgumentException ex) {
-			return ex.getMessage();
+			return  new OutcomeNotification(ex.getMessage(), false);
 		}
 	}
 
-	public String expendAction(String cName) {
+	public OutcomeNotification expendAction(String cName) {
 		if (actedThisTurn) {
-			return "Cannot take action, already acted this turn";
+			return new OutcomeNotification("Cannot take action, already acted this turn", false);
 		}
 		try {
 			Action action = returnAction(cName, actions);
@@ -282,15 +283,15 @@ public class MonsterInstance extends ManagedEntity {
 				if (actionReadiness.get(action)) {
 					actionReadiness.put(action, false);
 				} else {
-					return "Rechargable Action - Need " + action.rechargeDiceMeets + " or better from "
-							+ action.rechargeDice;
+					return new OutcomeNotification("Rechargable Action - Need " + action.rechargeDiceMeets + " or better from "
+							+ action.rechargeDice, false);
 				}
 			}
 
 			actedThisTurn = true;
-			return action.expendAction(this);
+			return new OutcomeNotification(action.expendAction(this), true);
 		} catch (IllegalArgumentException ex) {
-			return ex.getMessage();
+			return new OutcomeNotification(ex.getMessage(), false);
 		}
 	}
 

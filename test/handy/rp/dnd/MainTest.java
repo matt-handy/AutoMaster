@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import handy.rp.OutcomeNotification;
 import handy.rp.dnd.monsters.MonsterInstance;
 
 class MainTest {
@@ -47,13 +48,13 @@ class MainTest {
 		}
 		
 		String args[] = {"amon", "Hill Giant", "Danny Boy"};
-		String response = main.addMonster(args);
+		String response = main.addMonster(args).humanMessage;
 		assertTrue(response.startsWith("Added Hill Giant as Danny Boy with initiative "));
 		String args2[] = {"amon", "1", "Other Guy"};
-		response = main.addMonster(args2);
+		response = main.addMonster(args2).humanMessage;
 		assertTrue(response.startsWith("Added Bandit Captain as Other Guy with initiative "));
 		String args3[] = {"amon", "1", "Dude"};
-		response = main.addMonster(args3);
+		response = main.addMonster(args3).humanMessage;
 		assertTrue(response.startsWith("Added Bandit Captain as Dude with initiative "));
 		
 		main.startCombat();
@@ -61,7 +62,7 @@ class MainTest {
 		String starter = main.getCurrentEntity().personalName;
 		
 		String rmArgs[] = {"rm", starter};
-		response = main.rmEntity(rmArgs);
+		response = main.rmEntity(rmArgs).humanMessage;
 		assertTrue(response.startsWith("Removed: " + starter));
 		
 		assertFalse(main.getCurrentEntity().personalName.equals(starter));
@@ -220,7 +221,9 @@ class MainTest {
 		main.startCombat();
 		
 		String argsConSave[] = {"rollSave", "str"};
-		String result = main.rollSave(argsConSave);
+		OutcomeNotification notice = main.rollSave(argsConSave);
+		String result = notice.humanMessage;
+		assertTrue(notice.outcome);
 		String targetStr = "Dave rolls a strength saving throw of ";
 		assertTrue(result.startsWith(targetStr));
 		int sthrow = Integer.parseInt(result.substring(targetStr.length()));
@@ -245,33 +248,38 @@ class MainTest {
 		main.startCombat();
 		
 		String badIdxArcs[] = {"react", "oppAtt", "2"};
-		String response = main.takeReaction(badIdxArcs);
-		assertEquals(response, "Invalid index");
+		OutcomeNotification response = main.takeReaction(badIdxArcs);
+		assertEquals(response.humanMessage, "Invalid index");
+		assertFalse(response.outcome);
+		
 		String badIdxArcs2[] = {"react", "oppAtt", "fart"};
 		response = main.takeReaction(badIdxArcs2);
-		assertEquals(response, "Need reactor index");
+		assertEquals(response.humanMessage, "Need reactor index");
+		assertFalse(response.outcome);
 		
 		String entityTest[] = {"react", "oppAtt", "1"};
 		response = main.takeReaction(entityTest);
-		assertEquals(response, "Only monsters can take reactions now");
+		assertEquals(response.humanMessage, "Only monsters can take reactions now");
+		assertFalse(response.outcome);
 		
 		String oppAttTest[] = {"react", "oppAtt", "0"};
 		response = main.takeReaction(oppAttTest);
-		assertTrue(response.contains("Dave takes reaction"));
-		assertTrue(response.contains("Available attacks for opportunity attack: Bite hits for "));
-		assertTrue(response.contains("\r\nClaw hits for "));
+		assertTrue(response.outcome);
+		assertTrue(response.humanMessage.contains("Dave takes reaction"));
+		assertTrue(response.humanMessage.contains("Available attacks for opportunity attack: Bite hits for "));
+		assertTrue(response.humanMessage.contains("\r\nClaw hits for "));
 		
 		response = main.takeReaction(oppAttTest);
-		assertEquals(response, "Dave takes reaction\r\n" + 
+		assertEquals(response.humanMessage, "Dave takes reaction\r\n" + 
 				"Dave cannot take reaction: oppAtt");
 		
-		response = main.advanceTurn();
-		assertEquals(response, "Next in order: Larry\r\n" + 
+		String responseStr = main.advanceTurn();
+		assertEquals(responseStr, "Next in order: Larry\r\n" + 
 				"Cannot list actions, entity is not managed by this tool\r\n" + 
 				"Cannot list stats, entity is not managed by this tool\r\n" + 
 				"[]");
-		response = main.advanceTurn();
-		String elements[] = response.split(System.lineSeparator());
+		responseStr = main.advanceTurn();
+		String elements[] = responseStr.split(System.lineSeparator());
 		assertEquals("New round! Current round: 2", elements[0]);
 		assertEquals("Next in order: Dave", elements[1]);
 		assertTrue(elements[2].contains("2D6 + 0 Fire with 14 to hit") &&
@@ -281,9 +289,9 @@ class MainTest {
 		assertEquals("AC: 19", elements[7]);
 		assertEquals("Speed: 40", elements[8]);
 		response = main.takeReaction(oppAttTest);
-		assertTrue(response.contains("Dave takes reaction"));
-		assertTrue(response.contains("Available attacks for opportunity attack: Bite hits for "));
-		assertTrue(response.contains("\r\nClaw hits for "));
+		assertTrue(response.humanMessage.contains("Dave takes reaction"));
+		assertTrue(response.humanMessage.contains("Available attacks for opportunity attack: Bite hits for "));
+		assertTrue(response.humanMessage.contains("\r\nClaw hits for "));
 		main.shutdown();
 	}
 	
@@ -303,7 +311,7 @@ class MainTest {
 		
 		//Guarentee Gary will have a lower initiative than the dragon
 		String args2[] = {"apc", "Gary", "1"};
-		String result = main.addPlayerCharacter(args2);
+		String result = main.addPlayerCharacter(args2).humanMessage;
 		assertEquals("Added Gary", result);
 		
 		String args3[] = {"listlact", "0"};
@@ -315,7 +323,7 @@ class MainTest {
 		assertTrue(result.contains("The creature makes a Wisdom (Perception) check." + System.lineSeparator()));
 		
 		String args4[] = {"lact", "0", "tail_attack"};
-		result = main.doLegendaryAction(args4);
+		result = main.doLegendaryAction(args4).humanMessage;
 		assertTrue(result.contains("Tail Attack" + System.lineSeparator() + "Tail hits for "));
 		assertTrue(result.contains(" Bludgeoning damage with a hit dice of "));
 		assertFalse(result.contains("Against Gary"));
@@ -328,14 +336,15 @@ class MainTest {
 		assertTrue(result.contains("The creature makes a Wisdom (Perception) check." + System.lineSeparator()));
 		
 		String args5[] = {"lact", "0", "tail_attack", "1"};
-		result = main.doLegendaryAction(args5);
+		result = main.doLegendaryAction(args5).humanMessage;
 		assertTrue(result.contains("Tail Attack" + System.lineSeparator() + "Tail hits for "));
 		assertTrue(result.contains(" Bludgeoning damage with a hit dice of "));
 		assertTrue(result.contains("against target Gary"));
 		
 		String args6[] = {"lact", "0", "wing_attack"};
-		result = main.doLegendaryAction(args6);
-		assertEquals("Insufficient charges for legendary action: wing_attack", result);
+		OutcomeNotification resultNotice = main.doLegendaryAction(args6);
+		assertEquals("Insufficient charges for legendary action: wing_attack", resultNotice.humanMessage);
+		assertFalse(resultNotice.outcome);
 		
 		
 		main.shutdown();
@@ -363,7 +372,8 @@ class MainTest {
 				"Rechargable spell, ready? true" + System.lineSeparator());
 		
 		String args3[] = {"act", "fire_breath"};
-		String actResult = main.doAction(args3);
+		OutcomeNotification notification = main.doAction(args3);
+		String actResult = notification.humanMessage;
 		assertTrue(actResult.contains("Fire Breath: The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one."));
 	
 		listActResults = main.listActions();
@@ -384,26 +394,31 @@ class MainTest {
 		}
 		
 		String args[] = {"setlair", "100"};
-		String message = main.setLair(args);
-		assertEquals("Unable to use provided index: 100", message);
+		OutcomeNotification message = main.setLair(args);
+		assertEquals("Unable to use provided index: 100", message.humanMessage);
+		assertFalse(message.outcome);
 		
 		String args2[] = {"setlair", "dave"};
 		message = main.setLair(args2);
-		assertEquals("Unable to use provided index: dave", message);
+		assertEquals("Unable to use provided index: dave", message.humanMessage);
+		assertFalse(message.outcome);
 		
 		String args3[] = {"setlair", "0"};
 		message = main.setLair(args3);
-		assertEquals("Added Lair: Demogorgon's Lair", message);
+		assertEquals("Added Lair: Demogorgon's Lair", message.humanMessage);
+		assertTrue(message.outcome);
 		
 		main.startCombat();
 		
 		String args4[] = {"lairact", "0"};
 		message = main.lairAct(args4);
-		assertTrue(message.contains("Illusory Duplicate"));
-		assertTrue(message.contains("The creature creates an illusory duplicate of himself, which appears in his own space and lasts until initiative count 20 of the next round. On his turn, the creature can move the illusory duplicate a distance equal to his walking speed (no action required). The first time a creature or object interacts physically with the creature (for example. hitting him with an attack). there is a 50 percent chance that it is the illusory duplicate that is being affected, not the creature himself, in which case the illusion disappears."));
+		assertTrue(message.humanMessage.contains("Illusory Duplicate"));
+		assertTrue(message.humanMessage.contains("The creature creates an illusory duplicate of himself, which appears in his own space and lasts until initiative count 20 of the next round. On his turn, the creature can move the illusory duplicate a distance equal to his walking speed (no action required). The first time a creature or object interacts physically with the creature (for example. hitting him with an attack). there is a 50 percent chance that it is the illusory duplicate that is being affected, not the creature himself, in which case the illusion disappears."));
+		assertTrue(message.outcome);
 		
 		message = main.lairAct(args4);
-		assertEquals("Cannot act this turn, already acted", message);
+		assertEquals("Cannot act this turn, already acted", message.humanMessage);
+		assertFalse(message.outcome);
 		main.shutdown();
 	}
 	
@@ -423,15 +438,18 @@ class MainTest {
 		main.startCombat();
 		
 		String args2[] = {"icast", "levitate"};
-		String results = main.castInnateSpell(args2);
-		assertTrue(results.contains("Levitate: One creature or loose object of your choice that you can see "));
+		OutcomeNotification results = main.castInnateSpell(args2);
+		assertTrue(results.humanMessage.contains("Levitate: One creature or loose object of your choice that you can see "));
+		assertTrue(results.outcome);
 		
 		results = main.castInnateSpell(args2);
-		assertEquals(results, "Cannot cast spell: No more charges for spell: levitate");
+		assertEquals(results.humanMessage, "Cannot cast spell: No more charges for spell: levitate");
+		assertFalse(results.outcome);
 		
 		String args3[] = {"icast", "darkness"};
 		results = main.castInnateSpell(args3);
-		assertEquals(results, "Cannot cast spell: Already concentrating on: Levitate");
+		assertEquals(results.humanMessage, "Cannot cast spell: Already concentrating on: Levitate");
+		assertFalse(results.outcome);
 		main.shutdown();
 	}
 	
@@ -502,12 +520,14 @@ class MainTest {
 		}
 		
 		String args[] = {"bad command"};
-		String response = main.loadMonsterSet(args);
-		assertEquals(response, "lms <filename>");
+		OutcomeNotification responseNotice = main.loadMonsterSet(args);
+		assertEquals(responseNotice.humanMessage, "lms <filename>");
+		assertFalse(responseNotice.outcome);
 		
 		String args2[] = {"lms", "test_data" + File.separator + "monster_sets" + File.separator + "test_monsterset.csv"};
-		response = main.loadMonsterSet(args2);
-		assertEquals(response, "Loaded Successfully");
+		responseNotice = main.loadMonsterSet(args2);
+		assertEquals(responseNotice.humanMessage, "Loaded Successfully");
+		assertTrue(responseNotice.outcome);
 		
 		assertTrue(main.currentInitiativeList.size() == 5);
 		boolean foundDave = false;

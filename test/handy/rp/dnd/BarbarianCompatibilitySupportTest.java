@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import handy.rp.OutcomeNotification;
 import handy.rp.dnd.CharClass.SPELLCASTING_MODIFIER;
 import handy.rp.dnd.ClassFeature.USE_TYPE;
 import handy.rp.dnd.character.PlayerCharacter;
@@ -101,7 +102,7 @@ class BarbarianCompatibilitySupportTest {
 			assertTrue(durnt != null, "Didn't load Barbie reference");
 
 			durnt.expendFeature(0);
-			String successAttack = durnt.attack("warhammer", false, false);
+			String successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.endsWith("Rage hits for an extra 4 damage"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -161,15 +162,16 @@ class BarbarianCompatibilitySupportTest {
 			}
 			//3 attacks, extra attack + reaction
 			assertTrue(durnt != null, "Didn't load Barbie reference");
-			String successAttack = durnt.attack("warhammer", false, false);
+			String successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			String hitStartString = "barbie_the_barbarian strikes with Warhammer with a to hit of ";
 			assertTrue(successAttack.startsWith(hitStartString));
-			successAttack = durnt.attack("warhammer", false, false);
+			successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.startsWith(hitStartString));
-			successAttack = durnt.attack("warhammer", false, false);
+			successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.startsWith(hitStartString));
-			String failedThirdAttack = durnt.attack("warhammer", false, false);
-			assertEquals("No attacks remaining this turn", failedThirdAttack);
+			OutcomeNotification failedThirdAttack= durnt.attack("warhammer", false, false);
+			assertEquals("No attacks remaining this turn", failedThirdAttack.humanMessage);
+			assertFalse(failedThirdAttack.outcome);
 			durnt.notifyNewTurn();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -226,15 +228,16 @@ class BarbarianCompatibilitySupportTest {
 			String attackOptions = durnt.listAttackOptions();
 			String optionElements[] = attackOptions.split(System.lineSeparator());
 			assertEquals("Reaction attack still available and will be automatically used on attack", optionElements[1]);
-			String successAttack = durnt.attack("warhammer", false, false);
+			String successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			String hitStartString = "barbie_the_barbarian strikes with Warhammer with a to hit of ";
 			assertTrue(successAttack.startsWith(hitStartString));
-			successAttack = durnt.attack("warhammer", false, false);
+			successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.startsWith(hitStartString));
-			successAttack = durnt.attack("warhammer", false, false);
+			successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.startsWith(hitStartString));
-			String failedFourthAttack = durnt.attack("warhammer", false, false);
-			assertEquals("No attacks remaining this turn", failedFourthAttack);
+			OutcomeNotification failedFourthAttack = durnt.attack("warhammer", false, false);
+			assertEquals("No attacks remaining this turn", failedFourthAttack.humanMessage);
+			assertFalse(failedFourthAttack.outcome);
 			durnt.notifyNewTurn();
 			
 			ClassFeature feature = durnt.expendFeature(11);//Frenzy
@@ -244,16 +247,17 @@ class BarbarianCompatibilitySupportTest {
 			assertEquals("Bonus action attack still available and will be automatically used on attack", optionElements[1]);
 			assertEquals("Reaction attack still available and will be automatically used on attack", optionElements[2]);
 			assertTrue(feature.allowBonusActionAttack(true));
-			successAttack = durnt.attack("warhammer", false, false);
+			successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.startsWith(hitStartString));
-			successAttack = durnt.attack("warhammer", false, false);
+			successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.startsWith(hitStartString));
-			successAttack = durnt.attack("warhammer", false, false);
+			successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.startsWith(hitStartString));
-			successAttack = durnt.attack("warhammer", false, false);
+			successAttack = durnt.attack("warhammer", false, false).humanMessage;
 			assertTrue(successAttack.startsWith(hitStartString));
 			failedFourthAttack = durnt.attack("warhammer", false, false);
-			assertEquals("No attacks remaining this turn", failedFourthAttack);
+			assertEquals("No attacks remaining this turn", failedFourthAttack.humanMessage);
+			assertFalse(failedFourthAttack.outcome);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -298,7 +302,7 @@ class BarbarianCompatibilitySupportTest {
 			assertEquals(3, durnt.extraCritDice());
 			assertTrue(durnt != null, "Didn't load Durnt reference");
 			for (int i = 0; i < 100; i++) {
-				String successAttack = durnt.attack("warhammer", false, false);
+				String successAttack = durnt.attack("warhammer", false, false).humanMessage;
 				String hitStartString = "barbie_the_barbarian strikes with Warhammer with a to hit of ";
 				assertTrue(successAttack.startsWith(hitStartString));
 				String[] remainingElements = successAttack.substring(hitStartString.length()).split(" ");
