@@ -592,7 +592,11 @@ public class EncounterRunner {
 				break;
 			case "cur":
 			case "currententity":
-				pw.println("Current actor: " + currentEntity.personalName);
+				if (currentEntity != null) {
+					pw.println("Current actor: " + currentEntity.personalName);
+				} else {
+					pw.println("Combat has not started");
+				}
 				break;
 			case "curhp":
 				if (currentEntity instanceof MonsterInstance) {
@@ -696,7 +700,10 @@ public class EncounterRunner {
 		sb.append(System.lineSeparator());
 		sb.append(currentEntity.listStats());
 		sb.append(System.lineSeparator());
-		sb.append(currentEntity.getConditions());
+		Set<CONDITIONS> conditions = currentEntity.getConditions();
+		if (!conditions.isEmpty()) {
+			sb.append(conditions);
+		}
 		return sb.toString();
 	}
 
@@ -745,6 +752,9 @@ public class EncounterRunner {
 	}
 
 	OutcomeNotification rollSave(String[] args) {
+		if (args.length != 2 && args.length != 3) {
+			return new OutcomeNotification("rollSave <str|dex|con|int|wis|cha> <optional - entity index>", false);
+		}
 		String saveType = args[1];
 		Entity entity = currentEntity;
 		if (args.length == 3) {

@@ -73,6 +73,213 @@ class MainTest {
 	}
 	
 	@Test
+	//Originally all testing of the runEncounter loop was done by direct test of child methods
+	//The main loop itself was not tested. This test was created to address some gaps
+	//where validation logic and invocation of those child methods was not performed
+	void testMainLoopCommandIntegration() {
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("amon 0 Dave");
+		builder.println("apc Gary -1");
+		builder.println("apc Sven 99");
+		builder.println("sc");
+		//Test error handling on breaking concentration on spell - breakSpell
+		builder.println("breakSpell");
+		//Test listing of initiative - li
+		builder.println("li");
+		//Test naming of current entity - cur
+		builder.println("cur");
+		//Test stating of current HP - curHp
+		builder.println("curhp");//Non-managed character
+		builder.println("advturn");
+		builder.println("breakSpell");//Test other error handling now that monster is in play
+		builder.println("curhp");//Managed monster
+		//gr - get round
+		builder.println("gr");
+		//lss - no spells
+		builder.println("lss");
+		//rollSave
+		builder.println("rollSave");//Invalid command
+		builder.println("rollSave str");//Assumes current monster, correct roll
+		builder.println("rollSave str 2");//Directs at player, no roll possible
+		//default - unknown command
+		builder.println("Narf");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.runEncounter(builder, br);
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			String line = br.readLine();
+			assertTrue(line.startsWith("Added Adult Red Dragon as Dave with initiative "));
+			line = br.readLine();
+			assertEquals("Added Gary", line);
+			line = br.readLine();
+			assertEquals("Added Sven", line);
+			assertEquals(br.readLine(),
+					"First in order: Sven");
+			
+			line = br.readLine();
+			assertEquals("Cannot list actions, entity is not managed by this tool", line);
+			line = br.readLine();
+			assertEquals("Can only break concentration for monsters", line);
+			line = br.readLine();
+			assertEquals("0 Sven 99", line);
+			line = br.readLine();
+			assertTrue(line.startsWith("1 Dave"));
+			line = br.readLine();
+			assertEquals("2 Gary -1", line);
+			line = br.readLine();
+			assertEquals("Current actor: Sven", line);
+			line = br.readLine();
+			assertEquals("Current actor does not have managed HP", line);
+			//We advanced turn 
+			
+			line = br.readLine();
+			assertEquals("Next in order: Dave", line);
+			line = br.readLine();
+			assertEquals("Attack: 0 Bite hits for 2D6 + 0 Fire with 14 to hit and 2D10 + 8 Piercing with 14 to hit", line);
+			line = br.readLine();
+			assertEquals("Attack: 1 Claw hits for 2D6 + 8 Slashing with 14 to hit", line);
+			line = br.readLine();
+			assertEquals("Attack: 2 Claw hits for 2D6 + 8 Slashing with 14 to hit", line);
+			line = br.readLine();
+			assertEquals("", line);
+			line = br.readLine();
+			assertEquals("", line);
+			line = br.readLine();
+			assertEquals("AC: 19", line);
+			line = br.readLine();
+			assertEquals("Speed: 40", line);
+			line = br.readLine();
+			assertEquals("Attributes: Legendary Resistance (3/Day): If the Dragon fails a saving throw, it can choose to succeed instead.", line);
+			line = br.readLine();
+			assertEquals("Frightful Presence: Each creature of the dragon's choice that is within 120 ft. of the Dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become Frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the Effect on itself on a success. If a creature's saving throw is successful or the Effect ends for it, the creature is immune to the dragon's Frightful Presence for the next 24 hours.", line);
+			line = br.readLine();
+			assertEquals("", line);
+			line = br.readLine();
+			assertEquals("", line);
+			
+			line = br.readLine();
+			assertEquals("Monster was not concetrating on anything", line);
+			line = br.readLine();
+			assertEquals("Current HP: 256", line);
+			line = br.readLine();
+			assertEquals("Current round is: 1", line);
+			line = br.readLine();
+			assertEquals("", line);//Blank line for lss, monster has no slots remaining
+			line = br.readLine();
+			assertEquals("", line);//Blank line for lss, monster has no slots remaining
+			line = br.readLine();
+			assertEquals("rollSave <str|dex|con|int|wis|cha> <optional - entity index>", line);
+			line = br.readLine();
+			assertTrue(line.startsWith("Dave rolls a strength saving throw of "));
+			line = br.readLine();
+			assertEquals("Only monsters and managed players can roll saving throws for now", line);
+			line = br.readLine();
+			assertEquals("Unknown command: Narf", line);
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+		
+		//No log file validation performed here, log validation performed in child method tests
+		
+		main.shutdown();
+	}
+	
+	@Test
+	void testHpModification() {
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("amon 0 Dave");
+		builder.println("apc Gary -1");
+		builder.println("sc");
+		builder.println("hit 4");
+		builder.println("hit 0 25");
+		builder.println("heal 0 24 1");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.runEncounter(builder, br);
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			String line = br.readLine();
+			assertTrue(line.startsWith("Added Adult Red Dragon as Dave with initiative "));
+			line = br.readLine();
+			assertEquals("Added Gary", line);
+			assertEquals(br.readLine(),
+					"First in order: Dave");
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			br.readLine();//Attack info
+			line = br.readLine();
+			assertEquals("hit <monster> <hp> <option - action taker index>", line);
+			line = br.readLine();
+			assertEquals("Current HP: 231", line);
+			line = br.readLine();
+			assertEquals("Current HP: 255", line);
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+		
+		try {
+			BufferedReader fr = new BufferedReader(new FileReader("log"));
+			String next = fr.readLine();
+			assertEquals("Dave is hit for 25", next);
+			next = fr.readLine();
+			assertEquals("Dave HP: 231", next);
+			next = fr.readLine();
+			assertEquals("Dave is healed by Gary for 24", next);
+			next = fr.readLine();
+			assertEquals("Dave HP: 255", next);
+			fr.close();
+		} catch (FileNotFoundException e1) {
+			fail(e1.getMessage());
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+		main.shutdown();
+	}
+	
+	@Test
 	void testSavingThrowSinglePlayerCommonCodeTestWithLogging() {
 		EncounterRunner main = new EncounterRunner();
 		try {
@@ -276,8 +483,7 @@ class MainTest {
 		String responseStr = main.advanceTurn();
 		assertEquals(responseStr, "Next in order: Larry\r\n" + 
 				"Cannot list actions, entity is not managed by this tool\r\n" + 
-				"Cannot list stats, entity is not managed by this tool\r\n" + 
-				"[]");
+				"Cannot list stats, entity is not managed by this tool\r\n");
 		responseStr = main.advanceTurn();
 		String elements[] = responseStr.split(System.lineSeparator());
 		assertEquals("New round! Current round: 2", elements[0]);
