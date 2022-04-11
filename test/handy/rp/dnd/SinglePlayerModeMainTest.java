@@ -55,6 +55,7 @@ class SinglePlayerModeMainTest {
 		PrintWriter builder = new PrintWriter(bos);
 		builder.println("lvl");
 		builder.println("0");
+		builder.println("narf");
 		builder.println("wis");
 		builder.println("WIS");
 		builder.println("quit");
@@ -76,6 +77,8 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "0: Forge Domain Cleric at level 7");
 			assertEquals(br.readLine(), "Select 1 for a new multiclass option");
 
+			assertEquals(br.readLine(), "Select first ability score area (str, dex, con, int, wis, cha): ");
+			assertEquals(br.readLine(), "That wasn't a valid ability score, try again");
 			assertEquals(br.readLine(), "Select first ability score area (str, dex, con, int, wis, cha): ");
 			assertEquals(br.readLine(), "Select second ability score area (str, dex, con, int, wis, cha): ");
 		} catch (IOException ex) {
@@ -122,6 +125,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "hitdice => lists available hit dice");
 			assertEquals("lcr | listclassresources => lists all class resource counters (channel divinity, rage, etc)",
 					br.readLine());
+			assertEquals("learnSpell <spellname> => Wizards add a new spell to their spell books", br.readLine());
 			assertEquals("lf | listfeatures => list features available to character", br.readLine());
 			assertEquals("lfa | listfeaturesactive => list features available to character", br.readLine());
 			assertEquals("lp | listproficiencies => list proficiencies", br.readLine());
@@ -131,6 +135,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "lss | listspellslots => prints list of current monster spell slots");
 			assertEquals(br.readLine(), "lvl | levelup => begins the level up process");
 			assertEquals(br.readLine(), "makeplusweapon <name> <modifier> => temporarily make a plus weapon");
+			assertEquals(br.readLine(), "prepareSpell <spell name> => prepare a spell from known spell list");
 			assertEquals(br.readLine(),
 					"react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 			assertEquals(br.readLine(), "rollInit | rollInitiative => roll initiative for character");
@@ -139,6 +144,7 @@ class SinglePlayerModeMainTest {
 					"shd | spendhitdice => Uses a hit dice. You should only be using this if you are going to take a short rest");
 			assertEquals("skillcheck <skill> => player rolls a skill check", br.readLine());
 			assertEquals(br.readLine(), "sr | shortrest => player takes a short rest");
+			assertEquals(br.readLine(), "swapSpell <current prepared spell> <new prepared spell> => player prepares a spell from list");
 			assertEquals("uf | usefeature <idx> => player uses a feature", br.readLine());
 			assertEquals(br.readLine(), "unmakeplusweapon <name> => remove buff on weapon");
 		} catch (IOException ex) {

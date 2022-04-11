@@ -156,7 +156,8 @@ class MainTest {
 			line = br.readLine();
 			assertEquals("Next in order: Dave", line);
 			line = br.readLine();
-			assertEquals("Attack: 0 Bite hits for 2D6 + 0 Fire with 14 to hit and 2D10 + 8 Piercing with 14 to hit", line);
+			assertTrue(line.equals("Attack: 0 Bite hits for 2D6 + 0 Fire with 14 to hit and 2D10 + 8 Piercing with 14 to hit") ||
+					line.equals("Attack: 0 Bite hits for 2D10 + 8 Piercing with 14 to hit and 2D6 + 0 Fire with 14 to hit"));
 			line = br.readLine();
 			assertEquals("Attack: 1 Claw hits for 2D6 + 8 Slashing with 14 to hit", line);
 			line = br.readLine();

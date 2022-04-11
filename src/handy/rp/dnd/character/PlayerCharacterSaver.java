@@ -16,12 +16,15 @@ import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
 public class PlayerCharacterSaver {
-	
-	//This class is located in the character package so that it can access protected members 
-	//of PlayerCharacter without muddying up the API for PlayerCharacter with a bunch of stuff 
-	//that the rest of the program doesn't need to see. Might think about making this
-	//an anonymous inner class or something...
-	
+
+	// This class is located in the character package so that it can access
+	// protected members
+	// of PlayerCharacter without muddying up the API for PlayerCharacter with a
+	// bunch of stuff
+	// that the rest of the program doesn't need to see. Might think about making
+	// this
+	// an anonymous inner class or something...
+
 	public static void saveCharacter(PlayerCharacter pc, Path path) {
 		try {
 			BufferedWriter writer = Files.newBufferedWriter(path);
@@ -65,6 +68,15 @@ public class PlayerCharacterSaver {
 					pw.println("<spell>" + spell.computerName + "</spell>");
 				}
 				pw.println("</prepared_spells>");
+				
+				if (spellSummary.getKnownSpells() != null && spellSummary.getKnownSpells().size() > 0) {
+					pw.println("<known_spells>");
+					for (Spell spell : spellSummary.getKnownSpells()) {
+						pw.println("<spell>" + spell.computerName + "</spell>");
+					}
+					pw.println("</known_spells>");
+				}
+				
 				pw.println("<spellslots>");
 				for (int idx = 1; idx <= 9; idx++) {
 					SLOTLEVEL level = SLOTLEVEL.get(idx);
@@ -82,9 +94,9 @@ public class PlayerCharacterSaver {
 			for (CharacterWeapon weapon : pc.getWeaponsInfo()) {
 				if (weapon.isProficient) {
 					pw.println("<weapon>");
-					pw.println("<name>"+ weapon.weapon.cname + "</name>");
-					if(weapon.getPlusWeaponMod() != 0) {
-						pw.println("<plusMod>"+ weapon.getPlusWeaponMod() + "</plusMod>");
+					pw.println("<name>" + weapon.weapon.cname + "</name>");
+					if (weapon.getPlusWeaponMod() != 0) {
+						pw.println("<plusMod>" + weapon.getPlusWeaponMod() + "</plusMod>");
 					}
 					pw.println("</weapon>");
 				}
@@ -94,9 +106,9 @@ public class PlayerCharacterSaver {
 			for (CharacterWeapon weapon : pc.getWeaponsInfo()) {
 				if (!weapon.isProficient) {
 					pw.println("<weapon>");
-					pw.println("<name>"+ weapon.weapon.cname + "</name>");
-					if(weapon.getPlusWeaponMod() != 0) {
-						pw.println("<plusMod>"+ weapon.getPlusWeaponMod() + "</plusMod>");
+					pw.println("<name>" + weapon.weapon.cname + "</name>");
+					if (weapon.getPlusWeaponMod() != 0) {
+						pw.println("<plusMod>" + weapon.getPlusWeaponMod() + "</plusMod>");
 					}
 					pw.println("</weapon>");
 				}
@@ -120,7 +132,7 @@ public class PlayerCharacterSaver {
 				pw.println("</resource>");
 			}
 			pw.println("</class-resources>");
-			
+
 			pw.println("<feature-charges>");
 			for (ClassFeature feature : pc.featureCharges.keySet()) {
 				pw.println("<feature>");
@@ -129,9 +141,9 @@ public class PlayerCharacterSaver {
 				pw.println("</feature>");
 			}
 			pw.println("</feature-charges>");
-			
+
 			pw.println("<current_hitdice>");
-			for(DICE_TYPE dice : pc.hitDice.keySet()) {
+			for (DICE_TYPE dice : pc.hitDice.keySet()) {
 				pw.println("<dice>");
 				pw.println("<type>" + dice.name() + "</type>");
 				pw.println("<count>" + pc.hitDice.get(dice) + "</count>");
@@ -139,6 +151,17 @@ public class PlayerCharacterSaver {
 			}
 			pw.println("</current_hitdice>");
 
+			for(GenericFeatureData gfd : pc.featureDataSet) {
+				pw.println("<feature_data>");
+				pw.println("<feature_name>" + gfd.featureName + "</feature_name>");
+				int counter = 1;
+				for(String data: gfd.getFeatureData()) {
+					String fieldName = "field" + counter;
+					pw.println("<" + fieldName +">" + data + "</" +fieldName + ">");
+				}
+				pw.println("</feature_data>");
+			}
+			
 			pw.println("</player_char>");
 			pw.flush();
 			pw.close();

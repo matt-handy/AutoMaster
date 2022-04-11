@@ -2,7 +2,13 @@ package handy.rp.dnd;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +27,7 @@ import handy.rp.dnd.character.PlayerCharacterSaver;
 import handy.rp.dnd.character.Proficiency;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
+import handy.rp.xml.MonsterParser;
 import handy.rp.xml.PlayerCharacterParser;
 
 class PlayerCharacterTest {
@@ -36,6 +43,9 @@ class PlayerCharacterTest {
 					StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "barbie.xml"), Paths.get("player_chars", "barbie.xml"),
 					StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "wizzie.xml"), Paths.get("player_chars", "wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "lil_wizzie.xml"), Paths.get("player_chars", "lil_wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "unprep_lil_wizzie.xml"), Paths.get("player_chars", "unprep_lil_wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -52,6 +62,9 @@ class PlayerCharacterTest {
 					StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "durnt_lvl1.xml"), Paths.get("player_chars", "durnt_lvl1.xml"),
 					StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "wizzie.xml"), Paths.get("player_chars", "wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "lil_wizzie.xml"), Paths.get("player_chars", "lil_wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("player_chars_backup", "unprep_lil_wizzie.xml"), Paths.get("player_chars", "unprep_lil_wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -357,6 +370,107 @@ class PlayerCharacterTest {
 		}
 	}
 
+	
+	@Test 
+	void testGenericFeatureDataSaves(){
+		try {
+			List<PlayerCharacter> characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");
+			PlayerCharacter durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("wizzie_the_wizard")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Wizzie reference");
+
+			//This will test that feature data is saved and acted on.
+			assertTrue(durnt.hasFeatureToIgnoreSpellCast("shield"));
+			assertTrue(durnt.hasFeatureToIgnoreSpellCast("detect_magic"));
+			assertTrue(durnt.hasFeatureToIgnoreSpellCast("fireball"));
+			assertTrue(durnt.hasFeatureToIgnoreSpellCast("fly"));
+			assertFalse(durnt.hasFeatureToIgnoreSpellCast("command"));
+			
+			//Trigger Save
+			durnt.takeLongRest();
+
+			durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("wizzie_the_wizard")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Wizzie reference");
+
+			assertTrue(durnt.hasFeatureToIgnoreSpellCast("shield"));
+			assertTrue(durnt.hasFeatureToIgnoreSpellCast("detect_magic"));
+			assertTrue(durnt.hasFeatureToIgnoreSpellCast("fireball"));
+			assertTrue(durnt.hasFeatureToIgnoreSpellCast("fly"));
+			assertFalse(durnt.hasFeatureToIgnoreSpellCast("command"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	void testLearnsCantripAndNewSpellsOnLevelup() {
+		//Validate the UI on level up to learn a cantrip
+		//Try selecting a fake cantrip
+		//Select correct cantrip
+		EncounterRunner main = new EncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("lvl");
+		builder.println("0");
+		builder.println("int");
+		builder.println("int");
+		builder.println("fart");
+		builder.println("fire_bolt");
+		builder.println("light");
+		builder.println("fly");
+		builder.println("levitate");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.singlePlayerMode(builder, br, "lilwizzie_the_wizard");
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertEquals(br.readLine(), "0: Evocation Wizard at level 3");
+			assertEquals(br.readLine(), "Select 1 for a new multiclass option");
+			assertEquals(br.readLine(), "Select first ability score area (str, dex, con, int, wis, cha): ");
+			assertEquals(br.readLine(), "Select second ability score area (str, dex, con, int, wis, cha): ");
+			assertEquals(br.readLine(), "You learned a new cantrip! Enter the name below (format: toll_the_dead)");
+			assertEquals(br.readLine(), "Error, try again: ");
+			assertEquals(br.readLine(), "Spell not found");
+			assertEquals(br.readLine(), "Error, try again: ");
+			assertEquals(br.readLine(), "Spell already known");
+			assertEquals(br.readLine(), "Spell learned: Light");
+			assertEquals(br.readLine(), "You learned a new spell! Enter the name below (format: fireball)");
+			assertEquals(br.readLine(), "Spell learned: Fly");
+			assertEquals(br.readLine(), "You learned a new spell! Enter the name below (format: fireball)");
+			assertEquals(br.readLine(), "Spell learned: Levitate");
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
 	@Test
 	void testClassResourceSave() {
 		try {
@@ -843,6 +957,7 @@ class PlayerCharacterTest {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			//System.out.println("-" + MonsterParser.readFile(file) + "-");
 			fail(e.getMessage());
 		}
 	}

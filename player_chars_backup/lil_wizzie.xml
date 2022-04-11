@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<player_char>
+	<name>lilwizzie_the_wizard</name>
+	<classInfo>
+		<levels>3</levels>
+		<class>Evocation Wizard</class>
+	</classInfo>
+	<maxhp>24</maxhp>
+	<currenthp>24</currenthp>
+	<str>10</str>
+	<dex>14</dex>
+	<con>15</con>
+	<int>16</int>
+	<wis>8</wis>
+	<cha>12</cha>
+	<skill_proficiencies>
+	<proficiency>acrobatics</proficiency>
+	<proficiency>medicine</proficiency>
+	<proficiency>persuasion</proficiency>
+	<proficiency>survival</proficiency>
+	</skill_proficiencies>
+	<cantrips>
+		<spell>mage_hand</spell>
+		<spell>fire_bolt</spell>
+		<spell>toll_the_dead</spell>
+	</cantrips>
+	<proficient_weapons>
+		<weapon>
+			<name>dagger</name>
+		</weapon>
+	</proficient_weapons>
+	<prepared_spells>
+		<spell>bane</spell>
+		<spell>shield</spell>
+		<spell>catapult</spell>
+		<spell>detect_magic</spell>
+		<spell>grease</spell>
+		<spell>fog_cloud</spell>
+	</prepared_spells>
+	<known_spells>
+		<spell>bane</spell>
+		<spell>shield</spell>
+		<spell>catapult</spell>
+		<spell>detect_magic</spell>
+		<spell>grease</spell>
+		<spell>fog_cloud</spell>
+		<spell>jump</spell>
+		<spell>magic_missile</spell>
+	</known_spells>
+</player_char>

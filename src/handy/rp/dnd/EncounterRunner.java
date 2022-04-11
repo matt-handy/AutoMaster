@@ -166,6 +166,7 @@ public class EncounterRunner {
 				pw.println("hitdice => lists available hit dice");
 				pw.println(
 						"lcr | listclassresources => lists all class resource counters (channel divinity, rage, etc)");
+				pw.println("learnSpell <spellname> => Wizards add a new spell to their spell books");
 				pw.println("lf | listfeatures => list features available to character");
 				pw.println("lfa | listfeaturesactive => list features available to character");
 				pw.println("lp | listproficiencies => list proficiencies");
@@ -175,6 +176,7 @@ public class EncounterRunner {
 				pw.println("lss | listspellslots => prints list of current monster spell slots");
 				pw.println("lvl | levelup => begins the level up process");
 				pw.println("makeplusweapon <name> <modifier> => temporarily make a plus weapon");
+				pw.println("prepareSpell <spell name> => prepare a spell from known spell list");
 				pw.println(
 						"react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 				pw.println("rollInit | rollInitiative => roll initiative for character");
@@ -183,6 +185,7 @@ public class EncounterRunner {
 						"shd | spendhitdice => Uses a hit dice. You should only be using this if you are going to take a short rest");
 				pw.println("skillcheck <skill> => player rolls a skill check");
 				pw.println("sr | shortrest => player takes a short rest");
+				pw.println("swapSpell <current prepared spell> <new prepared spell> => player prepares a spell from list");
 				pw.println("uf | usefeature <idx> => player uses a feature");
 				pw.println("unmakeplusweapon <name> => remove buff on weapon");
 				break;
@@ -239,6 +242,22 @@ public class EncounterRunner {
 			case "lcr":
 			case "listclassresources":
 				pw.println(pc.printResourceCounters());
+				break;
+			case "learnSpell":
+				if (args.length == 2) {
+					boolean foundWizard = false;
+					for (CharClass cClass : pc.getClassInfo().keySet()) {
+						if (cClass.getRootClass().name.equalsIgnoreCase("Wizard")) {
+							foundWizard = true;
+							pw.println(pc.learnSpell(args[1]).humanMessage);
+						}
+					}
+					if (!foundWizard) {
+						pw.println("Only wizards can learn spells");
+					}
+				} else {
+					pw.println("learnSpell <spell name>");
+				}
 				break;
 			case "lf":
 			case "listfeatures":
@@ -328,6 +347,22 @@ public class EncounterRunner {
 			case "cast":
 				pw.println(castSpell(args).humanMessage);
 				break;
+			case "prepareSpell":
+				if (args.length == 2) {
+					boolean foundWizard = false;
+					for (CharClass cClass : pc.getClassInfo().keySet()) {
+						if (cClass.getRootClass().name.equalsIgnoreCase("Wizard")) {
+							foundWizard = true;
+							pw.println(pc.addPreparedSpell(args[1]).humanMessage);
+						}
+					}
+					if (!foundWizard) {
+						pw.println("Only wizards can prepare spells for now");
+					}
+				} else {
+					pw.println("prepareSpell <spell name>");
+				}
+				break;
 			case "savethrow":
 				if (args.length != 2) {
 					pw.println("savethrow <STR|DEX|CON|INT|WIS|CHA> => roll a saving throw for character");
@@ -351,6 +386,22 @@ public class EncounterRunner {
 					pw.println("Player is out of hit dice");
 				}
 				break;
+			case "swapSpell":
+				if (args.length == 3) {
+					boolean foundWizard = false;
+					for (CharClass cClass : pc.getClassInfo().keySet()) {
+						if (cClass.getRootClass().name.equalsIgnoreCase("Wizard")) {
+							foundWizard = true;
+							pw.println(pc.swapPreparedSpell(args[1], args[2]).humanMessage);
+						}
+					}
+					if (!foundWizard) {
+						pw.println("Only wizards can swap spells for now");
+					}
+				} else {
+					pw.println("swapSpell <old spell name> <new spell name>");
+				}
+				break;
 			case "ur":
 			case "usefeature":
 				if (args.length != 2) {
@@ -358,7 +409,11 @@ public class EncounterRunner {
 				} else {
 					try {
 						int idx = Integer.parseInt(args[1]);
-						pw.println(pc.expendFeature(idx).printEffect());
+						ClassFeature feature = pc.expendFeature(idx); 
+						pw.println(feature.printEffect());
+						if(feature.recoverSpellSlotsOnShortRest) {
+							pc.spellSlotRecoveryWizard(feature, br, pw);
+						}
 					} catch (Exception ex) {
 						pw.println("Unable to use feature at idx: " + args[1] + " " + ex.getMessage());
 					}

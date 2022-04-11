@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<subclass>
+	<parent>Wizard</parent>
+	<name>Evocation Wizard</name>
+	<feature>
+		<name>Evocation Savant</name>
+		<minLevel>2</minLevel>
+		<description>Beginning when you select this school at 2nd level, the gold and time you must spend to copy an evocation spell into your spellbook is halved.</description>
+	</feature>
+	<feature>
+		<name>Sculpt Spells</name>
+		<minLevel>2</minLevel>
+		<description>Beginning at 2nd level, you can create pockets of relative safety within the effects of your evocation spells. When you cast an evocation spell that affects other creatures that you can see, you can choose a number of them equal to 1 + the spell’s level. The chosen creatures automatically succeed on their saving throws against the spell, and they take no damage if they would normally take half damage on a successful save.</description>
+	</feature>
+	<feature>
+		<name>Potent Cantrip</name>
+		<minLevel>6</minLevel>
+		<description>Starting at 6th level, your damaging cantrips affect even creatures that avoid the brunt of the effect. When a creature succeeds on a saving throw against your cantrip, the creature takes half the cantrip’s damage (if any) but suffers no additional effect from the cantrip.</description>
+		<half_damage_cantrip>true</half_damage_cantrip>
+	</feature>
+	<feature>
+		<name>Empowered Evocation</name>
+		<minLevel>10</minLevel>
+		<description>Note: this effect must be applied manually. Beginning at 10th level, you can add your Intelligence modifier to one damage roll of any wizard evocation spell you cast.</description>
+	</feature>
+	<feature>
+		<name>Overchannel</name>
+		<minLevel>14</minLevel>
+		<description>Note: this effect must be applied manually. Starting at 14th level, you can increase the power of your simpler spells. When you cast a wizard spell of 1st through 5th level that deals damage, you can deal maximum damage with that spell.
+The first time you do so, you suffer no adverse effect. If you use this feature again before you finish a long rest, you take 2d12 necrotic damage for each level of the spell, immediately after you cast it. Each time you use this feature again before finishing a long rest, the necrotic damage per spell level increases by 1d12. This damage ignores resistance and immunity.</description>
+	</feature>
+</subclass>

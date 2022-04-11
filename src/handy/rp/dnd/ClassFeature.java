@@ -31,6 +31,20 @@ public class ClassFeature {
 	public final ClassFeatureHealingModifier selfHealingMod;
 	public final boolean isTogglableFeature;
 	
+	public final boolean recoverSpellSlotsOnShortRest;
+	
+	//This flag is used for if the feature allows for cantrips which otherwise would fail on save to 
+	//Still do damage.
+	public final boolean halfDamageCantrip;
+	
+	//This flag is used for if the feature allows for spells to be cast without using a spell slot
+	//GenericFeatureData is used to determine which spells apply.
+	public final boolean allowsFreeSpells;
+	
+	//This flag is used for when the feature allows some spells to be case without preparation
+	//or counting to prep limit
+	//GenericFeatureData is used to determine which spells apply.
+	public final boolean allowsNoPrepSpells;
 	
 	public CharClass parent;
 	
@@ -45,7 +59,8 @@ public class ClassFeature {
 			DAMAGE_EFFECT damageEffect, Map<Integer, CoreDamageComponent> levelsToSpecialDamage, USE_TYPE useType, RECHARGE_DURATION recharge, int maxCharges,
 			ClassFeatureHealingModifier otherHealingMod, ClassFeatureHealingModifier selfHealingMod, int extraAttacksUnconditional,
 			Map<Integer, Integer> levelsToExtraCritDice, boolean initiativeAdvantage, boolean isTogglableFeature,
-			boolean allowBonusActionAttack, boolean allowReactionAttack) {
+			boolean allowBonusActionAttack, boolean allowReactionAttack, boolean recoverSpellSlotsOnShortRest, boolean halfDamageCantrip, boolean allowsFreeSpells, 
+			boolean allowsNoPrepSpells) {
 		this.featureName = featureName;
 		this.effectString = effectString;
 		this.damageEffect = damageEffect;
@@ -63,6 +78,10 @@ public class ClassFeature {
 		this.isTogglableFeature = isTogglableFeature; 
 		this.allowBonusActionAttack = allowBonusActionAttack;
 		this.allowReactionAttack = allowReactionAttack;
+		this.recoverSpellSlotsOnShortRest = recoverSpellSlotsOnShortRest;
+		this.halfDamageCantrip = halfDamageCantrip;
+		this.allowsFreeSpells = allowsFreeSpells;
+		this.allowsNoPrepSpells = allowsNoPrepSpells;
 	}
 	
 	public boolean allowBonusActionAttack(boolean isToggled) {

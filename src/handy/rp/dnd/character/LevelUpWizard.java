@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import handy.rp.OutcomeNotification;
 import handy.rp.dnd.CharClass;
 import handy.rp.dnd.CharSubClass;
 import handy.rp.dnd.CharClass.ESSENTIAL_ABILITY_SCORE;
@@ -110,6 +111,8 @@ public class LevelUpWizard {
 				try {
 					first = ESSENTIAL_ABILITY_SCORE.getFromName(response);
 				} catch (IllegalArgumentException ex) {
+					pw.println("That wasn't a valid ability score, try again");
+					pw.flush();
 					continue;
 				}
 				pw.println("Select second ability score area (str, dex, con, int, wis, cha): ");
@@ -119,6 +122,8 @@ public class LevelUpWizard {
 				try {
 					second = ESSENTIAL_ABILITY_SCORE.getFromName(response);
 				} catch (IllegalArgumentException ex) {
+					pw.println("That wasn't a valid ability score, try again");
+					pw.flush();
 					continue;
 				}
 				userHasGivenValidInput = true;
@@ -135,6 +140,38 @@ public class LevelUpWizard {
 		asis.add(second);
 		pc.levelUp(extraHp, asis, chosenClass, chosenClassNewNum);
 
-		// Do I learn new spells? Add support for a wizard to capture spell learning
+		if(pc.getSpellSummary().getKnownCantrips().size() < pc.getMaxCantrips()) {
+			pw.println("You learned a new cantrip! Enter the name below (format: toll_the_dead)");
+			pw.flush();
+			learnSpellSubwizard(pc, pw, br);
+		}
+		
+		for(idx = 0; idx < spellsToLearn(chosenClass); idx++) {
+			pw.println("You learned a new spell! Enter the name below (format: fireball)");
+			pw.flush();
+			learnSpellSubwizard(pc, pw, br);
+		}
+	}
+	
+	private static void learnSpellSubwizard(PlayerCharacter pc, PrintWriter pw, BufferedReader br) throws IOException{
+		String response = br.readLine();
+		OutcomeNotification notification = pc.learnSpell(response);
+		while(!notification.outcome) {
+			pw.println("Error, try again: ");
+			pw.println(notification.humanMessage);
+			pw.flush();
+			response = br.readLine();
+			notification = pc.learnSpell(response);
+		}
+		pw.println(notification.humanMessage);
+		pw.flush();
+	}
+	
+	private static int spellsToLearn(CharClass cClass) {
+		if(cClass.getRootClass().name.equalsIgnoreCase("wizard")) {
+			return 2;
+		}else {
+			return 0;
+		}
 	}
 }

@@ -22,7 +22,6 @@
 	<cantrips>
 		<spell>spare_the_dying</spell>
 		<spell>sacred_flame</spell>
-		<spell>thaumaturgy</spell>
 		<spell>toll_the_dead</spell>
 	</cantrips>
 	<prepared_spells>

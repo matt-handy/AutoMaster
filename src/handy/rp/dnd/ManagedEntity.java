@@ -38,9 +38,10 @@ public abstract class ManagedEntity extends Entity {
 	protected boolean bonusActedThisTurn = false;
 	protected boolean hasCastNonCantripSpell = false;
 
-	private Map<Spell.SLOTLEVEL, List<Spell>> spells;
+	protected Map<Spell.SLOTLEVEL, List<Spell>> spells;
+	protected Map<Spell.SLOTLEVEL, List<Spell>> freeSpells = new HashMap<>();
 	protected Map<Spell.SLOTLEVEL, Integer> slotsRemaining;
-	private Map<Spell.SLOTLEVEL, Integer> maxSpellSlots;
+	protected Map<Spell.SLOTLEVEL, Integer> maxSpellSlots;
 
 	public ManagedEntity(String personalName, int str, int dex, int con, int inte, int wis, int cha,
 			Map<Spell.SLOTLEVEL, List<Spell>> spells, Map<Spell.SLOTLEVEL, Integer> slotMapping, int maxHp,
@@ -63,7 +64,7 @@ public abstract class ManagedEntity extends Entity {
 		replenishSpellSlots();
 		this.spellcastingMod = spellcastingMod;
 	}
-	
+
 	public void regenerateSpellSlots(Map<Spell.SLOTLEVEL, Integer> slotMapping) {
 		maxSpellSlots = new HashMap<>();
 		if (slotMapping != null) {
@@ -72,11 +73,11 @@ public abstract class ManagedEntity extends Entity {
 			}
 		}
 	}
-	
+
 	public int getMaxHp() {
 		return maxHP;
 	}
-	
+
 	public int getStr() {
 		return str;
 	}
@@ -170,7 +171,7 @@ public abstract class ManagedEntity extends Entity {
 			throw new IllegalArgumentException("This player does not cast spells");
 		}
 	}
-	
+
 	public void breakConcentration() {
 		concentratedSpell = null;
 	}
@@ -192,7 +193,7 @@ public abstract class ManagedEntity extends Entity {
 			} else {
 				currentInitiative = candInitiative2;
 			}
-		}else {
+		} else {
 			currentInitiative = candInitiative1;
 		}
 		return currentInitiative;
@@ -219,6 +220,15 @@ public abstract class ManagedEntity extends Entity {
 
 		for (Spell.SLOTLEVEL slot : spells.keySet()) {
 			List<Spell> spells = this.spells.get(slot);
+			sb.append("Level: " + slot.toString() + " ");
+			for (Spell spell : spells) {
+				sb.append(spell.readableName + ", ");
+			}
+			sb.append(System.lineSeparator());
+		}
+		
+		for (Spell.SLOTLEVEL slot : freeSpells.keySet()) {
+			List<Spell> spells = this.freeSpells.get(slot);
 			sb.append("Level: " + slot.toString() + " ");
 			for (Spell spell : spells) {
 				sb.append(spell.readableName + ", ");
@@ -269,8 +279,10 @@ public abstract class ManagedEntity extends Entity {
 		slots.addAll(slotsRemaining.keySet());
 		Collections.sort(slots);
 		for (Spell.SLOTLEVEL slot : slots) {
-			sb.append("Level " + slot.level + ": " + slotsRemaining.get(slot));
-			sb.append(", ");
+			if(slot != SLOTLEVEL.CANTRIP) {
+				sb.append("Level " + slot.level + ": " + slotsRemaining.get(slot));
+				sb.append(", ");
+			}
 		}
 		sb.append(System.lineSeparator());
 		return sb.toString();
@@ -324,9 +336,15 @@ public abstract class ManagedEntity extends Entity {
 				}
 			}
 			hasCastNonCantripSpell = true;
-			slotsRemaining.put(slotLvl, slotsRemaining.get(slotLvl) - 1);
+			if (!(hasFeatureToIgnoreSpellCast(targetSpell.computerName) && slotLvl == targetSpell.minimumLevel)) {
+				slotsRemaining.put(slotLvl, slotsRemaining.get(slotLvl) - 1);
+			}
 			return targetSpell;
 		}
+	}
+
+	protected boolean hasFeatureToIgnoreSpellCast(String spellName) {
+		return false;
 	}
 
 	public Spell expendSpell(String spellName) {
@@ -341,9 +359,17 @@ public abstract class ManagedEntity extends Entity {
 		return getSpellByCompName(spellName).minimumLevel.level;
 	}
 
-	private Spell getSpellByCompName(String spellName) {
+	protected Spell getSpellByCompName(String spellName) {
 		for (Spell.SLOTLEVEL slot : spells.keySet()) {
 			List<Spell> spells = this.spells.get(slot);
+			for (Spell spell : spells) {
+				if (spell.computerName.equals(spellName)) {
+					return spell;
+				}
+			}
+		}
+		for (Spell.SLOTLEVEL slot : freeSpells.keySet()) {
+			List<Spell> spells = this.freeSpells.get(slot);
 			for (Spell spell : spells) {
 				if (spell.computerName.equals(spellName)) {
 					return spell;

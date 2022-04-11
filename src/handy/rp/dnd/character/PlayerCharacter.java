@@ -1,5 +1,8 @@
 package handy.rp.dnd.character;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +30,7 @@ import handy.rp.dnd.attacks.CharacterWeapon;
 import handy.rp.dnd.attacks.Weapon.WEAPON_ATTRIBUTES;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
+import handy.rp.xml.PlayerCharacterParser;
 
 public class PlayerCharacter extends ManagedEntity {
 
@@ -47,22 +51,31 @@ public class PlayerCharacter extends ManagedEntity {
 	private List<SKILL_CHECK> skillProficiencies;
 
 	private CharacterSpellInfo spellSummary = null;
-	
+
 	private final Path originalFile;
-	
+
 	private Set<Proficiency> armorProficiencies;
 	private Set<Proficiency> toolProficiencies;
+
+	private List<Spell> knownSpells;
 	
+	private int maxCantrips = 0;
+	
+	protected Set<GenericFeatureData> featureDataSet;
+
 	public PlayerCharacter(String personalName, int str, int dex, int con, int inte, int wis, int cha,
 			Map<SLOTLEVEL, List<Spell>> spells, Map<CharClass, Integer> classes, int maxHp, int currentHp,
-			List<CharacterWeapon> weapons, List<SKILL_CHECK> skillProficiencies, Path originalFile, Map<Spell.SLOTLEVEL, Integer> restoredSlotsRemaining,
-			List<String> activeFeatureNames, Map<String, Integer> classToResource, Map<String, Integer> featureCharges,
-			Map<DICE_TYPE, Integer> hitDice) {
-		super(personalName, str, dex, con, inte, wis, cha, spells, deriveSlotMapping(classes), maxHp, currentHp, refreshSpellCastingModifier(classes));
+			List<CharacterWeapon> weapons, List<SKILL_CHECK> skillProficiencies, Path originalFile,
+			Map<Spell.SLOTLEVEL, Integer> restoredSlotsRemaining, List<String> activeFeatureNames,
+			Map<String, Integer> classToResource, Map<String, Integer> featureCharges, Map<DICE_TYPE, Integer> hitDice,
+			List<Spell> knownSpells, Set<GenericFeatureData> featureDataSet) {
+		super(personalName, str, dex, con, inte, wis, cha, spells, deriveSlotMapping(classes), maxHp, currentHp,
+				refreshSpellCastingModifier(classes));
 		this.classes = classes;
 		this.weapons = weapons;
 		this.skillProficiencies = skillProficiencies;
 		attacksPerTurn = 1;
+		
 		refreshSavingThrowProficiencies();
 		notifyNewTurn();
 		replenishHitDice();
@@ -72,91 +85,352 @@ public class PlayerCharacter extends ManagedEntity {
 		refreshClassResourceCounters();
 		attacksRemaining = attacksPerTurn;
 		activeFeatures = new ArrayList<>();
-		populateSpellInfo(spells);
-		this.originalFile = originalFile;
 		
-		if(restoredSlotsRemaining != null) {
+		populateSpellInfo(spells);
+		updateMaxCantripsKnown();
+		validateMaxCantripsCurrently();//Throws exception and will not construct object with too many
+		
+		this.originalFile = originalFile;
+		this.knownSpells = knownSpells;
+		this.featureDataSet = featureDataSet;
+
+		if (restoredSlotsRemaining != null) {
 			restoreSpellSlots(restoredSlotsRemaining);
 		}
-		if(activeFeatureNames != null) {
+		if (activeFeatureNames != null) {
 			restoreFeatures(activeFeatureNames);
 		}
 		restoreClassResources(classToResource);
 		restoreFeatureCharges(featureCharges);
 		restoreHitDice(hitDice);
 		regenerateProficiencies();
+		populateFeatureBasedFreeSpells();
 	}
 	
+	public int getMaxCantrips() {
+		return maxCantrips;
+	}
+	
+	private void updateMaxCantripsKnown() {
+		int temp = 0;
+		
+		for(CharClass cClass : classes.keySet()) {
+			int classLevel = classes.get(cClass);
+			if(cClass.slotsPerLevel != null && cClass.slotsPerLevel.get(classLevel) != null) {
+				temp += cClass.slotsPerLevel.get(classLevel).get(SLOTLEVEL.CANTRIP);
+			}
+		}
+		
+		maxCantrips = temp;
+	}
+	
+	private void validateMaxCantripsCurrently() {
+		if(spellSummary.getKnownCantrips().size() > maxCantrips) {
+			throw new IllegalArgumentException("Character " + personalName + " created with too many cantrips for level: " + spellSummary.getKnownCantrips().size() + " vs allowed " + maxCantrips);
+		}
+	}
+	
+	private void populateFeatureBasedFreeSpells() {
+		for(ClassFeature feature : applicableFeatures) {
+			if(feature.allowsNoPrepSpells) {
+				for(GenericFeatureData gfd : featureDataSet) {
+					if(gfd.featureName.equals(feature.featureName)) {
+						for(String spellName : gfd.getFeatureData()) {
+							for(Spell spell : knownSpells) {
+								if(spell.computerName.equals(spellName)) {
+									PlayerCharacterParser.addSpell(freeSpells, spell);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public boolean hasFeatureToIgnoreSpellCast(String spellName) {
+		
+		List<ClassFeature> desiredFeatures = new ArrayList<>();
+		for(ClassFeature feature:  applicableFeatures) {
+			if(feature.allowsFreeSpells) {
+				desiredFeatures.add(feature);
+			}
+		}
+		for(ClassFeature feature : desiredFeatures) {
+			if(hasSpellInFeatureDataset(feature.featureName, spellName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean hasSpellInFeatureDataset(String featureName, String spellName) {
+		for(GenericFeatureData gfd : featureDataSet) {
+			if(gfd.featureName.equals(featureName) && gfd.hasFeatureDataString(spellName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public String printSpellsKnown() {
+		if (knownSpells.size() == 0) {
+			return "No spells known";
+		} else {
+			StringBuilder sb = new StringBuilder();
+			for (Spell spell : knownSpells) {
+				sb.append(
+						spell.readableName + " (Level " + spell.minimumLevel.toString() + ")" + System.lineSeparator());
+			}
+			return sb.toString();
+		}
+	}
+
+	public OutcomeNotification learnSpell(String spellName) {
+		Spell newSpell = null;
+		for (Spell spell : PlayerCharacterParser.spellsList) {
+			if (spell.computerName.equals(spellName)) {
+				newSpell = spell;
+			}
+		}
+		if (newSpell == null) {
+			return new OutcomeNotification("Spell not found", false);
+		} else if (knownSpells.contains(newSpell) || spellSummary.getKnownCantrips().contains(newSpell)) {
+			return new OutcomeNotification("Spell already known", false);
+		} else {
+			if(newSpell.minimumLevel == SLOTLEVEL.CANTRIP) {
+				spells.get(SLOTLEVEL.CANTRIP).add(newSpell);
+			}else{
+				knownSpells.add(newSpell);
+			}
+			
+			populateSpellInfo(spells);
+			PlayerCharacterSaver.saveCharacter(this, originalFile);
+			return new OutcomeNotification("Spell learned: " + newSpell.readableName, true);
+		}
+	}
+
+	public OutcomeNotification swapPreparedSpell(String oldSpell, String newSpell) {
+		Spell newPreparedSpell = null;
+		for (Spell spell : knownSpells) {
+			if (spell.computerName.equals(newSpell)) {
+				newPreparedSpell = spell;
+			}
+		}
+		if (newPreparedSpell == null) {
+			return new OutcomeNotification("Unknown spell: " + newSpell, false);
+		}
+		if (newPreparedSpell.minimumLevel == SLOTLEVEL.CANTRIP) {
+			return new OutcomeNotification("Cannot swap cantrip: " + newSpell, false);
+		}
+		boolean foundRemovedOldSpell = false;
+		for (SLOTLEVEL level : spells.keySet()) {
+			Spell toRemove = null;
+			for (Spell spell : spells.get(level)) {
+				if (spell.computerName.equals(oldSpell)) {
+					toRemove = spell;
+					if (toRemove.minimumLevel == SLOTLEVEL.CANTRIP) {
+						return new OutcomeNotification("Cannot swap cantrip: " + oldSpell, false);
+					}
+				}
+			}
+			if (toRemove != null) {
+				spells.get(level).remove(toRemove);
+				foundRemovedOldSpell = true;
+			}
+		}
+		if (!foundRemovedOldSpell) {
+			return new OutcomeNotification("Spell not prepared: " + oldSpell, false);
+		}
+		spells.get(newPreparedSpell.minimumLevel).add(newPreparedSpell);
+		populateSpellInfo(spells);
+		PlayerCharacterSaver.saveCharacter(this, originalFile);
+		return new OutcomeNotification("Spell prepared: " + newPreparedSpell.readableName, true);
+	}
+
+	private boolean addSlots(int slotNumber, int slotCount) {
+		SLOTLEVEL slotLevel = SLOTLEVEL.get(slotNumber);
+		if (maxSpellSlots.get(slotLevel) == null) {
+			return false;
+		}
+		if (slotsRemaining.get(slotLevel) + slotCount > maxSpellSlots.get(slotLevel)) {
+			return false;
+		} else {
+			slotsRemaining.put(slotLevel, slotsRemaining.get(slotLevel) + slotCount);
+			return true;
+		}
+	}
+
+	public void spellSlotRecoveryWizard(ClassFeature feature, BufferedReader br, PrintWriter pw) throws IOException {
+		pw.println("Welcome to the Spell Slot Recovery Wizard");
+		// Get total number of slots available for recovery
+		int availableForRecovery = getCasterLevel() / 2;
+		int recovered = 0;
+		pw.println(
+				"Enter the slots you would like to recover, such as: 'slot 1 2' to recover two #1 slots, or 'slot 2' to recover a single #2 slot");
+		pw.println("Enter 'quit' to return to play");
+		String line = br.readLine();
+		while (!line.equalsIgnoreCase("quit") && availableForRecovery > recovered) {
+			String elements[] = line.split(" ");
+			if (elements.length == 2) {
+				try {
+					int desiredSlot = Integer.parseInt(elements[1]);
+					if (recovered + (1 * desiredSlot) > availableForRecovery) {
+						pw.println("Insufficient recovery slots available");
+					} else {
+					if (addSlots(desiredSlot, 1)) {
+						pw.println("Slots recovered");
+						recovered+=(1 * desiredSlot);
+					} else {
+						pw.println("Unable to recover desired slots");
+					}
+					}
+				} catch (NumberFormatException ex) {
+					pw.println("Unknown command: invalid number format");
+				}
+			} else if (elements.length == 3) {
+				try {
+					int desiredSlot = Integer.parseInt(elements[1]);
+					int desiredSlotCount = Integer.parseInt(elements[2]);
+					if (recovered + (desiredSlotCount * desiredSlot) > availableForRecovery) {
+						pw.println("Insufficient recovery slots available");
+					} else {
+						if (addSlots(desiredSlot, desiredSlotCount)) {
+							pw.println("Slots recovered");
+							recovered += desiredSlotCount * desiredSlot;
+						} else {
+							pw.println("Unable to recover desired slots");
+						}
+					}
+				} catch (NumberFormatException ex) {
+					pw.println("Unknown command: invalid number format");
+				}
+			} else {
+				pw.println("Unknown command");
+			}
+			line = br.readLine();
+		}
+		pw.println("Your slot work is complete");
+	}
+
+	public OutcomeNotification addPreparedSpell(String spellName) {
+		Spell newPreparedSpell = null;
+		for (Spell spell : knownSpells) {
+			if (spell.computerName.equals(spellName)) {
+				newPreparedSpell = spell;
+			}
+		}
+		if (newPreparedSpell == null) {
+			return new OutcomeNotification("Unknown spell: " + spellName, false);
+		}
+		if (currentSpellsPrepared() >= maxSpellsToPrepare()) {
+			return new OutcomeNotification("Player already has maximum spell number prepared", false);
+		}
+		spells.get(newPreparedSpell.minimumLevel).add(newPreparedSpell);
+		populateSpellInfo(spells);
+		PlayerCharacterSaver.saveCharacter(this, originalFile);
+		return new OutcomeNotification("Spell prepared: " + newPreparedSpell.readableName, true);
+	}
+
+	private int currentSpellsPrepared() {
+		int currentCount = 0;
+		for (SLOTLEVEL lvl : spells.keySet()) {
+			if (lvl != SLOTLEVEL.CANTRIP) {
+				currentCount += spells.get(lvl).size();
+			}
+		}
+		return currentCount;
+	}
+
+	private int maxSpellsToPrepare() {
+		int prepareables = 0;
+		for (CharClass cClass : classes.keySet()) {
+			if (cClass.spellcastingModifier != SPELLCASTING_MODIFIER.NA) {
+				prepareables += classes.get(cClass);
+				if (cClass.spellcastingModifier == SPELLCASTING_MODIFIER.CHARISMA) {
+					prepareables += Helpers.getModifierFromAbility(cha);
+				} else if (cClass.spellcastingModifier == SPELLCASTING_MODIFIER.WISDOM) {
+					prepareables += Helpers.getModifierFromAbility(wis);
+				} else {// Intelligence
+					prepareables += Helpers.getModifierFromAbility(inte);
+				}
+			}
+		}
+		return prepareables;
+	}
+
 	private void regenerateProficiencies() {
 		armorProficiencies = new HashSet<>();
 		toolProficiencies = new HashSet<>();
-		for(CharClass cClass : classes.keySet()) {
-			if(!cClass.getRootClass().name.equals(cClass.name)) {
-				for(Proficiency prof : cClass.getRootClass().getArmorProficiencies()) {
+		for (CharClass cClass : classes.keySet()) {
+			if (!cClass.getRootClass().name.equals(cClass.name)) {
+				for (Proficiency prof : cClass.getRootClass().getArmorProficiencies()) {
 					armorProficiencies.add(prof);
 				}
-				for(Proficiency prof : cClass.getRootClass().getToolProficiencies()) {
+				for (Proficiency prof : cClass.getRootClass().getToolProficiencies()) {
 					toolProficiencies.add(prof);
 				}
 			}
-			for(Proficiency prof : cClass.getArmorProficiencies()) {
+			for (Proficiency prof : cClass.getArmorProficiencies()) {
 				armorProficiencies.add(prof);
 			}
-			for(Proficiency prof : cClass.getToolProficiencies()) {
+			for (Proficiency prof : cClass.getToolProficiencies()) {
 				toolProficiencies.add(prof);
 			}
 		}
 	}
-	
-	public Set<Proficiency> getArmorProficiencies(){
+
+	public Set<Proficiency> getArmorProficiencies() {
 		return new HashSet<>(armorProficiencies);
 	}
-	
-	public Set<Proficiency> getToolProficiencies(){
+
+	public Set<Proficiency> getToolProficiencies() {
 		return new HashSet<>(toolProficiencies);
 	}
-	
+
 	private void restoreHitDice(Map<DICE_TYPE, Integer> hitDice) {
-		for(DICE_TYPE dice : hitDice.keySet()) {
+		for (DICE_TYPE dice : hitDice.keySet()) {
 			this.hitDice.put(dice, hitDice.get(dice));
 		}
 	}
-	
+
 	public void levelUp(int hpIncrease, List<ESSENTIAL_ABILITY_SCORE> asis, CharClass cClass, int newLevel) {
-		//Fix HP
+		// Fix HP
 		maxHP += hpIncrease;
 		currentHp += hpIncrease;
-		
-		//Adjust asis
-		for(ESSENTIAL_ABILITY_SCORE asi : asis) {
-			if(asi == ESSENTIAL_ABILITY_SCORE.STRENGTH) {
+
+		// Adjust asis
+		for (ESSENTIAL_ABILITY_SCORE asi : asis) {
+			if (asi == ESSENTIAL_ABILITY_SCORE.STRENGTH) {
 				str++;
-			}else if(asi == ESSENTIAL_ABILITY_SCORE.DEXTERITY) {
+			} else if (asi == ESSENTIAL_ABILITY_SCORE.DEXTERITY) {
 				dex++;
-			}else if(asi == ESSENTIAL_ABILITY_SCORE.CONSTITUTION) {
+			} else if (asi == ESSENTIAL_ABILITY_SCORE.CONSTITUTION) {
 				con++;
-			}else if(asi == ESSENTIAL_ABILITY_SCORE.INTELLIGENCE) {
+			} else if (asi == ESSENTIAL_ABILITY_SCORE.INTELLIGENCE) {
 				inte++;
-			}else if(asi == ESSENTIAL_ABILITY_SCORE.WISDOM) {
+			} else if (asi == ESSENTIAL_ABILITY_SCORE.WISDOM) {
 				wis++;
-			}else if(asi == ESSENTIAL_ABILITY_SCORE.CHARISMA) {
+			} else if (asi == ESSENTIAL_ABILITY_SCORE.CHARISMA) {
 				cha++;
 			}
 		}
-		
-		//For cClass, do a simple lookup and increment. If cClass level is > 1 and not present, then replaces
-		//parent
-		if(classes.keySet().contains(cClass) || newLevel == 1) {
+
+		// For cClass, do a simple lookup and increment. If cClass level is > 1 and not
+		// present, then replaces
+		// parent
+		if (classes.keySet().contains(cClass) || newLevel == 1) {
 			classes.put(cClass, newLevel);
-		}else { //It's a new subclass
-			if(classes.containsKey(cClass.getRootClass())) {
+		} else { // It's a new subclass
+			if (classes.containsKey(cClass.getRootClass())) {
 				classes.remove(cClass.getRootClass());
 				classes.put(cClass, newLevel);
-			}else {
+			} else {
 				throw new IllegalArgumentException("Improper class given, no parent available for replacement");
 			}
 		}
-		
+
 		regenerateSpellSlots(deriveSlotMapping(classes));
 		spellcastingMod = refreshSpellCastingModifier(classes);
 		refreshSavingThrowProficiencies();
@@ -167,61 +441,63 @@ public class PlayerCharacter extends ManagedEntity {
 		refreshExtraAttacksPerTurn();
 		refreshClassResourceCounters();
 		regenerateProficiencies();
-		
+		updateMaxCantripsKnown();
+
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 	}
-	
+
 	private void restoreFeatureCharges(Map<String, Integer> featureCharges) {
-		for(String featureName : featureCharges.keySet()) {
-			for(ClassFeature feature : applicableFeatures) {
-				if(featureName.equals(feature.featureName)) {
+		for (String featureName : featureCharges.keySet()) {
+			for (ClassFeature feature : applicableFeatures) {
+				if (featureName.equals(feature.featureName)) {
 					this.featureCharges.put(feature, featureCharges.get(featureName));
 				}
 			}
 		}
 	}
-	
+
 	private void restoreClassResources(Map<String, Integer> classToResource) {
-		for(String rsc : classToResource.keySet()) {
-			for(CharClass cClass : classes.keySet()) {
-				if(rsc.equals(cClass.getRootClass().name)) {
+		for (String rsc : classToResource.keySet()) {
+			for (CharClass cClass : classes.keySet()) {
+				if (rsc.equals(cClass.getRootClass().name)) {
 					classResourceCounters.put(cClass.getRootClass(), classToResource.get(rsc));
 				}
 			}
 		}
 	}
-	
+
 	private void restoreFeatures(List<String> activeFeatureNames) {
-		for(String name : activeFeatureNames) {
-			for(ClassFeature feature : applicableFeatures) {
-				if(feature.featureName.equals(name)) {
+		for (String name : activeFeatureNames) {
+			for (ClassFeature feature : applicableFeatures) {
+				if (feature.featureName.equals(name)) {
 					activeFeatures.add(feature);
 				}
 			}
 		}
 	}
-	
-	//TODO: This object faciliates XML output. homogenize the XML input as well to also use this object to streamline
-	//spell info transmission
+
+	// TODO: This object faciliates XML output. homogenize the XML input as well to
+	// also use this object to streamline
+	// spell info transmission
 	private void populateSpellInfo(Map<SLOTLEVEL, List<Spell>> spells) {
-		if(spells != null) {
+		if (spells != null) {
 			List<Spell> cantrips = new ArrayList<>();
 			List<Spell> preparedSpell = new ArrayList<>();
-			for(SLOTLEVEL level : spells.keySet()) {
+			for (SLOTLEVEL level : spells.keySet()) {
 				List<Spell> spellList = spells.get(level);
-				if(spellList != null) {
-					if(level == SLOTLEVEL.CANTRIP) {
+				if (spellList != null) {
+					if (level == SLOTLEVEL.CANTRIP) {
 						cantrips.addAll(spellList);
-					}else {
+					} else {
 						preparedSpell.addAll(spellList);
 					}
 				}
 			}
-			spellSummary = new CharacterSpellInfo(cantrips, preparedSpell, null);
+			spellSummary = new CharacterSpellInfo(cantrips, preparedSpell, knownSpells);
 			spellSummary.update(slotsRemaining);
 		}
 	}
-	
+
 	@Override
 	public Spell expendSpell(String spellName) {
 		Spell spell = super.expendSpell(spellName);
@@ -229,7 +505,7 @@ public class PlayerCharacter extends ManagedEntity {
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 		return spell;
 	}
-	
+
 	@Override
 	public Spell expendSpell(String spellName, Spell.SLOTLEVEL slotLvl) {
 		Spell spell = super.expendSpell(spellName, slotLvl);
@@ -238,6 +514,15 @@ public class PlayerCharacter extends ManagedEntity {
 		return spell;
 	}
 	
+	public boolean featuresAllowHalfDamageCantrip() {
+		for(ClassFeature feature : applicableFeatures) {
+			if(feature.halfDamageCantrip) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public CharacterSpellInfo getSpellSummary() {
 		return spellSummary;
 	}
@@ -262,8 +547,8 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 		return d20Roll;
 	}
-	
-	public List<SKILL_CHECK> getSkillProficiencies(){
+
+	public List<SKILL_CHECK> getSkillProficiencies() {
 		return new ArrayList<>(skillProficiencies);
 	}
 
@@ -311,14 +596,12 @@ public class PlayerCharacter extends ManagedEntity {
 	public List<ClassFeature> getFeatureMeleeBonus() {
 		List<ClassFeature> features = new ArrayList<>();
 		for (ClassFeature feature : applicableFeatures) {
-			if (feature.damageEffect == DAMAGE_EFFECT.MELEE &&
-					!feature.isTogglableFeature) {
+			if (feature.damageEffect == DAMAGE_EFFECT.MELEE && !feature.isTogglableFeature) {
 				features.add(feature);
 			}
 		}
-		for(ClassFeature feature : activeFeatures) {
-			if (feature.damageEffect == DAMAGE_EFFECT.MELEE &&
-					!features.contains(feature)) {
+		for (ClassFeature feature : activeFeatures) {
+			if (feature.damageEffect == DAMAGE_EFFECT.MELEE && !features.contains(feature)) {
 				features.add(feature);
 			}
 		}
@@ -367,7 +650,7 @@ public class PlayerCharacter extends ManagedEntity {
 		if (feature.isTogglableFeature && !activeFeatures.contains(feature)) {
 			activeFeatures.add(feature);
 		}
-		
+
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 		return feature;
 	}
@@ -481,23 +764,23 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 	}
 
-	public Map<CharClass, Integer> getClassInfo(){
+	public Map<CharClass, Integer> getClassInfo() {
 		return new HashMap<>(classes);
 	}
-	
+
 	@Override
 	public String hit(int hp) {
 		String retVal = super.hit(hp);
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 		return retVal;
 	}
-	
+
 	@Override
 	public void heal(int hp) {
 		super.heal(hp);
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 	}
-	
+
 	private void replenishHitDice() {
 		hitDice = new HashMap<>();
 		for (CharClass cClass : classes.keySet()) {
@@ -547,24 +830,24 @@ public class PlayerCharacter extends ManagedEntity {
 		sb.append("Available attacks: " + attacksRemaining + " out of a max per turn: " + attacksPerTurn);
 		sb.append(System.lineSeparator());
 
-		if(canBonusAttack()) {
-			if(bonusActedThisTurn) {
+		if (canBonusAttack()) {
+			if (bonusActedThisTurn) {
 				sb.append("Bonus action attack depleted.");
-			}else {
+			} else {
 				sb.append("Bonus action attack still available and will be automatically used on attack");
 			}
 			sb.append(System.lineSeparator());
 		}
-		
-		if(canReactAttack()) {
-			if(!canTakeReaction()) {
+
+		if (canReactAttack()) {
+			if (!canTakeReaction()) {
 				sb.append("Reaction attack depleted.");
-			}else {
+			} else {
 				sb.append("Reaction attack still available and will be automatically used on attack");
 			}
 			sb.append(System.lineSeparator());
 		}
-		
+
 		for (CharacterWeapon weapon : weapons) {
 			if (weapon.isProficient) {
 				sb.append("(proficient) ");
@@ -575,11 +858,11 @@ public class PlayerCharacter extends ManagedEntity {
 
 		return sb.toString();
 	}
-	
-	public List<CharacterWeapon> getWeaponsInfo(){
+
+	public List<CharacterWeapon> getWeaponsInfo() {
 		return new ArrayList<>(weapons);
 	}
-	
+
 	private boolean canBonusAttack() {
 		for (ClassFeature feature : activeFeatures) {
 			if (feature.allowBonusActionAttack(true)) {
@@ -593,7 +876,7 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 		return false;
 	}
-	
+
 	private boolean canReactAttack() {
 		for (ClassFeature feature : activeFeatures) {
 			if (feature.allowReactionAttack(true)) {
@@ -617,12 +900,12 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 		if (weapon == null) {
 			return new OutcomeNotification("Character does not have this weapon available", false);
-		}else {
+		} else {
 			weapon.setTempPlusWeaponMod(plusModifier);
-			return  new OutcomeNotification("Character weapon modifier has been set", true);
+			return new OutcomeNotification("Character weapon modifier has been set", true);
 		}
 	}
-	
+
 	public OutcomeNotification resetTempPlusWeapon(String weaponName) {
 		CharacterWeapon weapon = null;
 		for (CharacterWeapon cur : weapons) {
@@ -632,40 +915,40 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 		if (weapon == null) {
 			return new OutcomeNotification("Character does not have this weapon available", false);
-		}else {
+		} else {
 			weapon.resetTempPlusWeapon();
-			return  new OutcomeNotification("Character weapon modifier has been reset", true);
+			return new OutcomeNotification("Character weapon modifier has been reset", true);
 		}
 	}
-	
+
 	public OutcomeNotification attack(String weaponName, boolean throwWeapon, boolean isOpportunityAttack) {
 		boolean usingBonusAttack = false;
 		boolean usingReaction = false;
-		if(isOpportunityAttack) {
-			if(canTakeReaction()) {
+		if (isOpportunityAttack) {
+			if (canTakeReaction()) {
 				usingReaction = true;
-			}else {
+			} else {
 				return new OutcomeNotification("Character has already used reaction", false);
 			}
-		}else {
-		if (actedThisTurn) {
-			if (attacksRemaining == attacksPerTurn) {
-				return new OutcomeNotification("Character has already acted this turn", false);
-			}else if(attacksRemaining == 0) {
-				//We've taken an action, and are seeing if we can use a
-				//bonus action
-				if (!bonusActedThisTurn) {
-					usingBonusAttack = canBonusAttack();
-				}
-				if(!usingBonusAttack && canTakeReaction()) {
-					usingReaction = canReactAttack();
+		} else {
+			if (actedThisTurn) {
+				if (attacksRemaining == attacksPerTurn) {
+					return new OutcomeNotification("Character has already acted this turn", false);
+				} else if (attacksRemaining == 0) {
+					// We've taken an action, and are seeing if we can use a
+					// bonus action
+					if (!bonusActedThisTurn) {
+						usingBonusAttack = canBonusAttack();
+					}
+					if (!usingBonusAttack && canTakeReaction()) {
+						usingReaction = canReactAttack();
+					}
 				}
 			}
-		}
 
-		if (attacksRemaining == 0 && !usingBonusAttack & !usingReaction) {
-			return new OutcomeNotification("No attacks remaining this turn", false);
-		}
+			if (attacksRemaining == 0 && !usingBonusAttack & !usingReaction) {
+				return new OutcomeNotification("No attacks remaining this turn", false);
+			}
 		}
 
 		CharacterWeapon weapon = null;
@@ -675,13 +958,14 @@ public class PlayerCharacter extends ManagedEntity {
 			}
 		}
 		if (weapon == null) {
-			return new OutcomeNotification( "Character does not have this weapon available", false);
+			return new OutcomeNotification("Character does not have this weapon available", false);
 		}
 		try {
-			String attackInfo = weapon.weapon.rollAttack(this, weapon.isProficient, throwWeapon, weapon.getCurrentPlusWeaponMod());
+			String attackInfo = weapon.weapon.rollAttack(this, weapon.isProficient, throwWeapon,
+					weapon.getCurrentPlusWeaponMod());
 			if (usingBonusAttack) {
 				bonusActedThisTurn = true;
-			}else if(usingReaction) {
+			} else if (usingReaction) {
 				reactionsRemaining--;
 			} else {
 				actedThisTurn = true;
@@ -691,7 +975,7 @@ public class PlayerCharacter extends ManagedEntity {
 					attacksRemaining--;
 				}
 			}
-			return new OutcomeNotification(attackInfo, true) ;
+			return new OutcomeNotification(attackInfo, true);
 		} catch (Exception ex) {
 			return new OutcomeNotification(ex.getMessage(), false);
 		}
@@ -712,8 +996,9 @@ public class PlayerCharacter extends ManagedEntity {
 		return baseModifier;
 	}
 
-	//TODO: Support automatic saving rolls on hit for things like Relentless Rage or the Orc equivalent
-	
+	// TODO: Support automatic saving rolls on hit for things like Relentless Rage
+	// or the Orc equivalent
+
 	public Integer getSpellToHit() {
 		if (spellcastingMod == SPELLCASTING_MODIFIER.NA) {
 			return null;
@@ -786,13 +1071,13 @@ public class PlayerCharacter extends ManagedEntity {
 	private static Map<SLOTLEVEL, Integer> deriveSlotMapping(Map<CharClass, Integer> classes) {
 		Map<SLOTLEVEL, Integer> slotMapping = new HashMap<>();
 		for (CharClass cClass : classes.keySet()) {
-			//Skip this class if they have spells/slots
-			if(cClass.slotsPerLevel == null) {
+			// Skip this class if they have spells/slots
+			if (cClass.slotsPerLevel == null) {
 				continue;
 			}
 			Integer classLevel = classes.get(cClass);
 			for (SLOTLEVEL level : SLOTLEVEL.values()) {
-				if(cClass.slotsPerLevel.get(classLevel) == null) {
+				if (cClass.slotsPerLevel.get(classLevel) == null) {
 					continue;
 				}
 				if (slotMapping.containsKey(level)) {
@@ -825,19 +1110,19 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 		return critDice;
 	}
-	
+
 	public String printProficiencies() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Skill Proficiencies" + System.lineSeparator());
-		for(SKILL_CHECK skill : skillProficiencies) {
+		for (SKILL_CHECK skill : skillProficiencies) {
 			sb.append(skill.name() + System.lineSeparator());
 		}
 		sb.append("Armor Proficiencies" + System.lineSeparator());
-		for(Proficiency prof : armorProficiencies) {
+		for (Proficiency prof : armorProficiencies) {
 			sb.append(prof.name + System.lineSeparator());
 		}
 		sb.append("Tool Proficiencies" + System.lineSeparator());
-		for(Proficiency prof : toolProficiencies) {
+		for (Proficiency prof : toolProficiencies) {
 			sb.append(prof.name + System.lineSeparator());
 		}
 		return sb.toString();

@@ -270,6 +270,26 @@ public class ClassParser {
 				reactionAttack = true;
 			}
 		}
+		
+		boolean halfDamageCantrip = false;
+		if (slotsXmlElem.getElementsByTagName("half_damage_cantrip") != null
+				&& slotsXmlElem.getElementsByTagName("half_damage_cantrip").item(0) != null) {
+			String val = slotsXmlElem.getElementsByTagName("half_damage_cantrip").item(0).getTextContent();
+
+			if (val.equalsIgnoreCase("true")) {
+				halfDamageCantrip = true;
+			}
+		}
+		
+		boolean allowsFreeSpells = false;
+		if (slotsXmlElem.getElementsByTagName("allows_free_spells") != null
+				&& slotsXmlElem.getElementsByTagName("allows_free_spells").item(0) != null) {
+			String val = slotsXmlElem.getElementsByTagName("allows_free_spells").item(0).getTextContent();
+
+			if (val.equalsIgnoreCase("true")) {
+				allowsFreeSpells = true;
+			}
+		}
 
 		boolean initiativeAdvantage = false;
 		if (slotsXmlElem.getElementsByTagName("initiative_advantage") != null
@@ -281,6 +301,26 @@ public class ClassParser {
 			}
 		}
 
+		boolean allowsNoPrepSpells = false;
+		if (slotsXmlElem.getElementsByTagName("allows_no_prep_spells") != null
+				&& slotsXmlElem.getElementsByTagName("allows_no_prep_spells").item(0) != null) {
+			String val = slotsXmlElem.getElementsByTagName("allows_no_prep_spells").item(0).getTextContent();
+
+			if (val.equalsIgnoreCase("true")) {
+				allowsNoPrepSpells = true;
+			}
+		}
+		
+		boolean recoverSpellSlotsOnShortRest = false;
+		if (slotsXmlElem.getElementsByTagName("short_rest_spell_recharge") != null
+				&& slotsXmlElem.getElementsByTagName("short_rest_spell_recharge").item(0) != null) {
+			String val = slotsXmlElem.getElementsByTagName("short_rest_spell_recharge").item(0).getTextContent();
+
+			if (val.equalsIgnoreCase("true")) {
+				recoverSpellSlotsOnShortRest = true;
+			}
+		}
+		
 		int minLevel = Integer.parseInt(slotsXmlElem.getElementsByTagName("minLevel").item(0).getTextContent());
 
 		RECHARGE_DURATION recharge = RECHARGE_DURATION.NA;
@@ -413,12 +453,19 @@ public class ClassParser {
 		ClassFeature newFeature = new ClassFeature(name, description, minLevel, classResourceChargesUsed, damageEffect,
 				levelsToSpecialDamage, useType, recharge, charges, otherHealingModifier, selfHealingModifier,
 				extraAttacksUnconditional, levelsToExtraCritDice, initiativeAdvantage, toggle, bonusActionAttack,
-				reactionAttack);
+				reactionAttack, recoverSpellSlotsOnShortRest, halfDamageCantrip, allowsFreeSpells, allowsNoPrepSpells);
 		return newFeature;
 	}
 
 	public static Map<SLOTLEVEL, Integer> getSlotLevels(Element slotsXmlElem) {
 		Map<SLOTLEVEL, Integer> slots = new HashMap<>();
+		NodeList cantripNode = slotsXmlElem.getElementsByTagName("cantrips");
+		if (cantripNode != null && cantripNode.getLength() > 0) {
+			String cantrip = cantripNode.item(0).getTextContent();
+			Integer cantripNum = Integer.parseInt(cantrip);
+			slots.put(SLOTLEVEL.CANTRIP, cantripNum);
+		}
+		
 		NodeList level1NumNode = slotsXmlElem.getElementsByTagName("slevel1");
 		if (level1NumNode != null && level1NumNode.getLength() > 0) {
 			String level1String = level1NumNode.item(0).getTextContent();

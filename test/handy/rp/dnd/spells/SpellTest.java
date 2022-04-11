@@ -340,6 +340,17 @@ class SpellTest {
 	}
 
 	@Test
+	void testCatapultDoesNoDamageOnSave() {
+		try {
+			Spell catapult = SpellParser.load("spells\\catapult.xml", false);
+			String result = catapult.cast(SLOTLEVEL.ONE, 1, 14, 7, 4);
+			assertTrue(result.endsWith("Spell Save: 14, no damage on save."));
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
 	void testLoadAllActionSpells() {
 		try {
 			List<ActionSpell> allLoaded = SpellParser.loadAllActionSpells("action_spells");

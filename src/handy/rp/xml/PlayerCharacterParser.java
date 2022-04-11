@@ -6,8 +6,10 @@ import java.io.StringReader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +25,7 @@ import handy.rp.dnd.CharClass;
 import handy.rp.dnd.SkillCheckInfo.SKILL_CHECK;
 import handy.rp.dnd.attacks.CharacterWeapon;
 import handy.rp.dnd.attacks.Weapon;
+import handy.rp.dnd.character.GenericFeatureData;
 import handy.rp.dnd.character.PlayerCharacter;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
@@ -72,6 +75,24 @@ public class PlayerCharacterParser {
 
 		List<CharacterWeapon> weapons = new ArrayList<>();
 
+		NodeList featureDataList = document.getElementsByTagName("feature_data");
+		Set<GenericFeatureData> featureDataSet = new HashSet<>();
+		for(int idx = 0; idx < featureDataList.getLength(); idx++) {
+			Node item = featureDataList.item(idx);
+			Element itemElement = (Element) item;
+			String featureName = itemElement.getElementsByTagName("feature_name").item(0).getTextContent();
+			GenericFeatureData gfd = new GenericFeatureData(featureName);
+			int counter = 1;
+			Node next = itemElement.getElementsByTagName("field"+counter).item(0);
+			while(next != null) {
+				gfd.addFeatureData(next.getTextContent());
+				
+				counter++;
+				next = itemElement.getElementsByTagName("field"+counter).item(0);
+			}
+			featureDataSet.add(gfd);
+		}
+		
 		NodeList profWeapList = document.getElementsByTagName("proficient_weapons");
 		if (profWeapList != null && profWeapList.item(0) != null) {
 			Node profWeapListItem = profWeapList.item(0);
@@ -247,23 +268,15 @@ public class PlayerCharacterParser {
 			}
 		}
 		
+		List<Spell> knownSpells = getSpellsUnderHeader(document, "known_spells");
 		Map<SLOTLEVEL, List<Spell>> spells = new HashMap<>();
-		NodeList spellEnums = document.getElementsByTagName("spell");
-		for (int idx = 0; idx < spellEnums.getLength(); idx++) {
-			Node spellItem = spellEnums.item(idx);
-			Element spellElement = (Element) spellItem;
-			String spellName = spellElement.getTextContent();
-			boolean foundSpell = false;
-			for (Spell spell : spellsList) {
-				if (spell.computerName.equalsIgnoreCase(spellName)) {
-					addSpell(spells, spell);
-					foundSpell = true;
-					break;
-				}
-			}
-			if (!foundSpell) {
-				throw new IllegalArgumentException("Unknown spell: " + spellName);
-			}
+		List<Spell> cantrips = getSpellsUnderHeader(document, "cantrips");
+		for(Spell spell : cantrips) {
+			addSpell(spells, spell);
+		}
+		List<Spell> preparedSpells = getSpellsUnderHeader(document, "prepared_spells");
+		for(Spell spell : preparedSpells) {
+			addSpell(spells, spell);
 		}
 		
 		Map<DICE_TYPE, Integer> hitDice = new HashMap<>();
@@ -302,7 +315,32 @@ public class PlayerCharacterParser {
 					"character " + name + " has no identifiable class. Much like your mother.");
 		}
 
-		return new PlayerCharacter(name, str, dex, con, inte, wis, cha, spells, classes, maxHp, currentHp, weapons, skillProficiencies, Paths.get(file), savedSpellSlots, activeFeatureNames, classToResource, featureCharges, hitDice);
+		return new PlayerCharacter(name, str, dex, con, inte, wis, cha, spells, classes, maxHp, currentHp, weapons, skillProficiencies, Paths.get(file), savedSpellSlots, activeFeatureNames, classToResource, featureCharges, hitDice, knownSpells, featureDataSet);
+	}
+	
+	private static List<Spell> getSpellsUnderHeader(Document document, String header){
+		List<Spell> spells = new ArrayList<>();
+		NodeList skillProfs = document.getElementsByTagName(header);
+		if (skillProfs != null && skillProfs.item(0) != null) {
+			Node item = skillProfs.item(0);
+			Element elem = (Element) item;
+			NodeList list = elem.getElementsByTagName("spell");
+			for (int idx = 0; idx < list.getLength(); idx++) {
+				String spellName = list.item(idx).getTextContent();
+				boolean foundSpell = false;
+				for (Spell spell : spellsList) {
+					if (spell.computerName.equalsIgnoreCase(spellName)) {
+						spells.add(spell);
+						foundSpell = true;
+						break;
+					}
+				}
+				if (!foundSpell) {
+					throw new IllegalArgumentException("Unknown spell: " + spellName);
+				}
+			}
+		}
+		return spells;
 	}
 
 	public static void addSpell(Map<SLOTLEVEL, List<Spell>> spells, Spell spell) {

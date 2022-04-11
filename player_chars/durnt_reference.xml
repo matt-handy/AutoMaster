@@ -1,57 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <player_char>
-	<name>Durnt-reference</name>
-	<classInfo>
-		<levels>7</levels>
-		<class>Forge Domain Cleric</class>
-	</classInfo>
-	<maxhp>51</maxhp>
-	<currenthp>51</currenthp>
-	<str>14</str>
-	<dex>12</dex>
-	<con>15</con>
-	<int>8</int>
-	<wis>18</wis>
-	<cha>10</cha>
-	<skill_proficiencies>
-	<proficiency>acrobatics</proficiency>
-	<proficiency>medicine</proficiency>
-	<proficiency>persuasion</proficiency>
-	<proficiency>survival</proficiency>
-	</skill_proficiencies>
-	<cantrips>
-		<spell>spare_the_dying</spell>
-		<spell>sacred_flame</spell>
-		<spell>thaumaturgy</spell>
-		<spell>toll_the_dead</spell>
-	</cantrips>
-	<prepared_spells>
-		<spell>identify</spell>
-		<spell>searing_smite</spell>
-		<spell>bane</spell>
-		<spell>cure_wounds</spell>
-		<spell>shield_of_faith</spell>
-		<spell>detect_good_and_evil</spell>
-		<spell>guiding_bolt</spell>
-		<spell>heat_metal</spell>
-		<spell>magic_weapon</spell>
-		<spell>hold_person</spell>
-		<spell>zone_of_truth</spell>
-		<spell>spirit_guardians</spell>
-		<spell>magic_circle</spell>
-		<spell>protection_from_energy</spell>
-		<spell>guardian_of_faith</spell>
-		<spell>death_ward</spell>
-	</prepared_spells>
-	<proficient_weapons>
-		<weapon>
-			<name>warhammer</name>
-		</weapon>
-		<weapon>
-			<name>light_crossbow</name>
-		</weapon>
-		<weapon>
-			<name>dagger</name>
-		</weapon>
-	</proficient_weapons>
+<name>Durnt-reference</name>
+<classInfo>
+<levels>7</levels>
+<class>Forge Domain Cleric</class>
+</classInfo>
+<maxhp>51</maxhp>
+<currenthp>51</currenthp>
+<str>14</str>
+<dex>12</dex>
+<con>15</con>
+<int>8</int>
+<wis>18</wis>
+<cha>10</cha>
+<skill_proficiencies>
+<proficiency>acrobatics</proficiency>
+<proficiency>medicine</proficiency>
+<proficiency>persuasion</proficiency>
+<proficiency>survival</proficiency>
+</skill_proficiencies>
+<cantrips>
+<spell>spare_the_dying</spell>
+<spell>sacred_flame</spell>
+<spell>thaumaturgy</spell>
+<spell>toll_the_dead</spell>
+</cantrips>
+<prepared_spells>
+<spell>spirit_guardians</spell>
+<spell>magic_circle</spell>
+<spell>protection_from_energy</spell>
+<spell>elemental_weapon</spell>
+<spell>identify</spell>
+<spell>searing_smite</spell>
+<spell>bane</spell>
+<spell>cure_wounds</spell>
+<spell>shield_of_faith</spell>
+<spell>detect_good_and_evil</spell>
+<spell>guiding_bolt</spell>
+<spell>guardian_of_faith</spell>
+<spell>death_ward</spell>
+<spell>fabricate</spell>
+<spell>wall_of_fire</spell>
+<spell>heat_metal</spell>
+<spell>magic_weapon</spell>
+<spell>hold_person</spell>
+<spell>zone_of_truth</spell>
+</prepared_spells>
+<spellslots>
+<slevel1>4</slevel1>
+<slevel2>3</slevel2>
+<slevel3>3</slevel3>
+<slevel4>1</slevel4>
+</spellslots>
+<proficient_weapons>
+<weapon>
+<name>warhammer</name>
+</weapon>
+<weapon>
+<name>light_crossbow</name>
+</weapon>
+<weapon>
+<name>dagger</name>
+</weapon>
+</proficient_weapons>
+<nonproficient_weapons>
+</nonproficient_weapons>
+<class-resources>
+<resource>
+<class>Cleric</class>
+<counter>2</counter>
+</resource>
+</class-resources>
+<feature-charges>
+<feature>
+<name>Blessing of the Forge</name>
+<charges>1</charges>
+</feature>
+</feature-charges>
+<current_hitdice>
+<dice>
+<type>D8</type>
+<count>7</count>
+</dice>
+</current_hitdice>
 </player_char>

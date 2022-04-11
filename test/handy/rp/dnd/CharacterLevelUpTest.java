@@ -87,8 +87,10 @@ class CharacterLevelUpTest {
 			assertEquals(br.readLine(), "Select 1 for a new multiclass option");
 
 			assertEquals(br.readLine(), "Select first ability score area (str, dex, con, int, wis, cha): ");
+			assertEquals(br.readLine(), "That wasn't a valid ability score, try again");
 			assertEquals(br.readLine(), "Select first ability score area (str, dex, con, int, wis, cha): ");
 			assertEquals(br.readLine(), "Select second ability score area (str, dex, con, int, wis, cha): ");
+			assertEquals(br.readLine(), "That wasn't a valid ability score, try again");
 			assertEquals(br.readLine(), "Select first ability score area (str, dex, con, int, wis, cha): ");
 			assertEquals(br.readLine(), "Select second ability score area (str, dex, con, int, wis, cha): ");
 			testDurntLevelUpBaseline(pc);

@@ -46,6 +46,12 @@ public class SpellParser {
 		NodeList hasDcList = document.getElementsByTagName("hasDc");
 		boolean hasDc = hasDcList.item(0).getTextContent().equalsIgnoreCase("true");
 
+		NodeList noDamageOnSaveList = document.getElementsByTagName("noDamageOnSave");
+		boolean noDamageOnSave = false;
+		if(noDamageOnSaveList != null && noDamageOnSaveList.item(0) != null) {
+			noDamageOnSave = noDamageOnSaveList.item(0).getTextContent().equalsIgnoreCase("true");
+		}
+		
 		NodeList hasToHitList = document.getElementsByTagName("hasToHit");
 		boolean hasToHit = hasToHitList.item(0).getTextContent().equalsIgnoreCase("true");
 		
@@ -146,10 +152,10 @@ public class SpellParser {
 		}
 		
 		if(actionSpell) {
-			return new ActionSpell(compName, readableName, Spell.SLOTLEVEL.CANTRIP, hasDc, hasToHit, damagers, readableEffect, concentrate, dc, toHit, healingComponent, altDamagers);
+			return new ActionSpell(compName, readableName, Spell.SLOTLEVEL.CANTRIP, hasDc, hasToHit, damagers, readableEffect, concentrate, dc, toHit, healingComponent, altDamagers, noDamageOnSave);
 		}else {
 			return new Spell(compName, readableName, Spell.SLOTLEVEL.get(minLevel), hasDc, hasToHit, damagers,
-					readableEffect, concentrate, bonusAction, recurringType, healingComponent, altDamagers);
+					readableEffect, concentrate, bonusAction, recurringType, healingComponent, altDamagers, noDamageOnSave);
 		}
 
 	}

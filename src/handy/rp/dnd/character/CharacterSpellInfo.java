@@ -44,6 +44,11 @@ public class CharacterSpellInfo {
 	}
 
 	public List<Spell> getKnownSpells() {
-		return new ArrayList<>(knownSpells);
+		if(knownSpells == null) {
+			return null;
+		}else {
+			return new ArrayList<>(knownSpells);
+		}
+		
 	}
 }

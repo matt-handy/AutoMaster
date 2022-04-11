@@ -58,11 +58,12 @@ public class Spell {
 	public final String readableEffect;
 	public final boolean concentrate;
 	public final boolean bonusAction;
+	public final boolean noDamageOnSave;
 	
 	private RECURRING_DAMAGE_TYPE recurringOnTurnType = null;
 	
 	public Spell(String computerName, String readableName, SLOTLEVEL minimumLevel, boolean saveDc, boolean toHit, Map<SLOTLEVEL, List<SpellDamageComponent>> damagers,
-			String readableEffect, boolean concentrate, boolean bonusAction, RECURRING_DAMAGE_TYPE recurringOnTurnType, SpellHealingComponent healingComponent, Map<SLOTLEVEL, List<SpellDamageComponent>> altDamages){
+			String readableEffect, boolean concentrate, boolean bonusAction, RECURRING_DAMAGE_TYPE recurringOnTurnType, SpellHealingComponent healingComponent, Map<SLOTLEVEL, List<SpellDamageComponent>> altDamages, boolean noDamageOnSave){
 		this.readableEffect = readableEffect;
 		this.damagers = damagers;
 		this.minimumLevel = minimumLevel;
@@ -75,6 +76,7 @@ public class Spell {
 		this.recurringOnTurnType = recurringOnTurnType;
 		this.healingComponent = healingComponent;
 		this.altDamages = altDamages;
+		this.noDamageOnSave = noDamageOnSave;
 	}
 	
 	@Override
@@ -166,6 +168,12 @@ public class Spell {
 		if(saveDc) {
 			attackBuilder.append(System.lineSeparator());
 			attackBuilder.append("Spell Save: " + casterDc);
+			if(noDamageOnSave) {
+				attackBuilder.append(", no damage on save.");
+			}
+			if(level == SLOTLEVEL.CANTRIP && pc != null && pc.featuresAllowHalfDamageCantrip()) {
+				attackBuilder.append(", player feature causes half damage to cantrips on save. Only affects damage, other effects are still saved against");
+			}
 		}
 		if(toHit) {
 			attackBuilder.append(System.lineSeparator());
