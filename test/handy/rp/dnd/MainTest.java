@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import handy.rp.OutcomeNotification;
@@ -28,7 +29,8 @@ import handy.rp.dnd.monsters.MonsterInstance;
 
 class MainTest {
 
-	@AfterEach
+	@BeforeEach
+	@AfterEach 
 	void cleanupLog() {
 		try {
 			Files.deleteIfExists(Paths.get("log"));
@@ -39,7 +41,7 @@ class MainTest {
 	
 	@Test
 	void test() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -77,7 +79,7 @@ class MainTest {
 	//The main loop itself was not tested. This test was created to address some gaps
 	//where validation logic and invocation of those child methods was not performed
 	void testMainLoopCommandIntegration() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -208,7 +210,7 @@ class MainTest {
 	
 	@Test
 	void testHpModification() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -282,7 +284,7 @@ class MainTest {
 	
 	@Test
 	void testSavingThrowSinglePlayerCommonCodeTestWithLogging() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -357,7 +359,7 @@ class MainTest {
 	
 	@Test
 	void testConSaveOnTakingDamageConcentrationTest() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -416,7 +418,7 @@ class MainTest {
 	
 	@Test
 	void savingThrowTest() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -441,7 +443,7 @@ class MainTest {
 	
 	@Test
 	void testReactionIntegrationTest() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -504,7 +506,7 @@ class MainTest {
 	
 	@Test
 	void testLegendaryActions() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -559,7 +561,7 @@ class MainTest {
 	
 	@Test
 	void testActions() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -592,7 +594,7 @@ class MainTest {
 
 	@Test
 	void testLair() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -631,7 +633,7 @@ class MainTest {
 	
 	@Test
 	void testInnateSpellcast() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -662,7 +664,7 @@ class MainTest {
 	
 	@Test
 	void testMonsterCastHealSpell() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -718,7 +720,7 @@ class MainTest {
 	
 	@Test
 	void testLoadMonsters() {
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -781,7 +783,7 @@ class MainTest {
 	void testLogFile() {
 		//TODO: Replace this test with a better comprehensive test of the logging system that actually works
 		/*
-		EncounterRunner main = new EncounterRunner();
+		DungeonMasterEncounterRunner main = new DungeonMasterEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {

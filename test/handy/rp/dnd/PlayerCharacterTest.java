@@ -27,7 +27,6 @@ import handy.rp.dnd.character.PlayerCharacterSaver;
 import handy.rp.dnd.character.Proficiency;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
-import handy.rp.xml.MonsterParser;
 import handy.rp.xml.PlayerCharacterParser;
 
 class PlayerCharacterTest {
@@ -417,7 +416,7 @@ class PlayerCharacterTest {
 		//Validate the UI on level up to learn a cantrip
 		//Try selecting a fake cantrip
 		//Select correct cantrip
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -469,6 +468,7 @@ class PlayerCharacterTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 	
 	@Test

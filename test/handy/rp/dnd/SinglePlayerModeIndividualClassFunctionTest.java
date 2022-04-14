@@ -25,6 +25,7 @@ class SinglePlayerModeIndividualClassFunctionTest {
 			Files.copy(Paths.get("player_chars_backup", "wizzie.xml"), Paths.get("player_chars", "wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "lil_wizzie.xml"), Paths.get("player_chars", "lil_wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "unprep_lil_wizzie.xml"), Paths.get("player_chars", "unprep_lil_wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.deleteIfExists(Paths.get("log"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -36,6 +37,7 @@ class SinglePlayerModeIndividualClassFunctionTest {
 			Files.copy(Paths.get("player_chars_backup", "wizzie.xml"), Paths.get("player_chars", "wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "lil_wizzie.xml"), Paths.get("player_chars", "lil_wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
 			Files.copy(Paths.get("player_chars_backup", "unprep_lil_wizzie.xml"), Paths.get("player_chars", "unprep_lil_wizzie.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.deleteIfExists(Paths.get("log"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +45,7 @@ class SinglePlayerModeIndividualClassFunctionTest {
 	
 	@Test
 	void testAddPreparedSpellUI() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -76,13 +78,13 @@ class SinglePlayerModeIndividualClassFunctionTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
-		
+		main.shutdown();
 	}
 	
 	@Test
 	void testNonwizardsCantPrepareSpell() {
 		//TODO Refactor so that other classes can prep too from their class lists
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -113,11 +115,12 @@ class SinglePlayerModeIndividualClassFunctionTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 	
 	@Test
 	void testWizardPreparedKnownSpellSwapUI() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -150,12 +153,13 @@ class SinglePlayerModeIndividualClassFunctionTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testNonWizardsCantSwapsSpells() {
 		//TODO: Refactor so that other classes that prepare against class lists can do so instead of relying on individual known spell
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -186,11 +190,12 @@ class SinglePlayerModeIndividualClassFunctionTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 	
 	@Test
 	void testWizardLearnNewSpellUI() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -225,12 +230,12 @@ class SinglePlayerModeIndividualClassFunctionTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
-		
+		main.shutdown();
 	}
 	
 	@Test
 	void testNonWizardsCantLearnNewSpell() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -261,11 +266,12 @@ class SinglePlayerModeIndividualClassFunctionTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 	
 	@Test
 	void testArcaneRecoveryIntegratedWithShortRest() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -326,6 +332,7 @@ class SinglePlayerModeIndividualClassFunctionTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 }
 

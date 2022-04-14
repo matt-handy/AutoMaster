@@ -26,6 +26,7 @@ class SinglePlayerModeMainTest {
 		try {
 			Files.copy(Paths.get("player_chars_backup", "durnt_reference.xml"),
 					Paths.get("player_chars", "durnt_reference.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.deleteIfExists(Paths.get("log"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -36,6 +37,7 @@ class SinglePlayerModeMainTest {
 		try {
 			Files.copy(Paths.get("player_chars_backup", "durnt_reference.xml"),
 					Paths.get("player_chars", "durnt_reference.xml"), StandardCopyOption.REPLACE_EXISTING);
+			Files.deleteIfExists(Paths.get("log"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +45,7 @@ class SinglePlayerModeMainTest {
 
 	@Test
 	void testLevelUpWizardIsIntegrated() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -84,11 +86,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testMainHelp() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -150,11 +153,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testSpendHitDice() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -189,11 +193,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerSkillCheck() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -226,11 +231,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void takeLongRest() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -275,11 +281,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void takeShortRest() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -310,11 +317,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testFakeCharName() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -342,11 +350,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testAdvanceTurn() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -396,11 +405,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testSavingThrows() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -446,11 +456,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testConcentrationSavingThrowOnDamage() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -494,11 +505,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCharacterRecurringFeature() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -532,11 +544,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCharacterManageActiveFeatures() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -584,11 +597,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerAttackOfOpportunity() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -625,11 +639,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerPrintProficiencies() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -673,11 +688,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCharacterConcentrationRecurringDamage() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -726,11 +742,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCastSpell() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -781,6 +798,7 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	private void testDurntSpellListing(BufferedReader br) throws IOException {
@@ -798,7 +816,7 @@ class SinglePlayerModeMainTest {
 
 	@Test
 	void testFeatureIntegeration() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -846,11 +864,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerMakePlusWeapon() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -891,11 +910,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerHitAndHeal() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -936,11 +956,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testListAvailableWeaponsAndAttacks() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -977,11 +998,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCharacterStrikeRanged() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -1023,11 +1045,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCharacterStrikeMelee() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -1059,11 +1082,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCharacterStrikeThrown() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -1094,11 +1118,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCharacterRollInitiative() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -1132,11 +1157,12 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 
 	@Test
 	void testPlayerCharacterRollInitiativeAdv() {
-		EncounterRunner main = new EncounterRunner();
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
 			main.initialize();
 		} catch (Exception e) {
@@ -1172,5 +1198,6 @@ class SinglePlayerModeMainTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+		main.shutdown();
 	}
 }
