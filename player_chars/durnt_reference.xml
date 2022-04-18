@@ -26,10 +26,6 @@
 <spell>toll_the_dead</spell>
 </cantrips>
 <prepared_spells>
-<spell>spirit_guardians</spell>
-<spell>magic_circle</spell>
-<spell>protection_from_energy</spell>
-<spell>elemental_weapon</spell>
 <spell>identify</spell>
 <spell>searing_smite</spell>
 <spell>bane</spell>
@@ -37,6 +33,10 @@
 <spell>shield_of_faith</spell>
 <spell>detect_good_and_evil</spell>
 <spell>guiding_bolt</spell>
+<spell>spirit_guardians</spell>
+<spell>magic_circle</spell>
+<spell>protection_from_energy</spell>
+<spell>elemental_weapon</spell>
 <spell>guardian_of_faith</spell>
 <spell>death_ward</spell>
 <spell>fabricate</spell>

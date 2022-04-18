@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<unit>
+	<name>Ork Boyz</name>
+	<leader>
+	 	<movement>5</movement>
+		<weapon_skill>3</weapon_skill>
+		<ballistic_skill>5</ballistic_skill>
+		<strength>5</strength>
+		<toughness>5</toughness>
+		<wounds>2</wounds>
+		<attacks>THREE</attacks>
+		<leadership>7</leadership>
+		<save>6</save>
+		<points>9</points>
+	</leader>
+	<base>
+		<movement>5</movement>
+		<weapon_skill>3</weapon_skill>
+		<ballistic_skill>5</ballistic_skill>
+		<strength>4</strength>
+		<toughness>5</toughness>
+		<wounds>1</wounds>
+		<attacks>TWO</attacks>
+		<leadership>6</leadership>
+		<save>6</save>
+		<points>9</points>
+	</base>
+</unit>

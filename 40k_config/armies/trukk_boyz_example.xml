@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<army>
+	<army_name>Trukk Boyz Test</army_name>
+	<unit>
+		<mnemonic>Boyz</mnemonic>
+		<name>Ork Boyz</name>
+		<model_count>11</model_count><!-- Assume leader is included -->	 	
+	</unit>
+	<unit>
+		<mnemonic>Trukk</mnemonic>
+		<name>Trukk</name>
+		<model_count>1</model_count>	 	
+	</unit>
+</army>
