@@ -35,7 +35,7 @@ class ArmyParserTest {
 		
 		assertTrue(boyz.leader != null);
 		assertEquals(boyz.leader.baseStats.wounds, 2);//Proxy that this is a nob
-		assertEquals(boyz.getModels().size(), 11);
+		assertEquals(boyz.getModels().size(), 10);
 		assertEquals(boyz.getModels().get(0).baseStats.wounds, 1);//Proxy that this is a normal boy
 	}
 

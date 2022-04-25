@@ -4,7 +4,7 @@
 	<unit>
 		<mnemonic>Boyz</mnemonic>
 		<name>Ork Boyz</name>
-		<model_count>11</model_count><!-- Assume leader is included -->	 	
+		<model_count>10</model_count><!-- Assume leader is included -->	 	
 	</unit>
 	<unit>
 		<mnemonic>Trukk</mnemonic>

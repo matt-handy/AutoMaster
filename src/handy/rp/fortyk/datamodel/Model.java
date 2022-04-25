@@ -12,6 +12,7 @@ public class Model {
 		this.baseStats = baseStats;
 		//No copy needed as XML parser can pass ownership
 		this.degradedStats = degradedStats;
+		this.currentWounds = baseStats.wounds;
 	}
 	
 	public int getCurrentWounds() {
@@ -33,7 +34,7 @@ public class Model {
 		int currentLowestThreshold = baseStats.wounds;
 		boolean metAThreshold = false;
 		for(Integer threshold : degradedStats.keySet()) {
-			if(threshold < currentLowestThreshold && threshold <= currentWounds) {
+			if(threshold < currentLowestThreshold && threshold >= currentWounds) {
 				metAThreshold = true;	
 				currentLowestThreshold = threshold;
 			}

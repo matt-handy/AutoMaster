@@ -442,5 +442,21 @@ public class EncounterRunner extends GameRunner{
 		}
 	}
 
+
+
+	@Override
+	public String getHelp() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public void processCommand(String[] args, PrintWriter pw, BufferedReader br, String rawCommand) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

@@ -29,13 +29,13 @@ public class ArmyParser {
 	private static List<Army> allArmies = null;
 
 	public static List<Army> getAllArmies() {
-		if (allArmies == null) {
+		//if (allArmies == null) {
 			try {
 				allArmies = loadAll(Paths.get("40k_config", "armies").toString());
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
-		}
+		//}
 		return allArmies;
 
 	}
