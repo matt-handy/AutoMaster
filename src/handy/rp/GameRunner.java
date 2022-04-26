@@ -11,7 +11,7 @@ public abstract class GameRunner {
 		boolean stayInLoop = true;
 
 		String nextCommand;
-		while ((nextCommand = br.readLine()) != null && stayInLoop) {
+		while (stayInLoop && (nextCommand = br.readLine()) != null) {
 			String args[] = nextCommand.split(" ");
 
 			if (args.length < 1) {

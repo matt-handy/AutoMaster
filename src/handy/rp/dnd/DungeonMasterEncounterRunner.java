@@ -203,7 +203,7 @@ public class DungeonMasterEncounterRunner extends EncounterRunner {
 
 		boolean continueRunning = true;
 		String nextCommand;
-		while ((nextCommand = br.readLine()) != null && continueRunning) {
+		while (continueRunning && (nextCommand = br.readLine()) != null) {
 			String args[] = nextCommand.split(" ");
 
 			if (args.length < 1) {
