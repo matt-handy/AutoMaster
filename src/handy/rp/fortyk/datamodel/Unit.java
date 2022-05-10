@@ -14,7 +14,7 @@ public class Unit {
 		this.name = name;
 	}
 	
-	public UnitInstance getInstance(int count, String mnemonic) {
-		return new UnitInstance(this, count, mnemonic);
+	public UnitInstance getInstance(int count, String mnemonic, List<String> leaderWeapons, List<String> standardWeapons, List<List<String>> limitedWeaponSet) {
+		return new UnitInstance(this, count, mnemonic, leaderWeapons, standardWeapons, limitedWeaponSet);
 	}
 }

@@ -2,7 +2,7 @@
 <unit>
 	<name>Ork Boyz</name>
 	<leader>
-	 	<movement>5</movement>
+		<movement>5</movement>
 		<weapon_skill>3</weapon_skill>
 		<ballistic_skill>5</ballistic_skill>
 		<strength>5</strength>
@@ -12,6 +12,118 @@
 		<leadership>7</leadership>
 		<save>6</save>
 		<points>9</points>
+		<weapon>
+			<name>Slugga</name>
+			<profile>
+				<range>12</range>
+				<attacks>Pistol 1</attacks>
+				<strength>4</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+			</profile>
+		</weapon>
+		<weapon>
+			<name>Stikkbombz</name>
+			<profile>
+				<range>8</range>
+				<strength>3</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+				<attacks>GRENADE D6</attacks>
+			</profile>
+		</weapon>
+		<weapon>
+			<name>Choppa</name>
+			<profile>
+				<range>Melee</range>
+				<attacks>Melee</attacks>
+				<strength>User</strength>
+				<ap>-1</ap>
+				<wounds>1</wounds>
+			</profile>
+			<freeattack>true</freeattack>
+		</weapon>
+		<weapon>
+			<name>Power Stabba</name>
+			<profile>
+				<range>Melee</range>
+				<attacks>Melee</attacks>
+				<strength>User</strength>
+				<ap>-2</ap>
+				<wounds>1</wounds>
+			</profile>
+			<points>5</points>
+			<replace>1</replace>
+		</weapon>
+		<weapon>
+			<name>Power Klaw</name>
+			<profile>
+				<range>Melee</range>
+				<attacks>Melee</attacks>
+				<strength>x2</strength>
+				<ap>-3</ap>
+				<wounds>2</wounds>
+			</profile>
+			<points>10</points>
+			<replace>1</replace>
+			<minus_to_hit>1</minus_to_hit>
+		</weapon>
+		<weapon>
+			<name>Killsaw</name>
+			<profile>
+				<range>Melee</range>
+				<attacks>Melee</attacks>
+				<strength>x2</strength>
+				<ap>-4</ap>
+				<wounds>D3</wounds>
+			</profile>
+			<points>10</points>
+			<replace>1</replace>
+			<minus_to_hit>1</minus_to_hit>
+		</weapon>
+		<weapon>
+			<name>Kombi-rokkit</name>
+			<replace>2</replace>
+			<points>10</points>
+			<profile>
+				<name>Rokkit</name>
+				<range>24</range>
+				<strength>8</strength>
+				<ap>-2</ap>
+				<wounds>3</wounds>
+				<attacks>1</attacks>
+			</profile>
+			<profile>
+				<name>Shoota</name>
+				<range>18</range>
+				<strength>4</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+				<attacks>3/2</attacks>
+			</profile>
+		</weapon>
+		<weapon>
+			<name>Kombi-skorcha</name>
+			<replace>2</replace>
+			<points>10</points>
+			<profile>
+				<name>Skorcha</name>
+				<range>12</range>
+				<strength>5</strength>
+				<ap>-1</ap>
+				<wounds>1</wounds>
+				<attacks>D6</attacks>
+				<autohit>true</autohit>
+			</profile>
+			<profile>
+				<name>Shoota</name>
+				<range>18</range>
+				<strength>4</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+				<attacks>3/2</attacks>
+			</profile>
+		</weapon>
 	</leader>
 	<base>
 		<movement>5</movement>
@@ -24,5 +136,74 @@
 		<leadership>6</leadership>
 		<save>6</save>
 		<points>9</points>
+		<weapon>
+			<name>Slugga</name>
+			<profile>
+				<range>12</range>
+				<attacks>Pistol 1</attacks>
+				<strength>4</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+			</profile>
+		</weapon>
+		<weapon>
+			<name>Stikkbombz</name>
+			<profile>
+				<range>8</range>
+				<strength>3</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+				<attacks>GRENADE D6</attacks>
+			</profile>
+		</weapon>
+		<weapon>
+			<name>Choppa</name>
+			<profile>
+				<range>Melee</range>
+				<attacks>Melee</attacks>
+				<strength>User</strength>
+				<ap>-1</ap>
+				<wounds>1</wounds>
+			</profile>
+			<freeattack>true</freeattack>
+		</weapon>
+		<weapon>
+			<name>Shoota</name>
+			<profile>
+				<range>18</range>
+				<attacks>3/2</attacks>
+				<strength>4</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+			</profile>
+			<replace>2</replace>
+		</weapon>
+		<weapon>
+			<name>Rokkit Launcha</name>
+			<profile>
+				<range>24</range>
+				<attacks>D3</attacks>
+				<strength>8</strength>
+				<ap>-2</ap>
+				<wounds>3</wounds>
+			</profile>
+			<replace>2</replace>
+			<limit>1/10</limit>
+			<points>10</points>
+		</weapon>
+		<weapon>
+			<name>Big Shoota</name>
+			<profile>
+				<range>36</range>
+				<attacks>5/3</attacks>
+				<strength>5</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+			</profile>
+			<replace>2</replace>
+			<limit>1/10</limit>
+			<points>5</points>
+		</weapon>
 	</base>
+
 </unit>

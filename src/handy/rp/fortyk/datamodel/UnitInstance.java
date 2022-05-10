@@ -1,7 +1,11 @@
 package handy.rp.fortyk.datamodel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import handy.rp.Dice;
 import handy.rp.OutcomeNotification;
@@ -12,17 +16,118 @@ public class UnitInstance {
 	private List<Model> models;
 	public final String mnemonic;
 	
-	protected UnitInstance(Unit base, int count, String mnemonic) {
+	protected UnitInstance(Unit base, int count, String mnemonic, List<String> leaderWeapons, List<String> standardWeapons, List<List<String>> limitedWeaponSet) {
 		if(base.leadModel == null) {
 			leader = null;
 		}else {
-			leader = base.leadModel.clone();
+			leader = base.leadModel.clone(this);
+			leader.selectWeapons(leaderWeapons);
 		}
 		models = new ArrayList<>();
 		for(int idx = 0; idx < count; idx++) {
-			models.add(base.commonModel.clone());
+			Model clone = base.commonModel.clone(this);
+			if(idx >= limitedWeaponSet.size()) {
+				clone.selectWeapons(standardWeapons);
+			}else {
+				clone.selectWeapons(limitedWeaponSet.get(idx));
+			}
+			models.add(clone);
 		}
 		this.mnemonic = mnemonic;
+	}
+	
+	private boolean hasThrownGrenadeThisAttack = false;
+	
+	protected boolean hasUnitHasThrownGrenade() {
+		return hasThrownGrenadeThisAttack;
+	}
+	
+	protected void throwGrenade() {
+		hasThrownGrenadeThisAttack = true;
+	}
+	
+	public String rollAndFormatMeleeAttack() {
+		Map<WeaponDamageProfile, Set<FortyKDamageOutcome>> aggregatedOutput = new HashMap<>();
+		if(leader != null) {
+			List<FortyKDamageOutcome> outcomes = leader.rollMeleeAttacks();
+			sortDamage(aggregatedOutput, outcomes);
+		}
+		for(Model model : models) {
+			List<FortyKDamageOutcome> outcomes = model.rollMeleeAttacks();
+			sortDamage(aggregatedOutput, outcomes);
+		}
+		return buildWeaponDamageReadout(aggregatedOutput);
+	}
+	
+	public String rollAndFormatRangedAttack() {
+		hasThrownGrenadeThisAttack = false;
+		Map<WeaponDamageProfile, Set<FortyKDamageOutcome>> aggregatedOutput = new HashMap<>();
+		if(leader != null) {
+			List<FortyKDamageOutcome> outcomes = leader.rollShootingAttacks();
+			sortDamage(aggregatedOutput, outcomes);
+		}
+		for(Model model : models) {
+			List<FortyKDamageOutcome> outcomes = model.rollShootingAttacks();
+			sortDamage(aggregatedOutput, outcomes);
+		}
+		return buildWeaponDamageReadout(aggregatedOutput);
+	}
+	
+	private String buildWeaponDamageReadout(Map<WeaponDamageProfile, Set<FortyKDamageOutcome>> aggregatedOutput) {
+		StringBuilder sb = new StringBuilder();
+		for(WeaponDamageProfile profile : aggregatedOutput.keySet()) {
+			sb.append("Weapon name: " + profile.name + " with strength " + profile.strength + " and ap " + profile.ap);
+			sb.append(System.lineSeparator());
+			sb.append("Weapon hits unit toughness : " + (profile.strength * 2) + " or more: ");
+			sb.append(buildDamagesWhenAboveWoundThreshold(aggregatedOutput.get(profile), 6));
+			sb.append(System.lineSeparator());
+			sb.append("Weapon hits unit toughness : " + (profile.strength + 1) + " or more: ");
+			sb.append(buildDamagesWhenAboveWoundThreshold(aggregatedOutput.get(profile), 5));
+			sb.append(System.lineSeparator());
+			sb.append("Weapon hits unit toughness is " + profile.strength + " : ");
+			sb.append(buildDamagesWhenAboveWoundThreshold(aggregatedOutput.get(profile), 4));
+			sb.append(System.lineSeparator());
+			sb.append("Weapon hits unit toughness is less than " + profile.strength + " : ");
+			sb.append(buildDamagesWhenAboveWoundThreshold(aggregatedOutput.get(profile), 3));
+			sb.append(System.lineSeparator());
+			sb.append("Weapon hits unit toughness is " + profile.strength / 2 + " or less: ");
+			sb.append(buildDamagesWhenAboveWoundThreshold(aggregatedOutput.get(profile), 2));
+			sb.append(System.lineSeparator());
+		}
+		if(sb.length() == 0) {
+			sb.append("No hits connected with the enemy");
+		}
+		return sb.toString();
+	}
+	
+	private String buildDamagesWhenAboveWoundThreshold(Set<FortyKDamageOutcome> damages, int rollThreshold) {
+		StringBuilder sb = new StringBuilder();
+		for(FortyKDamageOutcome damage : damages) {
+			if(damage.woundRoll >= rollThreshold && !damage.optionalAttack) {
+				sb.append(damage.damageRoll + " ");
+			}
+		}
+		
+		boolean firstOptional = true;
+		for(FortyKDamageOutcome damage : damages) {
+			if(damage.woundRoll >= rollThreshold && damage.optionalAttack) {
+				if(firstOptional) {
+					sb.append("Optional attacks: ");
+					firstOptional = false;
+				}
+				sb.append(damage.damageRoll + " ");
+			}
+		}
+		return sb.toString();
+	}
+	
+	private static void sortDamage(Map<WeaponDamageProfile, Set<FortyKDamageOutcome>> aggregatedOutput, List<FortyKDamageOutcome> outcomes) {
+		for(FortyKDamageOutcome damage : outcomes) {
+			if(!aggregatedOutput.containsKey(damage.profile)) {
+				aggregatedOutput.put(damage.profile, new HashSet<>());
+			}
+			aggregatedOutput.get(damage.profile).add(damage);
+		}
 	}
 	
 	public List<Model> getModels(){

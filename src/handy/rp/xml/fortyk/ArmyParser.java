@@ -25,6 +25,9 @@ public class ArmyParser {
 	public static final String UNIT_XML = "unit";
 	public static final String MNEMONIC_XML = "mnemonic";
 	public static final String MODELCOUNT_XML = "model_count";
+	public static final String LEADERWEAPONS_XML = "leader_weapons";
+	public static final String STANDARDWEAPONS_XML = "standard_weapons";
+	public static final String LIMITEDWEAPONS_XML = "limited_weapons";
 
 	private static List<Army> allArmies = null;
 
@@ -78,7 +81,38 @@ public class ArmyParser {
 			String mnemonic = nextBlock.getElementsByTagName(MNEMONIC_XML).item(0).getTextContent();
 			String name = nextBlock.getElementsByTagName(NAME_XML).item(0).getTextContent();
 			int modelCount = Integer.parseInt(nextBlock.getElementsByTagName(MODELCOUNT_XML).item(0).getTextContent());
-			units.add(UnitParser.getUnitByName(name).getInstance(modelCount, mnemonic));
+			
+			List<String> leaderWeapons = new ArrayList<>();
+			NodeList leaderWeaponsNode = nextBlock.getElementsByTagName(LEADERWEAPONS_XML);
+			if(leaderWeaponsNode.item(0) != null) {
+				String tmp = leaderWeaponsNode.item(0).getTextContent();
+				for(String weapon : tmp.split(",")) {
+					leaderWeapons.add(weapon);
+				}
+			}
+			
+			List<String> standardWeapons = new ArrayList<>();
+			NodeList standardWeaponsNode = nextBlock.getElementsByTagName(STANDARDWEAPONS_XML);
+			if(standardWeaponsNode.item(0) != null) {
+				String tmp = standardWeaponsNode.item(0).getTextContent();
+				for(String weapon : tmp.split(",")) {
+					standardWeapons.add(weapon);
+				}
+			}
+			List<List<String>> limitedWeapons = new ArrayList<>();
+			NodeList limitedWeaponsNode = nextBlock.getElementsByTagName(LIMITEDWEAPONS_XML);
+			if(limitedWeaponsNode.item(0) != null) {
+				String tmp = limitedWeaponsNode.item(0).getTextContent();
+				for(String weaponGroups : tmp.split(":")) {
+					List<String> weaponList = new ArrayList<>();
+					for(String weapon : weaponGroups.split(",")) {
+						weaponList.add(weapon);
+					}
+					limitedWeapons.add(weaponList);
+				}
+			}
+			
+			units.add(UnitParser.getUnitByName(name).getInstance(modelCount, mnemonic, leaderWeapons, standardWeapons, limitedWeapons));
 		}
 
 		return new Army(armyName, units);

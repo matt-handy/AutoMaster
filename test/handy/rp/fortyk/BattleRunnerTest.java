@@ -15,6 +15,75 @@ import org.junit.jupiter.api.Test;
 class BattleRunnerTest {
 
 	@Test
+	void testRangedIntegration() {
+		BattleRunner battleRunner = new BattleRunner();
+
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("ranged Boyz");
+		builder.println("loadarmy Trukk Boyz Test");
+		builder.println("ranged Nonunit");
+		builder.println("ranged Boyz");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+
+		battleRunner.mainGameLoop(builder, br);
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			// Test Spell list
+			assertEquals(br.readLine(), "Army not loaded");
+			assertEquals(br.readLine(), "Army loaded!");
+			assertEquals(br.readLine(), "Unknown unit: Nonunit");
+			String firstLine = br.readLine();
+			assertTrue(firstLine.equals("Weapon name: Slugga with strength 4 and ap 0") ||
+					firstLine.equals("Weapon name: Rokkit Launcha with strength 8 and ap -2"));
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	void testMeleeIntegration() {
+		BattleRunner battleRunner = new BattleRunner();
+
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("melee Boyz");
+		builder.println("loadarmy Trukk Boyz Test");
+		builder.println("melee Nonunit");
+		builder.println("melee Boyz");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+
+		battleRunner.mainGameLoop(builder, br);
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertEquals(br.readLine(), "Army not loaded");
+			assertEquals(br.readLine(), "Army loaded!");
+			assertEquals(br.readLine(), "Unknown unit: Nonunit");
+			assertEquals(br.readLine(), "Weapon name: Choppa with strength 4 and ap -1");
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
 	void testLoadNonexistentArmy() {
 		BattleRunner battleRunner = new BattleRunner();
 

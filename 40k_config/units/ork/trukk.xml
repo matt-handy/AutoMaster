@@ -12,6 +12,43 @@
 		<leadership>6</leadership>
 		<save>4</save>
 		<points>70</points>
+		<weapon>
+			<name>Big shoota</name>
+			<profile>
+				<range>36</range>
+				<attacks>5/3</attacks>
+				<strength>5</strength>
+				<ap>0</ap>
+				<wounds>1</wounds>
+			</profile>
+		</weapon>
+		<!-- Can only pick one of the following -->
+		<weapon>
+			<name>Grabbin' Klaw</name>
+			<profile>
+				<range>Melee</range>
+				<attacks>Melee</attacks>
+				<strength>USER</strength>
+				<ap>-3</ap>
+				<wounds>2</wounds>
+			</profile>
+			<countsAgainstMeleeAttacks>false</countsAgainstMeleeAttacks>
+			<attack_limit>1</attack_limit>
+			<points>5</points>
+		</weapon>
+		<weapon>
+			<name>Wreckin' Ball</name>
+			<profile>
+				<range>Melee</range>
+				<attacks>Melee</attacks>
+				<strength>USER+2</strength>
+				<ap>-1</ap>
+				<wounds>2</wounds>
+			</profile>
+			<countsAgainstMeleeAttacks>false</countsAgainstMeleeAttacks>
+			<points>5</points>
+			<attack_limit>1</attack_limit>
+		</weapon>
 	</base>
 	<downgrade>
 		<wound_threshold>5</wound_threshold>
@@ -39,4 +76,5 @@
 		<save>4</save>
 		<points>70</points>
 	</downgrade>
+
 </unit>

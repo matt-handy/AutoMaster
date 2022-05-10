@@ -11,4 +11,13 @@ public class Army {
 		this.armyName = armyName;
 		this.armyComposition = armyComposition;
 	}
+	
+	public UnitInstance getUnitByMnemonic(String mnemonic) {
+		for(UnitInstance unit : armyComposition) {
+			if(unit.mnemonic.equalsIgnoreCase(mnemonic)) {
+				return unit;
+			}
+		}
+		throw new IllegalArgumentException("Unknown unit: " + mnemonic);
+	}
 }

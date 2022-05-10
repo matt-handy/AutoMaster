@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <army>
-	<army_name>Trukk Boyz Test</army_name>
+	<army_name>Trukk Boyz Test Set 4</army_name>
 	<unit>
 		<mnemonic>Boyz</mnemonic>
 		<name>Ork Boyz</name>
 		<model_count>10</model_count><!-- Assume leader is included -->
-		<leader_weapons>Stikkbombz,Slugga,Power stabba</leader_weapons>
+		<leader_weapons>Stikkbombz,Kombi-skorcha</leader_weapons>
 		<standard_weapons>Stikkbombz,Slugga,Choppa</standard_weapons>
-		<limited_weapons>Stikkbombz,Rokkit Launcha</limited_weapons>	 	
+		<limited_weapons>Stikkbombz,Big shoota</limited_weapons>	 	
 	</unit>
 	<unit>
 		<mnemonic>Trukk</mnemonic>

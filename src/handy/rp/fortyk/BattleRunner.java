@@ -35,10 +35,36 @@ public class BattleRunner extends GameRunner {
 				pw.println(ex.getMessage());
 			}
 			break;
+		case "melee":
+			if (currentArmy == null) {
+				pw.println("Army not loaded");
+			} else {
+				String unitName = rawCommand.substring("melee ".length());
+				try {
+					UnitInstance unit = currentArmy.getUnitByMnemonic(unitName);
+					pw.println(unit.rollAndFormatMeleeAttack());
+				} catch (IllegalArgumentException ex) {
+					pw.println("Unknown unit: " + unitName);
+				}
+			}
+			break;
+		case "ranged":
+			if (currentArmy == null) {
+				pw.println("Army not loaded");
+			} else {
+				String unitName = rawCommand.substring("ranged ".length());
+				try {
+					UnitInstance unit = currentArmy.getUnitByMnemonic(unitName);
+					pw.println(unit.rollAndFormatRangedAttack());
+				} catch (IllegalArgumentException ex) {
+					pw.println("Unknown unit: " + unitName);
+				}
+			}
+			break;
 		case "getmovement":
-			if(args.length != 2) {
+			if (args.length != 2) {
 				pw.println("getmovement <unit name>");
-			}else {
+			} else {
 				UnitInstance targetUnit = null;
 
 				if (currentArmy == null) {
