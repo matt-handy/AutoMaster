@@ -24,7 +24,12 @@
         <mkdir dir="build/deploy/char_subclasses"/>
         <mkdir dir="build/deploy/player_chars"/>
         <mkdir dir="build/deploy/weapons"/>
+        <mkdir dir="build/deploy/40k_config"/>
+        <mkdir dir="build/deploy/40k_config/armies"/>
+        <mkdir dir="build/deploy/40k_config/units"/>
+        <mkdir dir="build/deploy/40k_config/units/ork"/>
     	<copy file="exec.bat" todir="build/deploy"/>
+    	<copy file="exec_40k.bat" todir="build/deploy"/>
     	<copy todir="build/deploy/monsters">
     	  <fileset dir="monsters"/>
     	</copy>
@@ -54,6 +59,12 @@
     	</copy>
     	<copy todir="build/deploy/weapons">
     	  <fileset dir="weapons"/>
+    	</copy>
+    	<copy todir="build/deploy/40k_config/armies">
+    	  <fileset dir="40k_config/armies"/>
+    	</copy>
+    	<copy todir="build/deploy/40k_config/units/ork">
+    	  <fileset dir="40k_config/units/ork"/>
     	</copy>
         <jar destfile="build/deploy/AutoMaster.jar" basedir="build/classes">
             <manifest>

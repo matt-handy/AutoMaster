@@ -1,6 +1,7 @@
 package handy.rp.fortyk;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.PrintWriter;
 
 import handy.rp.GameRunner;
@@ -11,12 +12,29 @@ import handy.rp.xml.fortyk.ArmyParser;
 
 public class BattleRunner extends GameRunner {
 
+	public static final String TAKEWOUNDS_HELP = "takewounds <unit name> <would number> <wound severity> <mortal wounds m/mn - optional, assume nm>";
+	public static final String GETMOVEMENT_HELP = "getmovement <unit name> - gets the greatest common movement of the unit";
+	public static final String LOADARMY_HELP = "loadarmy <army name> - loads the army named in the command";
+	public static final String MELEE_HELP = "melee <unit name> - rolls melee damage for the unit named";
+	public static final String RANGED_HELP = "ranged <unit name> - rolls ranged damage for the unit named";
+	
 	private Army currentArmy = null;
 
+	public static void main(String args[]) {
+		Console console = System.console();
+		BattleRunner runner = new BattleRunner();
+		runner.mainGameLoop(console.writer(), new BufferedReader(console.reader()));
+	}
+	
 	@Override
 	public String getHelp() {
-//TODO fill in
-		return null;
+		StringBuilder sb = new StringBuilder();
+		sb.append(GETMOVEMENT_HELP + System.lineSeparator());
+		sb.append(LOADARMY_HELP + System.lineSeparator());
+		sb.append(MELEE_HELP + System.lineSeparator());
+		sb.append(RANGED_HELP + System.lineSeparator());
+		sb.append(TAKEWOUNDS_HELP + System.lineSeparator());
+		return sb.toString();
 	}
 
 	@Override
@@ -24,8 +42,13 @@ public class BattleRunner extends GameRunner {
 		// TODO: have way to indicate unknown command and have a common unknown command
 		// in parent's loop
 
+		// TODO: Migrate help to the parent class and each subclass implement getHelp
+		
 		String command = args[0];
 		switch (command) {
+		case "help":
+			pw.println(getHelp());
+			break;
 		case "loadarmy":
 			String armyName = rawCommand.substring("loadarmy".length() + 1);
 			try {
@@ -63,7 +86,7 @@ public class BattleRunner extends GameRunner {
 			break;
 		case "getmovement":
 			if (args.length != 2) {
-				pw.println("getmovement <unit name>");
+				pw.println(GETMOVEMENT_HELP);
 			} else {
 				UnitInstance targetUnit = null;
 
@@ -88,7 +111,7 @@ public class BattleRunner extends GameRunner {
 		case "takewounds":
 			if (args.length != 4 && args.length != 5) {
 				pw.println(
-						"takewounds <unit name> <would number> <wound severity> <mortal wounds m/mn - optional, assume nm>");
+						TAKEWOUNDS_HELP);
 			} else {
 				UnitInstance targetUnit = null;
 

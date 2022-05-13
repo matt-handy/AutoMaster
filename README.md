@@ -1,4 +1,6 @@
 # AutoMaster
+## D&D Dungeon Master Mode
+NOTE: This list of commands needs updating
 Tool for automated role playing game master functions
 
 1) advturn | advanceturn => advances play to the next entity
@@ -29,3 +31,10 @@ Spells
 Support spells, which are not targeted. DC rolls support.
 Supports automatic concentration checks
 
+## DND Single Player Mode
+TODO - Need to write this section
+
+##Warhammer 40k
+This mode allows users to create armies in 40k_config/armies. Several example files are provided. To run the program, execute exec_40k.bat.
+
+Enter "help" to the command prompt to see the list of commands.
