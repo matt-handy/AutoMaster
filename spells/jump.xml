@@ -7,4 +7,5 @@
 	<hasToHit>false</hasToHit>
 	<concentration>false</concentration>
 	<readableeffect>You touch a creature. The creature’s jump distance is tripled until the spell ends.</readableeffect>
+	<classes>wizard</classes>
 </spell>

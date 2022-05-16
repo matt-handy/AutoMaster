@@ -23,7 +23,6 @@
 		<spell>identify</spell>
 		<spell>searing_smite</spell>
 		<spell>bane</spell>
-		<spell>cure_wounds</spell>
 		<spell>shield_of_faith</spell>
 		<spell>detect_good_and_evil</spell>
 		<spell>guiding_bolt</spell>
@@ -32,10 +31,7 @@
 		<spell>hold_person</spell>
 		<spell>zone_of_truth</spell>
 		<spell>spirit_guardians</spell>
-		<spell>magic_circle</spell>
-		<spell>protection_from_energy</spell>
-		<spell>guardian_of_faith</spell>
-		<spell>death_ward</spell>
+		<spell>guiding_bolt</spell>
 	</prepared_spells>
 	<proficient_weapons>
 		<weapon>

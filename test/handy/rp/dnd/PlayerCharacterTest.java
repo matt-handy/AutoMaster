@@ -927,6 +927,80 @@ class PlayerCharacterTest {
 			fail(e.getMessage());
 		}
 	}
+	
+	@Test
+	void testClericSpellPreparationLimitCalculation() {
+		try {
+			List<PlayerCharacter> characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");
+			PlayerCharacter durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("Durnt-reference")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Durnt reference");
+			assertEquals(11, durnt.maxSpellsToPrepare());
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	void testClericAddPreparedSpell() {
+		try {
+			List<PlayerCharacter> characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");
+			PlayerCharacter durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("Durnt-life-cleric")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Durnt reference");
+			
+			assertEquals(9, durnt.getCharacterLevel());
+			assertEquals(18, durnt.getWis());
+			assertEquals(13, durnt.maxSpellsToPrepare());
+			assertEquals(12, durnt.currentSpellsPrepared());
+			
+			OutcomeNotification outcome = durnt.addPreparedSpell("magic_circle");
+			assertEquals("Spell prepared: Magic Circle", outcome.humanMessage);
+			assertTrue(outcome.outcome);
+			
+			outcome = durnt.addPreparedSpell("fireball");
+			assertFalse(outcome.outcome);
+			assertEquals("Unknown spell: fireball", outcome.humanMessage);
+			
+			outcome = durnt.addPreparedSpell("spirit_guardians");
+			assertFalse(outcome.outcome);
+			assertEquals("Player already has maximum spell number prepared", outcome.humanMessage);
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	void testClericSwapPreparedSpell() {
+		try {
+			List<PlayerCharacter> characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");
+			PlayerCharacter durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("Durnt-life-cleric")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Durnt reference");
+			
+			OutcomeNotification outcome = durnt.swapPreparedSpell("cure_wounds", "magic_circle");
+			assertEquals("Spell prepared: Magic Circle", outcome.humanMessage);
+			assertTrue(outcome.outcome);
+			
+			outcome = durnt.swapPreparedSpell("magic_circle", "fireball");
+			assertEquals("Unknown spell: fireball", outcome.humanMessage);
+			assertFalse(outcome.outcome);
+		}catch(Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
 
 	@Test
 	void testCrossbow() {
@@ -1253,13 +1327,13 @@ class PlayerCharacterTest {
 			String spellsArr[] = spells.split(System.lineSeparator());
 			assertEquals(spellsArr.length, 6);
 			assertTrue(spells.contains(
-					"Level: 1 Identify, Searing Smite, Bane, Cure Wounds, Shield of Faith, Detect Good and Evil, Guiding Bolt, Bless, "));
-			assertTrue(spells.contains("Level: 4 Guardian of Faith, Death Ward, "));
+					"Level: 1 Identify, Searing Smite, Bane, Shield of Faith, Detect Good and Evil, Guiding Bolt, Guiding Bolt, Bless, Cure Wounds, "));
+			assertTrue(spells.contains("Level: 4 Death Ward, Guardian of Faith"));
 			assertTrue(spells.contains(
 					"Level: 2 Heat Metal, Magic Weapon, Hold Person, Zone of Truth, Lesser Restoration, Spiritual Weapon, "));
 			assertTrue(spells.contains(
-					"Level: 3 Spirit Guardians, Magic Circle, Protection From Energy, Beacon of Hope, Revivify, "));
-			assertTrue(spells.contains("Level: Cantrip Spare the Dying, Sacred Flame, Thaumaturgy, Toll the Dead,"));
+					"Level: 3 Spirit Guardians, Beacon of Hope, Revivify, "));
+			assertTrue(spells.contains("Level: Cantrip Spare the Dying, Sacred Flame, Thaumaturgy, Toll the Dead, "));
 			assertTrue(spells.contains("Level: 5 Mass Cure Wounds, Raise Dead, "));
 		} catch (Exception ex) {
 			fail();

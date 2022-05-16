@@ -58,9 +58,9 @@ public class PlayerCharacter extends ManagedEntity {
 	private Set<Proficiency> toolProficiencies;
 
 	private List<Spell> knownSpells;
-	
+
 	private int maxCantrips = 0;
-	
+
 	protected Set<GenericFeatureData> featureDataSet;
 
 	public PlayerCharacter(String personalName, int str, int dex, int con, int inte, int wis, int cha,
@@ -75,7 +75,6 @@ public class PlayerCharacter extends ManagedEntity {
 		this.weapons = weapons;
 		this.skillProficiencies = skillProficiencies;
 		attacksPerTurn = 1;
-		
 		refreshSavingThrowProficiencies();
 		notifyNewTurn();
 		replenishHitDice();
@@ -85,11 +84,11 @@ public class PlayerCharacter extends ManagedEntity {
 		refreshClassResourceCounters();
 		attacksRemaining = attacksPerTurn;
 		activeFeatures = new ArrayList<>();
-		
+
 		populateSpellInfo(spells);
 		updateMaxCantripsKnown();
-		validateMaxCantripsCurrently();//Throws exception and will not construct object with too many
-		
+		validateMaxCantripsCurrently();// Throws exception and will not construct object with too many
+
 		this.originalFile = originalFile;
 		this.knownSpells = knownSpells;
 		this.featureDataSet = featureDataSet;
@@ -106,38 +105,41 @@ public class PlayerCharacter extends ManagedEntity {
 		regenerateProficiencies();
 		populateFeatureBasedFreeSpells();
 	}
-	
+
 	public int getMaxCantrips() {
 		return maxCantrips;
 	}
-	
+
 	private void updateMaxCantripsKnown() {
 		int temp = 0;
-		
-		for(CharClass cClass : classes.keySet()) {
+
+		for (CharClass cClass : classes.keySet()) {
 			int classLevel = classes.get(cClass);
-			if(cClass.slotsPerLevel != null && cClass.slotsPerLevel.get(classLevel) != null) {
+			if (cClass.slotsPerLevel != null && cClass.slotsPerLevel.get(classLevel) != null) {
 				temp += cClass.slotsPerLevel.get(classLevel).get(SLOTLEVEL.CANTRIP);
 			}
 		}
-		
+
 		maxCantrips = temp;
 	}
-	
+
 	private void validateMaxCantripsCurrently() {
-		if(spellSummary.getKnownCantrips().size() > maxCantrips) {
-			throw new IllegalArgumentException("Character " + personalName + " created with too many cantrips for level: " + spellSummary.getKnownCantrips().size() + " vs allowed " + maxCantrips);
+		if (spellSummary.getKnownCantrips().size() > maxCantrips) {
+			throw new IllegalArgumentException(
+					"Character " + personalName + " created with too many cantrips for level: "
+							+ spellSummary.getKnownCantrips().size() + " vs allowed " + maxCantrips);
 		}
 	}
-	
+
 	private void populateFeatureBasedFreeSpells() {
-		for(ClassFeature feature : applicableFeatures) {
-			if(feature.allowsNoPrepSpells) {
-				for(GenericFeatureData gfd : featureDataSet) {
-					if(gfd.featureName.equals(feature.featureName)) {
-						for(String spellName : gfd.getFeatureData()) {
-							for(Spell spell : knownSpells) {
-								if(spell.computerName.equals(spellName)) {
+		for (ClassFeature feature : applicableFeatures) {
+			if (feature.allowsNoPrepSpells) {
+				for (GenericFeatureData gfd : featureDataSet) {
+					if (gfd.featureName.equals(feature.featureName)) {
+						for (String spellName : gfd.getFeatureData()) {
+							for (Spell spell : knownSpells) {
+								if (spell.computerName.equals(spellName)) {
+									PlayerCharacterParser.addSpell(spells, spell);
 									PlayerCharacterParser.addSpell(freeSpells, spell);
 								}
 							}
@@ -150,30 +152,30 @@ public class PlayerCharacter extends ManagedEntity {
 
 	@Override
 	public boolean hasFeatureToIgnoreSpellCast(String spellName) {
-		
+
 		List<ClassFeature> desiredFeatures = new ArrayList<>();
-		for(ClassFeature feature:  applicableFeatures) {
-			if(feature.allowsFreeSpells) {
+		for (ClassFeature feature : applicableFeatures) {
+			if (feature.allowsFreeSpells) {
 				desiredFeatures.add(feature);
 			}
 		}
-		for(ClassFeature feature : desiredFeatures) {
-			if(hasSpellInFeatureDataset(feature.featureName, spellName)) {
+		for (ClassFeature feature : desiredFeatures) {
+			if (hasSpellInFeatureDataset(feature.featureName, spellName)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	private boolean hasSpellInFeatureDataset(String featureName, String spellName) {
-		for(GenericFeatureData gfd : featureDataSet) {
-			if(gfd.featureName.equals(featureName) && gfd.hasFeatureDataString(spellName)) {
+		for (GenericFeatureData gfd : featureDataSet) {
+			if (gfd.featureName.equals(featureName) && gfd.hasFeatureDataString(spellName)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	public String printSpellsKnown() {
 		if (knownSpells.size() == 0) {
 			return "No spells known";
@@ -199,12 +201,12 @@ public class PlayerCharacter extends ManagedEntity {
 		} else if (knownSpells.contains(newSpell) || spellSummary.getKnownCantrips().contains(newSpell)) {
 			return new OutcomeNotification("Spell already known", false);
 		} else {
-			if(newSpell.minimumLevel == SLOTLEVEL.CANTRIP) {
+			if (newSpell.minimumLevel == SLOTLEVEL.CANTRIP) {
 				spells.get(SLOTLEVEL.CANTRIP).add(newSpell);
-			}else{
+			} else {
 				knownSpells.add(newSpell);
 			}
-			
+
 			populateSpellInfo(spells);
 			PlayerCharacterSaver.saveCharacter(this, originalFile);
 			return new OutcomeNotification("Spell learned: " + newSpell.readableName, true);
@@ -212,12 +214,7 @@ public class PlayerCharacter extends ManagedEntity {
 	}
 
 	public OutcomeNotification swapPreparedSpell(String oldSpell, String newSpell) {
-		Spell newPreparedSpell = null;
-		for (Spell spell : knownSpells) {
-			if (spell.computerName.equals(newSpell)) {
-				newPreparedSpell = spell;
-			}
-		}
+		Spell newPreparedSpell = getSpellFromKnownSpellsByName(newSpell);
 		if (newPreparedSpell == null) {
 			return new OutcomeNotification("Unknown spell: " + newSpell, false);
 		}
@@ -279,12 +276,12 @@ public class PlayerCharacter extends ManagedEntity {
 					if (recovered + (1 * desiredSlot) > availableForRecovery) {
 						pw.println("Insufficient recovery slots available");
 					} else {
-					if (addSlots(desiredSlot, 1)) {
-						pw.println("Slots recovered");
-						recovered+=(1 * desiredSlot);
-					} else {
-						pw.println("Unable to recover desired slots");
-					}
+						if (addSlots(desiredSlot, 1)) {
+							pw.println("Slots recovered");
+							recovered += (1 * desiredSlot);
+						} else {
+							pw.println("Unable to recover desired slots");
+						}
 					}
 				} catch (NumberFormatException ex) {
 					pw.println("Unknown command: invalid number format");
@@ -313,14 +310,29 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 		pw.println("Your slot work is complete");
 	}
-
-	public OutcomeNotification addPreparedSpell(String spellName) {
-		Spell newPreparedSpell = null;
-		for (Spell spell : knownSpells) {
-			if (spell.computerName.equals(spellName)) {
-				newPreparedSpell = spell;
+	
+	private Spell getSpellFromKnownSpellsByName(String spellName) {
+		for (CharClass cClass : classes.keySet()) {
+			if (cClass.getRootClass().name.equalsIgnoreCase("wizard")) {
+				for (Spell spell : knownSpells) {
+					if (spell.computerName.equals(spellName)) {
+						return spell;
+					}
+				}
+			}else {
+				for(Spell spell : Spell.getAllSpellsForCharClass(cClass)) {
+					if (spell.computerName.equals(spellName)) {
+						return spell;
+					}
+				}
 			}
 		}
+		return null;
+	}
+
+	public OutcomeNotification addPreparedSpell(String spellName) {
+		Spell newPreparedSpell = getSpellFromKnownSpellsByName(spellName);
+		
 		if (newPreparedSpell == null) {
 			return new OutcomeNotification("Unknown spell: " + spellName, false);
 		}
@@ -333,17 +345,25 @@ public class PlayerCharacter extends ManagedEntity {
 		return new OutcomeNotification("Spell prepared: " + newPreparedSpell.readableName, true);
 	}
 
-	private int currentSpellsPrepared() {
+	public int currentSpellsPrepared() {
+		int currentCount = getSpellsCount(spells);
+		
+		int currentCountFreeSpells = getSpellsCount(freeSpells);
+		
+		return currentCount - currentCountFreeSpells;
+	}
+	
+	private int getSpellsCount(Map<SLOTLEVEL, List<Spell>> localspells) {
 		int currentCount = 0;
-		for (SLOTLEVEL lvl : spells.keySet()) {
+		for (SLOTLEVEL lvl : localspells.keySet()) {
 			if (lvl != SLOTLEVEL.CANTRIP) {
-				currentCount += spells.get(lvl).size();
+				currentCount += localspells.get(lvl).size();
 			}
 		}
 		return currentCount;
 	}
 
-	private int maxSpellsToPrepare() {
+	public int maxSpellsToPrepare() {
 		int prepareables = 0;
 		for (CharClass cClass : classes.keySet()) {
 			if (cClass.spellcastingModifier != SPELLCASTING_MODIFIER.NA) {
@@ -513,10 +533,10 @@ public class PlayerCharacter extends ManagedEntity {
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 		return spell;
 	}
-	
+
 	public boolean featuresAllowHalfDamageCantrip() {
-		for(ClassFeature feature : applicableFeatures) {
-			if(feature.halfDamageCantrip) {
+		for (ClassFeature feature : applicableFeatures) {
+			if (feature.halfDamageCantrip) {
 				return true;
 			}
 		}
@@ -715,7 +735,8 @@ public class PlayerCharacter extends ManagedEntity {
 	private void addClassBonusSpells() {
 		for (CharClass cClass : classes.keySet()) {
 			for (Spell spell : cClass.getAutomaticSpells(classes.get(cClass))) {
-				addSpell(spell);
+				addSpell(spell, spells);
+				addSpell(spell, freeSpells);
 			}
 		}
 	}

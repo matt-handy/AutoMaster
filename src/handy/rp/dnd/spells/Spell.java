@@ -1,15 +1,17 @@
 package handy.rp.dnd.spells;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import handy.rp.Dice;
+import handy.rp.dnd.CharClass;
 import handy.rp.dnd.ClassFeatureHealingModifier;
-import handy.rp.dnd.attacks.Attack;
 import handy.rp.dnd.attacks.Damage;
 import handy.rp.dnd.character.PlayerCharacter;
+import handy.rp.xml.PlayerCharacterParser;
 
 public class Spell {
 
@@ -59,11 +61,23 @@ public class Spell {
 	public final boolean concentrate;
 	public final boolean bonusAction;
 	public final boolean noDamageOnSave;
+	private List<CharClass> applicableClasses;
+	
+	public static List<Spell> getAllSpellsForCharClass(CharClass cClass){
+		List<Spell> applicableSpells = new ArrayList<>();
+		for(Spell spell : PlayerCharacterParser.spellsList) {
+			if(spell.applicableClasses.contains(cClass.getRootClass())) {
+				applicableSpells.add(spell);
+			}
+		}
+		return applicableSpells;
+	}
 	
 	private RECURRING_DAMAGE_TYPE recurringOnTurnType = null;
 	
 	public Spell(String computerName, String readableName, SLOTLEVEL minimumLevel, boolean saveDc, boolean toHit, Map<SLOTLEVEL, List<SpellDamageComponent>> damagers,
-			String readableEffect, boolean concentrate, boolean bonusAction, RECURRING_DAMAGE_TYPE recurringOnTurnType, SpellHealingComponent healingComponent, Map<SLOTLEVEL, List<SpellDamageComponent>> altDamages, boolean noDamageOnSave){
+			String readableEffect, boolean concentrate, boolean bonusAction, RECURRING_DAMAGE_TYPE recurringOnTurnType, SpellHealingComponent healingComponent, Map<SLOTLEVEL, List<SpellDamageComponent>> altDamages, boolean noDamageOnSave,
+			List<CharClass> applicableClasses){
 		this.readableEffect = readableEffect;
 		this.damagers = damagers;
 		this.minimumLevel = minimumLevel;
@@ -77,6 +91,7 @@ public class Spell {
 		this.healingComponent = healingComponent;
 		this.altDamages = altDamages;
 		this.noDamageOnSave = noDamageOnSave;
+		this.applicableClasses = applicableClasses;
 	}
 	
 	@Override

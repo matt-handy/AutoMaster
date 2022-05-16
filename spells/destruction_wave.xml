@@ -22,4 +22,5 @@
 			<extraDicePerLevel>false</extraDicePerLevel>
 		</damage>
 	</damages>
+	<classes>paladin</classes>
 </spell>

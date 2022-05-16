@@ -22,4 +22,5 @@
 			<extraDicePerLevel>false</extraDicePerLevel>
 		</damage1>
 	</damages>
+	<classes>wizard</classes>
 </spell>

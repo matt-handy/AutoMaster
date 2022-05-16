@@ -16,4 +16,5 @@ At Higher Levels: When you cast this spell using a spell slot of 2nd level or hi
 			<extraDicePerLevel>true</extraDicePerLevel>
 		</damage>
 	</damages>
+	<classes>cleric</classes>
 </spell>

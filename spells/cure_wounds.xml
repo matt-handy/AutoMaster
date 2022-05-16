@@ -16,5 +16,5 @@ At Higher Levels. When you cast this spell using a spell slot of 2nd level or hi
 		<modifier>SPELLCAST</modifier>
 		<extraDicePerLevel>true</extraDicePerLevel>
 	</healing>
-
+	<classes>cleric</classes>
 </spell>

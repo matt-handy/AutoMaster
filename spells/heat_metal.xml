@@ -19,4 +19,5 @@ At Higher Levels. When you cast this spell using a spell slot of 3rd level or hi
 		</damage>
 	</damages>
 	<recurring_damages_type>bonus</recurring_damages_type>
+	<classes>cleric</classes>
 </spell>

@@ -9,6 +9,21 @@ import handy.rp.dnd.character.Proficiency;
 import handy.rp.dnd.spells.Spell;
 
 public class CharClass {
+	
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof CharClass) {
+			return name.equals(((CharClass) other).name);
+		}else {
+			return false;
+		}
+	}
+	
+	@Override 
+	public int hashCode() {
+		return name.hashCode();
+	}
+	
 	public enum SPELLCASTING_MODIFIER {
 		CHARISMA, WISDOM, INTELLIGENCE, NA;
 		

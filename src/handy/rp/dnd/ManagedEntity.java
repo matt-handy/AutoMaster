@@ -106,7 +106,7 @@ public abstract class ManagedEntity extends Entity {
 		this.slotsRemaining = slots;
 	}
 
-	protected void addSpell(Spell spell) {
+	protected static void addSpell(Spell spell, Map<SLOTLEVEL, List<Spell>> spells) {
 		if (spells.containsKey(spell.minimumLevel)) {
 			if (!spells.get(spell.minimumLevel).contains(spell)) {
 				spells.get(spell.minimumLevel).add(spell);
@@ -226,7 +226,7 @@ public abstract class ManagedEntity extends Entity {
 			}
 			sb.append(System.lineSeparator());
 		}
-		
+		/*
 		for (Spell.SLOTLEVEL slot : freeSpells.keySet()) {
 			List<Spell> spells = this.freeSpells.get(slot);
 			sb.append("Level: " + slot.toString() + " ");
@@ -235,7 +235,7 @@ public abstract class ManagedEntity extends Entity {
 			}
 			sb.append(System.lineSeparator());
 		}
-
+		 */
 		return sb.toString();
 	}
 

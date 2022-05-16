@@ -7,4 +7,5 @@
 	<hasToHit>false</hasToHit>
 	<bonusAction>true</bonusAction>
 	<readableeffect>Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space that you can see.</readableeffect>
+	<classes>wizard</classes>
 </spell>

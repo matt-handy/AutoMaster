@@ -26,4 +26,5 @@
 			<stdCantripIncrease>true</stdCantripIncrease>
 		</altdamage>
 	</altdamages>
+	<classes>cleric,wizard</classes>
 </spell>

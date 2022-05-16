@@ -41,7 +41,9 @@ public class ClassParser {
 
 	static {
 		try {
-			charClasses = ClassParser.loadAll("char_classes");
+			if(charClasses == null) {
+				charClasses = ClassParser.loadAll("char_classes");
+			}
 		} catch (Exception ex) {
 			// Shouldn't happen, test loads happen before build.
 			// TODO: Add user notification if exception occurs, will be deploy issue
@@ -54,8 +56,17 @@ public class ClassParser {
 	}
 
 	public static CharClass getCharClass(String name) {
+		try {
+			if (charClasses == null) {
+				charClasses = ClassParser.loadAll("char_classes");
+			}
+		} catch (Exception ex) {
+			// Shouldn't happen, test loads happen before build.
+			// TODO: Add user notification if exception occurs, will be deploy issue
+			ex.printStackTrace();
+		}
 		for (CharClass cClass : charClasses) {
-			if (cClass.name.equals(name)) {
+			if (cClass.name.equalsIgnoreCase(name)) {
 				return cClass;
 			}
 		}
@@ -108,17 +119,19 @@ public class ClassParser {
 						"Class definition does not have a valid Saving Throw Proficiency: " + prof);
 			}
 		}
-		
+
 		NodeList armorProfList = document.getElementsByTagName("armor_proficiencies");
 		List<Proficiency> armorProficiencies = new ArrayList<>();
-		if(armorProfList != null && armorProfList.item(0) != null) {
-			armorProficiencies = getApplicableProficencies(ProficiencyParser.armorProficiencies, (Element) armorProfList.item(0));
+		if (armorProfList != null && armorProfList.item(0) != null) {
+			armorProficiencies = getApplicableProficencies(ProficiencyParser.armorProficiencies,
+					(Element) armorProfList.item(0));
 		}
-		
+
 		NodeList toolProfList = document.getElementsByTagName("tool_proficiencies");
 		List<Proficiency> toolProfienciesList = new ArrayList<>();
-		if(toolProfList != null && toolProfList.item(0) != null) {
-			toolProfienciesList = getApplicableProficencies(ProficiencyParser.toolProficiencies, (Element) toolProfList.item(0));
+		if (toolProfList != null && toolProfList.item(0) != null) {
+			toolProfienciesList = getApplicableProficencies(ProficiencyParser.toolProficiencies,
+					(Element) toolProfList.item(0));
 		}
 
 		ClassResource resource = null;
@@ -199,8 +212,8 @@ public class ClassParser {
 		NodeList children = listContainer.getElementsByTagName("proficiency");
 		for (int idx = 0; idx < children.getLength(); idx++) {
 			String prof = children.item(idx).getTextContent();
-			for(Proficiency profiency : canonList) {
-				if(prof.equals(profiency.name)) {
+			for (Proficiency profiency : canonList) {
+				if (prof.equals(profiency.name)) {
 					applicables.add(profiency);
 				}
 			}
@@ -270,7 +283,7 @@ public class ClassParser {
 				reactionAttack = true;
 			}
 		}
-		
+
 		boolean halfDamageCantrip = false;
 		if (slotsXmlElem.getElementsByTagName("half_damage_cantrip") != null
 				&& slotsXmlElem.getElementsByTagName("half_damage_cantrip").item(0) != null) {
@@ -280,7 +293,7 @@ public class ClassParser {
 				halfDamageCantrip = true;
 			}
 		}
-		
+
 		boolean allowsFreeSpells = false;
 		if (slotsXmlElem.getElementsByTagName("allows_free_spells") != null
 				&& slotsXmlElem.getElementsByTagName("allows_free_spells").item(0) != null) {
@@ -310,7 +323,7 @@ public class ClassParser {
 				allowsNoPrepSpells = true;
 			}
 		}
-		
+
 		boolean recoverSpellSlotsOnShortRest = false;
 		if (slotsXmlElem.getElementsByTagName("short_rest_spell_recharge") != null
 				&& slotsXmlElem.getElementsByTagName("short_rest_spell_recharge").item(0) != null) {
@@ -320,7 +333,7 @@ public class ClassParser {
 				recoverSpellSlotsOnShortRest = true;
 			}
 		}
-		
+
 		int minLevel = Integer.parseInt(slotsXmlElem.getElementsByTagName("minLevel").item(0).getTextContent());
 
 		RECHARGE_DURATION recharge = RECHARGE_DURATION.NA;
@@ -465,7 +478,7 @@ public class ClassParser {
 			Integer cantripNum = Integer.parseInt(cantrip);
 			slots.put(SLOTLEVEL.CANTRIP, cantripNum);
 		}
-		
+
 		NodeList level1NumNode = slotsXmlElem.getElementsByTagName("slevel1");
 		if (level1NumNode != null && level1NumNode.getLength() > 0) {
 			String level1String = level1NumNode.item(0).getTextContent();

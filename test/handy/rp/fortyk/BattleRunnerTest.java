@@ -77,7 +77,9 @@ class BattleRunnerTest {
 			assertEquals(br.readLine(), "Army not loaded");
 			assertEquals(br.readLine(), "Army loaded!");
 			assertEquals(br.readLine(), "Unknown unit: Nonunit");
-			assertEquals(br.readLine(), "Weapon name: Choppa with strength 4 and ap -1");
+			String nextLine =br.readLine(); 
+			assertTrue(nextLine.equals("Weapon name: Choppa with strength 4 and ap -1") ||
+					nextLine.equals("Weapon name: Power Stabba with strength 5 and ap -2"));
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}

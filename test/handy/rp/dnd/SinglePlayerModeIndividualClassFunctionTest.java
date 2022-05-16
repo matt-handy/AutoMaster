@@ -44,6 +44,44 @@ class SinglePlayerModeIndividualClassFunctionTest {
 	}
 	
 	@Test
+	void testClericAddAndSwapSpellsWorksInMainProgramExecution() {
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("prepareSpell magic_circle");
+		builder.println("swapSpell magic_circle detect_magic");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.singlePlayerMode(builder, br, "Durnt-life-cleric");
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertEquals("Spell prepared: Magic Circle", br.readLine());
+			assertEquals("Spell prepared: Detect Magic", br.readLine());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+		main.shutdown();
+	}
+	
+	@Test
 	void testAddPreparedSpellUI() {
 		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
 		try {
@@ -75,43 +113,6 @@ class SinglePlayerModeIndividualClassFunctionTest {
 			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
 			assertEquals("Spell prepared: Grease", br.readLine());
 			assertEquals("prepareSpell <spell name>", br.readLine());
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}
-		main.shutdown();
-	}
-	
-	@Test
-	void testNonwizardsCantPrepareSpell() {
-		//TODO Refactor so that other classes can prep too from their class lists
-		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
-		try {
-			main.initialize();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
-		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
-		PrintWriter builder = new PrintWriter(bos);
-		builder.println("prepareSpell cloudkill");
-		builder.println("quit");
-		builder.flush();
-
-		BufferedReader br = new BufferedReader(
-				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
-		cmdBuffer.reset();
-		bos = new BufferedOutputStream(cmdBuffer);
-		builder = new PrintWriter(bos);
-		try {
-			main.singlePlayerMode(builder, br, "Durnt-reference");
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-
-		try {
-			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
-			assertEquals("Only wizards can prepare spells for now", br.readLine());
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
@@ -156,42 +157,6 @@ class SinglePlayerModeIndividualClassFunctionTest {
 		main.shutdown();
 	}
 
-	@Test
-	void testNonWizardsCantSwapsSpells() {
-		//TODO: Refactor so that other classes that prepare against class lists can do so instead of relying on individual known spell
-		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
-		try {
-			main.initialize();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
-		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
-		PrintWriter builder = new PrintWriter(bos);
-		builder.println("swapSpell cloudkill barf");
-		builder.println("quit");
-		builder.flush();
-
-		BufferedReader br = new BufferedReader(
-				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
-		cmdBuffer.reset();
-		bos = new BufferedOutputStream(cmdBuffer);
-		builder = new PrintWriter(bos);
-		try {
-			main.singlePlayerMode(builder, br, "Durnt-reference");
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-
-		try {
-			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
-			assertEquals("Only wizards can swap spells for now", br.readLine());
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}
-		main.shutdown();
-	}
 	
 	@Test
 	void testWizardLearnNewSpellUI() {
@@ -227,42 +192,6 @@ class SinglePlayerModeIndividualClassFunctionTest {
 			assertEquals("Spell learned: Cloudkill", br.readLine());
 			assertEquals("Spell not found", br.readLine());
 			assertEquals("learnSpell <spell name>", br.readLine());
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}
-		main.shutdown();
-	}
-	
-	@Test
-	void testNonWizardsCantLearnNewSpell() {
-		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
-		try {
-			main.initialize();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
-		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
-		PrintWriter builder = new PrintWriter(bos);
-		builder.println("learnSpell cloudkill");
-		builder.println("quit");
-		builder.flush();
-
-		BufferedReader br = new BufferedReader(
-				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
-		cmdBuffer.reset();
-		bos = new BufferedOutputStream(cmdBuffer);
-		builder = new PrintWriter(bos);
-		try {
-			main.singlePlayerMode(builder, br, "Durnt-reference");
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-
-		try {
-			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
-			assertEquals("Only wizards can learn spells", br.readLine());
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}

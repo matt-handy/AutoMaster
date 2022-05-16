@@ -244,16 +244,7 @@ public class SinglePlayerEncounterRunner extends EncounterRunner {
 				break;
 			case "prepareSpell":
 				if (args.length == 2) {
-					boolean foundWizard = false;
-					for (CharClass cClass : pc.getClassInfo().keySet()) {
-						if (cClass.getRootClass().name.equalsIgnoreCase("Wizard")) {
-							foundWizard = true;
-							pw.println(pc.addPreparedSpell(args[1]).humanMessage);
-						}
-					}
-					if (!foundWizard) {
-						pw.println("Only wizards can prepare spells for now");
-					}
+					pw.println(pc.addPreparedSpell(args[1]).humanMessage);
 				} else {
 					pw.println("prepareSpell <spell name>");
 				}
@@ -283,16 +274,7 @@ public class SinglePlayerEncounterRunner extends EncounterRunner {
 				break;
 			case "swapSpell":
 				if (args.length == 3) {
-					boolean foundWizard = false;
-					for (CharClass cClass : pc.getClassInfo().keySet()) {
-						if (cClass.getRootClass().name.equalsIgnoreCase("Wizard")) {
-							foundWizard = true;
-							pw.println(pc.swapPreparedSpell(args[1], args[2]).humanMessage);
-						}
-					}
-					if (!foundWizard) {
-						pw.println("Only wizards can swap spells for now");
-					}
+					pw.println(pc.swapPreparedSpell(args[1], args[2]).humanMessage);
 				} else {
 					pw.println("swapSpell <old spell name> <new spell name>");
 				}

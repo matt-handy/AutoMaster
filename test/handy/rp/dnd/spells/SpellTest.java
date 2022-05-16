@@ -13,8 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import handy.rp.Dice;
+import handy.rp.dnd.CharClass;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
+import handy.rp.xml.ClassParser;
 import handy.rp.xml.SpellParser;
 
 class SpellTest {
@@ -371,6 +373,53 @@ class SpellTest {
 		}
 	}
 
+	@Test
+	void testGetAllSpellsForClass() {
+		CharClass cClass = ClassParser.getCharClass("Cleric");
+		assertEquals("Cleric", cClass.name);
+		List<Spell> spells = Spell.getAllSpellsForCharClass(cClass);
+		
+		boolean foundFireball = false;
+		boolean foundCurewounds = false;
+		boolean foundDetectMagic = false;
+		
+		for(Spell spell : spells) {
+			if(spell.computerName.equals("fireball")) {
+				foundFireball = true;
+			}else if(spell.computerName.equals("cure_wounds")) {
+				foundCurewounds = true;
+			}else if(spell.computerName.equals("detect_magic")) {
+				foundDetectMagic = true;
+			}
+		}
+		
+		assertTrue(foundCurewounds);
+		assertFalse(foundFireball);
+		assertTrue(foundDetectMagic);
+		
+		cClass = ClassParser.getCharClass("Wizard");
+		assertEquals("Wizard", cClass.name);
+		spells = Spell.getAllSpellsForCharClass(cClass);
+		
+		foundFireball = false;
+		foundCurewounds = false;
+		foundDetectMagic = false;
+		
+		for(Spell spell : spells) {
+			if(spell.computerName.equals("fireball")) {
+				foundFireball = true;
+			}else if(spell.computerName.equals("cure_wounds")) {
+				foundCurewounds = true;
+			}else if(spell.computerName.equals("detect_magic")) {
+				foundDetectMagic = true;
+			}
+		}
+		
+		assertFalse(foundCurewounds);
+		assertTrue(foundFireball);
+		assertTrue(foundDetectMagic);
+	}
+	
 	@Test
 	void testLoadAll() {
 		try {

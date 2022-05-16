@@ -17,4 +17,5 @@
 			<extraDicePerLevel>true</extraDicePerLevel>
 		</damage>
 	</damages>
+	<classes>cleric</classes>
 </spell>

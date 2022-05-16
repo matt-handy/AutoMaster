@@ -6,5 +6,5 @@
 	<hasDc>true</hasDc>
 	<hasToHit>false</hasToHit>
 	<readableeffect>You use your action to touch an object no longer than 10 feet in any dimension, causing it to shine bright light of a color you choose in a 20-foot radius and dim light for an additional 20 feet. If the object is completely covered, the light is blocked. The spell ends if you cast it again or dismiss the light as an action. If your target is an object held or worn by a hostile creature, the creature must pass a Dexterity save to avoid being lit by the spell.</readableeffect>
-	
+	<classes>cleric,wizard</classes>
 </spell>

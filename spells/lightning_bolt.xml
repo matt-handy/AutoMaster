@@ -16,4 +16,5 @@ The lightning ignites flammable objects in the area that aren't being worn or ca
 			<extraDicePerLevel>true</extraDicePerLevel>
 		</damage>
 	</damages>
+	<classes>wizard</classes>
 </spell>

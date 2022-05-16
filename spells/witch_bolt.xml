@@ -16,4 +16,5 @@
 			<extraDicePerLevel>true</extraDicePerLevel>
 		</damage>
 	</damages>
+	<classes>wizard</classes>
 </spell>

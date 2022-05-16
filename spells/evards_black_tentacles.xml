@@ -18,4 +18,5 @@ A creature restrained by the tentacles can use its action to make a Strength or 
 			<extraDicePerLevel>false</extraDicePerLevel>
 		</damage>
 	</damages>
+	<classes>wizard</classes>
 </spell>

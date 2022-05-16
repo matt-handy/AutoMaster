@@ -18,4 +18,5 @@ The fog moves 10 feet away from you at the start of each of your turns, rolling 
 			<extraDicePerLevel>true</extraDicePerLevel>
 		</damage>
 	</damages>
+	<classes>wizard</classes>
 </spell>
