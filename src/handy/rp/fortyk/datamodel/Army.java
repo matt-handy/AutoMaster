@@ -20,4 +20,18 @@ public class Army {
 		}
 		throw new IllegalArgumentException("Unknown unit: " + mnemonic);
 	}
+	
+	public String getTotalPointCount() {
+		StringBuilder sb = new StringBuilder();
+		int currentWorkingCount = 0;
+		
+		for(UnitInstance unit : armyComposition) {
+			sb.append(unit.mnemonic + " has point value: " + unit.getUnitPointValue());
+			sb.append(System.lineSeparator());
+			currentWorkingCount += unit.getUnitPointValue();
+		}
+		
+		sb.append("Total Army Points: " + currentWorkingCount);
+		return sb.toString();
+	}
 }

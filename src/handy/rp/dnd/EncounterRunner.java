@@ -453,9 +453,9 @@ public class EncounterRunner extends GameRunner{
 
 
 	@Override
-	public void processCommand(String[] args, PrintWriter pw, BufferedReader br, String rawCommand) {
+	public boolean processCommand(String[] args, PrintWriter pw, BufferedReader br, String rawCommand) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 	

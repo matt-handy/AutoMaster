@@ -100,6 +100,17 @@ public class UnitInstance {
 		return sb.toString();
 	}
 	
+	public int getUnitPointValue() {
+		int totalPointValue = 0;
+		if(leader != null) {
+			totalPointValue += leader.getActualPointValue();
+		}
+		for(Model model : models) {
+			totalPointValue += model.getActualPointValue();
+		}
+		return totalPointValue;
+	}
+	
 	private String buildDamagesWhenAboveWoundThreshold(Set<FortyKDamageOutcome> damages, int rollThreshold) {
 		StringBuilder sb = new StringBuilder();
 		for(FortyKDamageOutcome damage : damages) {

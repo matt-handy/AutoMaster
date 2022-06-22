@@ -15,6 +15,73 @@ import org.junit.jupiter.api.Test;
 class BattleRunnerTest {
 
 	@Test
+	void testPointsCalculationDisplay() {
+		BattleRunner battleRunner = new BattleRunner();
+
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("loadarmy Trukk Boyz Test");
+		builder.println("getpoints");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+
+		battleRunner.mainGameLoop(builder, br);
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			// Test Spell list
+			assertEquals(br.readLine(), "Army loaded!");
+			assertEquals(br.readLine(), "Boyz has point value: 114");
+			assertEquals(br.readLine(), "Trukk has point value: 75");
+			assertEquals(br.readLine(), "Total Army Points: 189");
+			assertEquals(null, br.readLine());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
+	void testHelp() {
+		BattleRunner battleRunner = new BattleRunner();
+
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("help");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+
+		battleRunner.mainGameLoop(builder, br);
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertEquals(BattleRunner.GETMOVEMENT_HELP, br.readLine());
+			assertEquals(BattleRunner.GETPOINTS_HELP, br.readLine());
+			assertEquals(BattleRunner.LOADARMY_HELP, br.readLine());
+			assertEquals(BattleRunner.MELEE_HELP, br.readLine());
+			assertEquals(BattleRunner.RANGED_HELP, br.readLine());
+			assertEquals(BattleRunner.TAKEWOUNDS_HELP, br.readLine());
+			assertEquals("", br.readLine());
+			assertEquals(null, br.readLine());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	@Test
 	void testRangedIntegration() {
 		BattleRunner battleRunner = new BattleRunner();
 

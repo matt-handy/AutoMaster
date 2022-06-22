@@ -229,12 +229,18 @@ public class UnitParser {
 			}
 		}
 		
+		int points = 0;
+		if (element.getElementsByTagName(POINTS_XML).item(0) != null) {
+			String tmp = element.getElementsByTagName(POINTS_XML).item(0).getTextContent();
+			points = Integer.parseInt(tmp);
+		}
+		
 		List<WeaponDamageProfile> profiles = new ArrayList<>();
 		NodeList profileNodes = element.getElementsByTagName("profile"); 
 		for(int idx = 0; idx < profileNodes.getLength(); idx++) {
 			profiles.add(parseProfile((Element)profileNodes.item(idx), name, modelStrength));
 		}
-		return new Weapon(name, modelStrength, countsAgainstMeleeAttacks, attackLimit, freeattack, replace, limitCanHave, limitOutOf, minusToHit, profiles);
+		return new Weapon(name, points, countsAgainstMeleeAttacks, attackLimit, freeattack, replace, limitCanHave, limitOutOf, minusToHit, profiles);
 	}
 	
 	public static Unit load(String filename) throws Exception {

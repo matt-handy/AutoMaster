@@ -11,6 +11,20 @@ import handy.rp.xml.fortyk.ArmyParser;
 class TestBoyz {
 
 	@Test
+	void testTrukkBoyz1PointsCalc() {
+		Army trukkBoyz = ArmyParser.getArmyByName("Trukk Boyz Test");
+		UnitInstance boyz = trukkBoyz.getUnitByMnemonic("Boyz");
+		assertEquals(114, boyz.getUnitPointValue());
+	}
+	
+	@Test
+	void testTrukkBoyz2PointsCalc() {
+		Army trukkBoyz = ArmyParser.getArmyByName("Trukk Boyz Test Set 2");
+		UnitInstance boyz = trukkBoyz.getUnitByMnemonic("Boyz");
+		assertEquals(109, boyz.getUnitPointValue());
+	}
+	
+	@Test
 	void testStickgrenades() {
 		// Can we only throw one grenade and shoot?
 		Army trukkBoyz = ArmyParser.getArmyByName("Trukk Boyz Test Set 2");

@@ -11,6 +11,13 @@ import handy.rp.xml.fortyk.ArmyParser;
 class TrukkTest {
 
 	@Test
+	void testPointCalculation() {
+		Army trukkBoyz = ArmyParser.getArmyByName("Trukk Boyz Test");
+		UnitInstance trukk = trukkBoyz.getUnitByMnemonic("Trukk");
+		assertEquals(75, trukk.getUnitPointValue());
+	}
+	
+	@Test
 	void testBigShoota() {
 		Army trukkBoyz = ArmyParser.getArmyByName("Trukk Boyz Test");
 		UnitInstance trukk = trukkBoyz.getUnitByMnemonic("Trukk");

@@ -18,13 +18,18 @@ public abstract class GameRunner {
 				pw.println("Improper command");
 				continue;
 			}
+			System.out.println(nextCommand);
 			
 			if(args[0].equalsIgnoreCase("quit")) {
 				stayInLoop = false;
 			}else if(args[0].equalsIgnoreCase("help")) {
 				pw.println(getHelp());
+				pw.flush();
 			}else {
-				processCommand(args, pw, br, nextCommand);
+				if(!processCommand(args, pw, br, nextCommand)) {
+					pw.println("Unknown command: " + nextCommand);
+					pw.flush();
+				}
 			}
 		}
 	} catch (IOException ex) {
@@ -34,5 +39,5 @@ public abstract class GameRunner {
 	
 	public abstract String getHelp();
 	
-	public abstract void processCommand(String args[],PrintWriter pw, BufferedReader br, String rawCommand);
+	public abstract boolean processCommand(String args[],PrintWriter pw, BufferedReader br, String rawCommand);
 }

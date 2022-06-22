@@ -178,6 +178,14 @@ public class Model {
 		}
 		return null;
 	}
+	
+	public int getActualPointValue() {
+		int basePoints = baseStats.points;
+		for(String chosen : chosenWeaponProfiles) {
+			basePoints += getWeaponProfile(chosen).points;
+		}
+		return basePoints;
+	}
 
 	public int getCurrentWounds() {
 		return currentWounds;

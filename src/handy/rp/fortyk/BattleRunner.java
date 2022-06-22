@@ -17,6 +17,7 @@ public class BattleRunner extends GameRunner {
 	public static final String LOADARMY_HELP = "loadarmy <army name> - loads the army named in the command";
 	public static final String MELEE_HELP = "melee <unit name> - rolls melee damage for the unit named";
 	public static final String RANGED_HELP = "ranged <unit name> - rolls ranged damage for the unit named";
+	public static final String GETPOINTS_HELP = "getpoints - get the point value of the current army as configured";
 	
 	private Army currentArmy = null;
 
@@ -30,6 +31,7 @@ public class BattleRunner extends GameRunner {
 	public String getHelp() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(GETMOVEMENT_HELP + System.lineSeparator());
+		sb.append(GETPOINTS_HELP + System.lineSeparator());
 		sb.append(LOADARMY_HELP + System.lineSeparator());
 		sb.append(MELEE_HELP + System.lineSeparator());
 		sb.append(RANGED_HELP + System.lineSeparator());
@@ -38,17 +40,12 @@ public class BattleRunner extends GameRunner {
 	}
 
 	@Override
-	public void processCommand(String[] args, PrintWriter pw, BufferedReader br, String rawCommand) {
+	public boolean processCommand(String[] args, PrintWriter pw, BufferedReader br, String rawCommand) {
 		// TODO: have way to indicate unknown command and have a common unknown command
 		// in parent's loop
 
-		// TODO: Migrate help to the parent class and each subclass implement getHelp
-		
 		String command = args[0];
 		switch (command) {
-		case "help":
-			pw.println(getHelp());
-			break;
 		case "loadarmy":
 			String armyName = rawCommand.substring("loadarmy".length() + 1);
 			try {
@@ -56,6 +53,13 @@ public class BattleRunner extends GameRunner {
 				pw.println("Army loaded!");
 			} catch (IllegalArgumentException ex) {
 				pw.println(ex.getMessage());
+			}
+			break;
+		case "getpoints":
+			if(currentArmy == null) {
+				pw.println("Army not loaded");
+			}else {
+				pw.println(currentArmy.getTotalPointCount());
 			}
 			break;
 		case "melee":
@@ -170,10 +174,10 @@ public class BattleRunner extends GameRunner {
 
 			break;
 		default:
-			pw.println("Unknown command: " + command);
-			break;
+			return false;
 		}
 		pw.flush();
+		return true;
 	}
 
 }
