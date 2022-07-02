@@ -48,6 +48,8 @@ public class ClassFeature {
 	
 	public CharClass parent;
 	
+	public final int acBonus;
+	
 	private int extraAttacksUnconditional = 0;
 	private Map<Integer, Integer> levelsToExtraCritDice;
 	
@@ -60,7 +62,7 @@ public class ClassFeature {
 			ClassFeatureHealingModifier otherHealingMod, ClassFeatureHealingModifier selfHealingMod, int extraAttacksUnconditional,
 			Map<Integer, Integer> levelsToExtraCritDice, boolean initiativeAdvantage, boolean isTogglableFeature,
 			boolean allowBonusActionAttack, boolean allowReactionAttack, boolean recoverSpellSlotsOnShortRest, boolean halfDamageCantrip, boolean allowsFreeSpells, 
-			boolean allowsNoPrepSpells) {
+			boolean allowsNoPrepSpells, int acBonus) {
 		this.featureName = featureName;
 		this.effectString = effectString;
 		this.damageEffect = damageEffect;
@@ -82,6 +84,7 @@ public class ClassFeature {
 		this.halfDamageCantrip = halfDamageCantrip;
 		this.allowsFreeSpells = allowsFreeSpells;
 		this.allowsNoPrepSpells = allowsNoPrepSpells;
+		this.acBonus = acBonus;
 	}
 	
 	public boolean allowBonusActionAttack(boolean isToggled) {

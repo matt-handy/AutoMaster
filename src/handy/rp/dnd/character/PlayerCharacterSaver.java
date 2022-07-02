@@ -161,6 +161,7 @@ public class PlayerCharacterSaver {
 				}
 				pw.println("</feature_data>");
 			}
+			pw.println(pc.equipment.getXML());
 			
 			pw.println("</player_char>");
 			pw.flush();

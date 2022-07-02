@@ -63,6 +63,9 @@ public class Spell {
 	public final boolean noDamageOnSave;
 	private List<CharClass> applicableClasses;
 	
+	private final int activeACBonus;
+	public final int temporaryACBonus;
+	
 	public static List<Spell> getAllSpellsForCharClass(CharClass cClass){
 		List<Spell> applicableSpells = new ArrayList<>();
 		for(Spell spell : PlayerCharacterParser.spellsList) {
@@ -75,9 +78,13 @@ public class Spell {
 	
 	private RECURRING_DAMAGE_TYPE recurringOnTurnType = null;
 	
+	public int getACBonus() {
+		return activeACBonus;
+	}
+	
 	public Spell(String computerName, String readableName, SLOTLEVEL minimumLevel, boolean saveDc, boolean toHit, Map<SLOTLEVEL, List<SpellDamageComponent>> damagers,
 			String readableEffect, boolean concentrate, boolean bonusAction, RECURRING_DAMAGE_TYPE recurringOnTurnType, SpellHealingComponent healingComponent, Map<SLOTLEVEL, List<SpellDamageComponent>> altDamages, boolean noDamageOnSave,
-			List<CharClass> applicableClasses){
+			List<CharClass> applicableClasses, int activeACBonus, int temporaryACBonus){
 		this.readableEffect = readableEffect;
 		this.damagers = damagers;
 		this.minimumLevel = minimumLevel;
@@ -92,6 +99,8 @@ public class Spell {
 		this.altDamages = altDamages;
 		this.noDamageOnSave = noDamageOnSave;
 		this.applicableClasses = applicableClasses;
+		this.activeACBonus = activeACBonus;
+		this.temporaryACBonus = temporaryACBonus;
 	}
 	
 	@Override

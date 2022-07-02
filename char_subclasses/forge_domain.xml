@@ -72,6 +72,7 @@ The ritual can create a duplicate of a nonmagical item that contains metal, such
 		<name>Soul of the Forge</name>
 		<minLevel>6</minLevel>
 		<description>Starting at 6th level, your mastery of the forge grants you special abilities. You gain resistance to fire damage. While wearing heavy armor, you gain a +1 bonus to AC.</description>
+		<ac_bonus>1</ac_bonus>
 	</feature>
 	<feature>
 		<name>Divine Strike</name>

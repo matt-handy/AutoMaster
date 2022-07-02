@@ -28,6 +28,7 @@ import handy.rp.dnd.SkillCheckInfo.SKILL_CHECK;
 import handy.rp.dnd.SkillCheckInfo.SKILL_MODIFIER;
 import handy.rp.dnd.attacks.CharacterWeapon;
 import handy.rp.dnd.attacks.Weapon.WEAPON_ATTRIBUTES;
+import handy.rp.dnd.character.feature.FeatureHelper;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 import handy.rp.xml.PlayerCharacterParser;
@@ -60,20 +61,27 @@ public class PlayerCharacter extends ManagedEntity {
 	private List<Spell> knownSpells;
 
 	private int maxCantrips = 0;
+	
+	//This variable is used as an accomulator so that temporary AC bonuses that last to the next turn
+	//are added, and then removed on "notifynextturn"
+	private int temporarySpellAC = 0;
 
 	protected Set<GenericFeatureData> featureDataSet;
+
+	public final PlayerEquipment equipment;
 
 	public PlayerCharacter(String personalName, int str, int dex, int con, int inte, int wis, int cha,
 			Map<SLOTLEVEL, List<Spell>> spells, Map<CharClass, Integer> classes, int maxHp, int currentHp,
 			List<CharacterWeapon> weapons, List<SKILL_CHECK> skillProficiencies, Path originalFile,
 			Map<Spell.SLOTLEVEL, Integer> restoredSlotsRemaining, List<String> activeFeatureNames,
 			Map<String, Integer> classToResource, Map<String, Integer> featureCharges, Map<DICE_TYPE, Integer> hitDice,
-			List<Spell> knownSpells, Set<GenericFeatureData> featureDataSet) {
+			List<Spell> knownSpells, Set<GenericFeatureData> featureDataSet, PlayerEquipment equipment) {
 		super(personalName, str, dex, con, inte, wis, cha, spells, deriveSlotMapping(classes), maxHp, currentHp,
 				refreshSpellCastingModifier(classes));
 		this.classes = classes;
 		this.weapons = weapons;
 		this.skillProficiencies = skillProficiencies;
+		this.equipment = equipment;
 		attacksPerTurn = 1;
 		refreshSavingThrowProficiencies();
 		notifyNewTurn();
@@ -108,6 +116,49 @@ public class PlayerCharacter extends ManagedEntity {
 
 	public int getMaxCantrips() {
 		return maxCantrips;
+	}
+
+	public int getCurrentAC() {
+
+		int baseAC = 10;
+		// TODO: Check if mage armor reset the baseAC...
+
+		// if the armor overrides relative bonuses for AC, get the static calc and
+		// ignore mods
+		if (equipment.hasStaticAC()) {
+			baseAC = equipment.getStaticAC();
+		} else {
+			if (equipment.hasArmorACMod()) {
+				baseAC = equipment.getArmorACMod();
+			}
+			
+			// Base A/C from player Dex
+			int dexMod = Helpers.getModifierFromAbility(getDex());
+			if (equipment.doesLimitDexACBonux() && dexMod >= equipment.getLimitedACDexBonus()) {
+				baseAC += equipment.getLimitedACDexBonus();
+			} else {
+				baseAC += dexMod;
+			}
+			// Base A/C from player race/class
+			for (CharClass cClass : classes.keySet()) {
+				if (cClass.getRootClass().name.equals("Barbarian") && !equipment.hasArmorACMod()) {
+					baseAC += Helpers.getModifierFromAbility(getCon());
+				}
+			}
+		}
+		
+		if (equipment.hasShield()) {
+			baseAC += equipment.getShieldAC();
+		}
+
+		if (concentratedSpell() != null) {
+			baseAC += concentratedSpell().getACBonus();// Shield of faith, haste
+		}
+		baseAC += temporarySpellAC;// Wizard shield
+
+		// A/C increase from feature
+		baseAC += FeatureHelper.assembleTotalACBonus(applicableFeatures);
+		return baseAC;
 	}
 
 	private void updateMaxCantripsKnown() {
@@ -150,6 +201,8 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 	}
 
+	// TODO: Migrate logic from these feature processing methods to ClassFeature or
+	// FeatureHelper
 	@Override
 	public boolean hasFeatureToIgnoreSpellCast(String spellName) {
 
@@ -310,7 +363,7 @@ public class PlayerCharacter extends ManagedEntity {
 		}
 		pw.println("Your slot work is complete");
 	}
-	
+
 	private Spell getSpellFromKnownSpellsByName(String spellName) {
 		for (CharClass cClass : classes.keySet()) {
 			if (cClass.getRootClass().name.equalsIgnoreCase("wizard")) {
@@ -319,8 +372,8 @@ public class PlayerCharacter extends ManagedEntity {
 						return spell;
 					}
 				}
-			}else {
-				for(Spell spell : Spell.getAllSpellsForCharClass(cClass)) {
+			} else {
+				for (Spell spell : Spell.getAllSpellsForCharClass(cClass)) {
 					if (spell.computerName.equals(spellName)) {
 						return spell;
 					}
@@ -332,7 +385,7 @@ public class PlayerCharacter extends ManagedEntity {
 
 	public OutcomeNotification addPreparedSpell(String spellName) {
 		Spell newPreparedSpell = getSpellFromKnownSpellsByName(spellName);
-		
+
 		if (newPreparedSpell == null) {
 			return new OutcomeNotification("Unknown spell: " + spellName, false);
 		}
@@ -347,12 +400,12 @@ public class PlayerCharacter extends ManagedEntity {
 
 	public int currentSpellsPrepared() {
 		int currentCount = getSpellsCount(spells);
-		
+
 		int currentCountFreeSpells = getSpellsCount(freeSpells);
-		
+
 		return currentCount - currentCountFreeSpells;
 	}
-	
+
 	private int getSpellsCount(Map<SLOTLEVEL, List<Spell>> localspells) {
 		int currentCount = 0;
 		for (SLOTLEVEL lvl : localspells.keySet()) {
@@ -521,6 +574,7 @@ public class PlayerCharacter extends ManagedEntity {
 	@Override
 	public Spell expendSpell(String spellName) {
 		Spell spell = super.expendSpell(spellName);
+		temporarySpellAC += spell.temporaryACBonus;
 		spellSummary.update(slotsRemaining);
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 		return spell;
@@ -529,6 +583,7 @@ public class PlayerCharacter extends ManagedEntity {
 	@Override
 	public Spell expendSpell(String spellName, Spell.SLOTLEVEL slotLvl) {
 		Spell spell = super.expendSpell(spellName, slotLvl);
+		temporarySpellAC += spell.temporaryACBonus;
 		spellSummary.update(slotsRemaining);
 		PlayerCharacterSaver.saveCharacter(this, originalFile);
 		return spell;
@@ -820,6 +875,7 @@ public class PlayerCharacter extends ManagedEntity {
 	public void notifyNewTurn() {
 		super.notifyNewTurn();
 		attacksRemaining = attacksPerTurn;
+		temporarySpellAC = 0;
 	}
 
 	public void takeShortRest() {

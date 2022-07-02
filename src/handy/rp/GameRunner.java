@@ -18,7 +18,6 @@ public abstract class GameRunner {
 				pw.println("Improper command");
 				continue;
 			}
-			System.out.println(nextCommand);
 			
 			if(args[0].equalsIgnoreCase("quit")) {
 				stayInLoop = false;

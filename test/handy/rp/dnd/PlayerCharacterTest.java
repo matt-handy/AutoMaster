@@ -70,6 +70,42 @@ class PlayerCharacterTest {
 	}
 
 	@Test
+	void testEquipmentSaved() {
+		//Tests that the equipment class is saved to XML
+		try {
+			List<PlayerCharacter> characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");
+			PlayerCharacter durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("Durnt-reference")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Durnt reference");
+
+			assertEquals(21, durnt.getCurrentAC());
+
+			//We're going to take a long rest to force a save-out of the character and a full XML reload.
+			//For this reference, both armor and shield are represented in the AC calculation
+			//If the AC calculation is the same, then all armor assets were saved and reloaded positively.
+			durnt.takeLongRest();
+
+			characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");
+			durnt = null;
+			for (PlayerCharacter pcs : characters) {
+				if (pcs.personalName.equals("Durnt-reference")) {
+					durnt = pcs;
+				}
+			}
+			assertTrue(durnt != null, "Didn't load Durnt reference");
+
+			assertEquals(21, durnt.getCurrentAC());
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
 	void testLongRest() {
 		try {
 			List<PlayerCharacter> characters = PlayerCharacterParser.loadAllPlayerCharacters("player_chars");

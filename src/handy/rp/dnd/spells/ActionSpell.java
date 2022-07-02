@@ -12,8 +12,8 @@ public class ActionSpell extends Spell {
 	public final int staticToHit;
 	public ActionSpell(String computerName, String readableName, SLOTLEVEL minimumLevel, boolean saveDc, boolean toHit,
 			Map<SLOTLEVEL, List<SpellDamageComponent>> damagers, String readableEffect, boolean concentrate,
-			int staticDC, int staticToHit, SpellHealingComponent healingComponent, Map<SLOTLEVEL, List<SpellDamageComponent>> altDamagers, boolean noDamageOnSave, List<CharClass> applicableClasses) {
-		super(computerName, readableName, minimumLevel, saveDc, toHit, damagers, readableEffect, concentrate, false, null, healingComponent, altDamagers, noDamageOnSave, applicableClasses);
+			int staticDC, int staticToHit, SpellHealingComponent healingComponent, Map<SLOTLEVEL, List<SpellDamageComponent>> altDamagers, boolean noDamageOnSave, List<CharClass> applicableClasses, int activeACBonus, int temporaryACBonus) {
+		super(computerName, readableName, minimumLevel, saveDc, toHit, damagers, readableEffect, concentrate, false, null, healingComponent, altDamagers, noDamageOnSave, applicableClasses, activeACBonus, temporaryACBonus);
 		this.staticDC = staticDC;
 		this.staticToHit = staticToHit;
 	}

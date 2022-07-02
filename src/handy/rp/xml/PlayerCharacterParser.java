@@ -27,6 +27,7 @@ import handy.rp.dnd.attacks.CharacterWeapon;
 import handy.rp.dnd.attacks.Weapon;
 import handy.rp.dnd.character.GenericFeatureData;
 import handy.rp.dnd.character.PlayerCharacter;
+import handy.rp.dnd.character.PlayerEquipment;
 import handy.rp.dnd.spells.Spell;
 import handy.rp.dnd.spells.Spell.SLOTLEVEL;
 
@@ -73,6 +74,15 @@ public class PlayerCharacterParser {
 		int wis = Integer.parseInt(document.getElementsByTagName("wis").item(0).getTextContent());
 		int cha = Integer.parseInt(document.getElementsByTagName("cha").item(0).getTextContent());
 
+		PlayerEquipment equipment = new PlayerEquipment();
+		NodeList equipmentList = document.getElementsByTagName("equipment");
+		for(int idx = 0; idx < equipmentList.getLength(); idx++) {
+			Node item = equipmentList.item(idx);
+			Element itemElement = (Element) item;
+			String itemName = itemElement.getTextContent();
+			equipment.addEquipment(itemName);
+		}
+		
 		List<CharacterWeapon> weapons = new ArrayList<>();
 
 		NodeList featureDataList = document.getElementsByTagName("feature_data");
@@ -315,7 +325,7 @@ public class PlayerCharacterParser {
 					"character " + name + " has no identifiable class. Much like your mother.");
 		}
 
-		return new PlayerCharacter(name, str, dex, con, inte, wis, cha, spells, classes, maxHp, currentHp, weapons, skillProficiencies, Paths.get(file), savedSpellSlots, activeFeatureNames, classToResource, featureCharges, hitDice, knownSpells, featureDataSet);
+		return new PlayerCharacter(name, str, dex, con, inte, wis, cha, spells, classes, maxHp, currentHp, weapons, skillProficiencies, Paths.get(file), savedSpellSlots, activeFeatureNames, classToResource, featureCharges, hitDice, knownSpells, featureDataSet, equipment);
 	}
 	
 	private static List<Spell> getSpellsUnderHeader(Document document, String header){

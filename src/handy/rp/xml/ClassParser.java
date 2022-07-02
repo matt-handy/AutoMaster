@@ -126,7 +126,8 @@ public class ClassParser {
 			armorProficiencies = getApplicableProficencies(ProficiencyParser.armorProficiencies,
 					(Element) armorProfList.item(0));
 		}
-
+		
+		
 		NodeList toolProfList = document.getElementsByTagName("tool_proficiencies");
 		List<Proficiency> toolProfienciesList = new ArrayList<>();
 		if (toolProfList != null && toolProfList.item(0) != null) {
@@ -454,6 +455,12 @@ public class ClassParser {
 			Element elem = (Element) xml;
 			selfHealingModifier = getHealingInfo(elem);
 		}
+		
+		int acBonus = 0;
+		NodeList acBonusList = slotsXmlElem.getElementsByTagName("ac_bonus");
+		if (acBonusList.item(0) != null) {
+			acBonus = Integer.parseInt(acBonusList.item(0).getTextContent());
+		}
 
 		ClassFeatureHealingModifier otherHealingModifier = null;
 		if (slotsXmlElem.getElementsByTagName("otherHealMod") != null
@@ -466,7 +473,7 @@ public class ClassParser {
 		ClassFeature newFeature = new ClassFeature(name, description, minLevel, classResourceChargesUsed, damageEffect,
 				levelsToSpecialDamage, useType, recharge, charges, otherHealingModifier, selfHealingModifier,
 				extraAttacksUnconditional, levelsToExtraCritDice, initiativeAdvantage, toggle, bonusActionAttack,
-				reactionAttack, recoverSpellSlotsOnShortRest, halfDamageCantrip, allowsFreeSpells, allowsNoPrepSpells);
+				reactionAttack, recoverSpellSlotsOnShortRest, halfDamageCantrip, allowsFreeSpells, allowsNoPrepSpells, acBonus);
 		return newFeature;
 	}
 

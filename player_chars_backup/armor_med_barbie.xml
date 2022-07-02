@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <player_char>
-	<name>barbie_the_barbarian</name>
+	<name>medarmored_barbie_the_barbarian</name>
 	<classInfo>
-		<levels>19</levels>
+		<levels>5</levels>
 		<class>Path of the Berserker Barbarian</class>
 	</classInfo>
-	<maxhp>200</maxhp>
-	<currenthp>200</currenthp>
-	<str>24</str>
+	<maxhp>50</maxhp>
+	<currenthp>50</currenthp>
+	<str>18</str>
 	<dex>16</dex>
-	<con>18</con>
+	<con>12</con>
 	<int>8</int>
-	<wis>18</wis>
+	<wis>10</wis>
 	<cha>10</cha>
 	<skill_proficiencies>
 	<proficiency>acrobatics</proficiency>
@@ -30,5 +30,5 @@
 			<name>dagger</name>
 		</weapon>
 	</proficient_weapons>
-	<equipment>shield</equipment>
+	<equipment>BREASTPLATE</equipment>
 </player_char>

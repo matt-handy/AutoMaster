@@ -112,7 +112,19 @@ public class SpellParser {
 				recurringType = Spell.RECURRING_DAMAGE_TYPE.AUTOMATIC;
 			}
 		}
-
+		
+		int temporaryACBonus = 0;
+		NodeList temporaryACBonusList = document.getElementsByTagName("temporary_ac_bonus");
+		if (temporaryACBonusList.item(0) != null) {
+			temporaryACBonus = Integer.parseInt(temporaryACBonusList.item(0).getTextContent());
+		}
+		
+		int activeACBonus = 0;
+		NodeList activeACBonusList = document.getElementsByTagName("active_ac_bonus");
+		if (activeACBonusList.item(0) != null) {
+			activeACBonus = Integer.parseInt(activeACBonusList.item(0).getTextContent());
+		}
+		
 		SpellHealingComponent healingComponent = null;
 		NodeList healingList = document.getElementsByTagName("healing");
 		if (healingList != null && healingList.item(0) != null) {
@@ -171,7 +183,7 @@ public class SpellParser {
 		if (actionSpell) {
 			return new ActionSpell(compName, readableName, Spell.SLOTLEVEL.CANTRIP, hasDc, hasToHit, damagers,
 					readableEffect, concentrate, dc, toHit, healingComponent, altDamagers, noDamageOnSave,
-					applicableClasses);
+					applicableClasses, activeACBonus, temporaryACBonus);
 		} else {
 			/* 
 			 * TODO Reactivate this case. Right now some spells are defined, but the parent classes aren't there yet.
@@ -182,7 +194,7 @@ public class SpellParser {
 			*/
 			return new Spell(compName, readableName, Spell.SLOTLEVEL.get(minLevel), hasDc, hasToHit, damagers,
 					readableEffect, concentrate, bonusAction, recurringType, healingComponent, altDamagers,
-					noDamageOnSave, applicableClasses);
+					noDamageOnSave, applicableClasses, activeACBonus, temporaryACBonus);
 		}
 
 	}

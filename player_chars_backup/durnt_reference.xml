@@ -54,4 +54,6 @@
 			<name>dagger</name>
 		</weapon>
 	</proficient_weapons>
+	<equipment>shield</equipment>
+	<equipment>plate</equipment>
 </player_char>

@@ -72,6 +72,7 @@ public class SinglePlayerEncounterRunner extends EncounterRunner {
 				pw.println("lvl | levelup => begins the level up process");
 				pw.println("makeplusweapon <name> <modifier> => temporarily make a plus weapon");
 				pw.println("prepareSpell <spell name> => prepare a spell from known spell list");
+				pw.println("printac | pac => prints the AC of the current character");
 				pw.println(
 						"react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 				pw.println("rollInit | rollInitiative => roll initiative for character");
@@ -248,6 +249,10 @@ public class SinglePlayerEncounterRunner extends EncounterRunner {
 				} else {
 					pw.println("prepareSpell <spell name>");
 				}
+				break;
+			case "printac":
+			case "pac":
+				pw.println("AC: " + pc.getCurrentAC());
 				break;
 			case "savethrow":
 				if (args.length != 2) {

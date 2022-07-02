@@ -139,6 +139,7 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "lvl | levelup => begins the level up process");
 			assertEquals(br.readLine(), "makeplusweapon <name> <modifier> => temporarily make a plus weapon");
 			assertEquals(br.readLine(), "prepareSpell <spell name> => prepare a spell from known spell list");
+			assertEquals("printac | pac => prints the AC of the current character", br.readLine());
 			assertEquals(br.readLine(),
 					"react <reaction string. oppAtt for opportunity attack> <argument - weapon name for oppAtt>");
 			assertEquals(br.readLine(), "rollInit | rollInitiative => roll initiative for character");
@@ -150,6 +151,44 @@ class SinglePlayerModeMainTest {
 			assertEquals(br.readLine(), "swapSpell <current prepared spell> <new prepared spell> => player prepares a spell from list");
 			assertEquals("uf | usefeature <idx> => player uses a feature", br.readLine());
 			assertEquals(br.readLine(), "unmakeplusweapon <name> => remove buff on weapon");
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+		main.shutdown();
+	}
+	
+	@Test
+	void testACCalculationIntegration() {
+		SinglePlayerEncounterRunner main = new SinglePlayerEncounterRunner();
+		try {
+			main.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		ByteArrayOutputStream cmdBuffer = new ByteArrayOutputStream();
+		BufferedOutputStream bos = new BufferedOutputStream(cmdBuffer);
+		PrintWriter builder = new PrintWriter(bos);
+		builder.println("pac");
+		builder.println("printac");
+		builder.println("quit");
+		builder.flush();
+
+		BufferedReader br = new BufferedReader(
+				new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+		cmdBuffer.reset();
+		bos = new BufferedOutputStream(cmdBuffer);
+		builder = new PrintWriter(bos);
+		try {
+			main.singlePlayerMode(builder, br, "Durnt-reference");
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+
+		try {
+			br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(cmdBuffer.toByteArray())));
+			assertEquals(br.readLine(), "AC: 21");
+			assertEquals(br.readLine(), "AC: 21");
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
